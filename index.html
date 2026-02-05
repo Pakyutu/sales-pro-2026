@@ -21,167 +21,186 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #EE2D24;     /* Merah Telkomsel */
-            --dark: #000000;        /* Hitam Pekat */
-            --bg-light: #f4f4f4;    /* Abu Sangat Muda */
-            --gold: #FFB81C;        /* Emas Mewah */
-            --card: #ffffff;
-            --text-main: #222222;
-            --text-sub: #888888;
-            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
-            --shadow-hard: 0 10px 30px rgba(238, 45, 36, 0.2);
+            --tsel-red: #EE2D24;     /* Merah Utama */
+            --tsel-dark: #b30000;    /* Merah Gelap */
+            --bg-color: #f8f9fa;     /* Putih Abu Bersih */
+            --card-white: #ffffff;
+            --text-dark: #1a1a1a;
+            --text-grey: #666666;
+            --gold: #FFB81C;
             --radius: 20px;
+            --shadow: 0 10px 30px rgba(238, 45, 36, 0.1);
         }
         
-        /* MODE GELAP TOTAL */
+        /* MODE GELAP (DARK MODE) */
         [data-theme="dark"] {
-            --bg-light: #0a0a0a; 
-            --card: #141414;
-            --text-main: #ffffff;
-            --text-sub: #666666;
-            --shadow-soft: 0 10px 30px rgba(0,0,0,0.5);
+            --bg-color: #121212; 
+            --card-white: #1e1e1e;
+            --text-dark: #ffffff;
+            --text-grey: #a0a0a0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
             color-scheme: dark;     
         }
 
-        body { font-family: 'Poppins', sans-serif; padding: 0; margin: 0; background: var(--bg-light); color: var(--text-main); transition: 0.3s; overflow-x: hidden; padding-bottom: 100px; }
+        body { 
+            font-family: 'Poppins', sans-serif; padding: 0; margin: 0; 
+            background-color: var(--bg-color); 
+            /* Pattern Background Telkomsel Style */
+            background-image: radial-gradient(var(--tsel-red) 0.5px, transparent 0.5px), radial-gradient(var(--tsel-red) 0.5px, var(--bg-color) 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            background-blend-mode: overlay;
+            color: var(--text-dark); transition: 0.3s; overflow-x: hidden; padding-bottom: 100px; 
+            opacity: 0.98;
+        }
         
-        /* HEADER MODERN */
+        /* HEADER MODERN CURVED */
         .header-main { 
-            background: linear-gradient(180deg, #EE2D24 0%, #8b0000 100%);
-            color: white; padding: 40px 20px 50px; text-align: center; 
-            border-radius: 0 0 40px 40px; 
-            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.4);
+            background: linear-gradient(135deg, #EE2D24 0%, #990000 100%);
+            color: white; padding: 40px 20px 60px; text-align: center; 
+            border-radius: 0 0 50px 50px; 
+            box-shadow: 0 15px 50px rgba(238, 45, 36, 0.4);
             position: relative; overflow: hidden;
         }
         
-        /* Efek Kilau di Header */
+        /* Hiasan Header Abstrak */
+        .header-main::after {
+            content: ''; position: absolute; bottom: -50px; right: -50px;
+            width: 200px; height: 200px; background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
         .header-main::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            animation: putar 25s infinite linear;
+            content: ''; position: absolute; top: -50px; left: -50px;
+            width: 150px; height: 150px; background: rgba(255,255,255,0.1);
+            border-radius: 50%;
         }
-        @keyframes putar { 0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);} }
 
-        .header-content { position: relative; z-index: 2; }
-        .header-content h1 { margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 1px; }
-        .header-content p { margin: 5px 0 0; font-size: 11px; opacity: 0.8; letter-spacing: 3px; font-weight: 600; text-transform: uppercase; }
+        .header-content h1 { margin: 0; font-size: 26px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        .header-content p { margin: 5px 0 0; font-size: 11px; opacity: 0.9; letter-spacing: 2px; font-weight: 600; background: rgba(0,0,0,0.2); display: inline-block; padding: 4px 12px; border-radius: 20px; }
         
-        .theme-btn { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 30px; cursor: pointer; backdrop-filter: blur(5px); z-index: 10; font-size:10px; color:white; font-weight:bold; letter-spacing: 1px;}
+        .theme-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 30px; cursor: pointer; backdrop-filter: blur(5px); z-index: 10; font-size:10px; color:white; font-weight:bold;}
 
-        /* TARGET BAR ELEGANT */
-        .target-box { margin-top: 25px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 2;}
+        /* TARGET BAR GLOWING */
+        .target-box { margin-top: 25px; background: rgba(0,0,0,0.25); padding: 15px; border-radius: 25px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); position: relative; z-index: 2;}
         .target-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .progress-track { background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--gold); width: 0%; border-radius: 10px; transition: 1s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 0 15px rgba(255, 184, 28, 0.6); }
+        .progress-track { background: rgba(255,255,255,0.15); height: 10px; border-radius: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gold); width: 0%; border-radius: 20px; transition: 1s ease; box-shadow: 0 0 20px rgba(255, 184, 28, 0.5); }
 
-        /* TAB NAVIGASI */
+        /* TABS FLOATING */
         .tabs-container { 
-            display: flex; justify-content: space-between; background: var(--card); margin: -30px 20px 20px; border-radius: 25px; 
-            padding: 8px; box-shadow: var(--shadow-soft); position: relative; z-index: 90; gap: 8px;
+            display: flex; justify-content: space-between; background: var(--card-white); margin: -35px 20px 20px; border-radius: 30px; 
+            padding: 8px; box-shadow: var(--shadow); position: relative; z-index: 90; gap: 8px;
         }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-sub); font-weight: 700; cursor: pointer; font-size: 10px; border-radius: 18px; transition:0.3s; font-family: 'Poppins', sans-serif;}
-        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(238, 45, 36, 0.4); }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-grey); font-weight: 700; cursor: pointer; font-size: 11px; border-radius: 22px; transition:0.3s; font-family: 'Poppins', sans-serif;}
+        .tab-btn.active { background: var(--tsel-red); color: white; box-shadow: 0 5px 20px rgba(238, 45, 36, 0.4); }
 
         .content { display: none; animation: slideUp 0.5s ease; padding: 0 20px; }
         .content.active { display: block; }
         @keyframes slideUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
 
-        /* KARTU & INPUT */
-        .input-group { background: var(--card); padding: 25px; border-radius: 30px; box-shadow: var(--shadow-soft); margin-bottom: 25px; border: 1px solid rgba(0,0,0,0.02); }
-        h3 { margin: 0 0 20px 0; color: var(--primary); font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display:flex; align-items:center; gap:10px;}
-        h3::before { content:''; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; display: inline-block; }
+        /* KARTU & INPUT MODERN */
+        .input-group { background: var(--card-white); padding: 25px; border-radius: 30px; box-shadow: var(--shadow); margin-bottom: 25px; border: 1px solid rgba(0,0,0,0.03); position: relative; overflow: hidden; }
+        .input-group::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--tsel-red); }
+        
+        h3 { margin: 0 0 20px 0; color: var(--tsel-red); font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; display:flex; align-items:center; gap:10px;}
         
         input, select { 
-            width: 100%; padding: 16px; border: 2px solid transparent; background: var(--bg-light); 
-            border-radius: 16px; box-sizing: border-box; font-size: 14px; margin-bottom: 12px; 
-            font-weight: 600; color: var(--text-main); font-family: 'Poppins', sans-serif; transition: 0.3s;
+            width: 100%; padding: 16px; border: 2px solid transparent; background: var(--bg-color); 
+            border-radius: 18px; box-sizing: border-box; font-size: 14px; margin-bottom: 15px; 
+            font-weight: 600; color: var(--text-dark); font-family: 'Poppins', sans-serif; transition: 0.3s;
         }
-        input:focus, select:focus { background: var(--card); border-color: var(--primary); outline:none; }
+        input:focus, select:focus { background: var(--card-white); border-color: var(--tsel-red); outline:none; }
 
-        /* TOMBOL BESAR */
-        .btn { border: none; border-radius: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; padding: 18px; width: 100%; font-size: 13px; letter-spacing: 1px; transition:0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif;}
+        /* BUTTONS */
+        .btn { border: none; border-radius: 20px; font-weight: 800; cursor: pointer; text-transform: uppercase; padding: 18px; width: 100%; font-size: 13px; letter-spacing: 1px; transition:0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif;}
         .btn:active { transform: scale(0.97); }
-        .btn-black { background: var(--text-main); color: var(--card); }
-        .btn-save { background: linear-gradient(135deg, #EE2D24, #b30000); color: white; box-shadow: var(--shadow-hard); }
+        .btn-black { background: #222; color: white; }
+        .btn-save { background: linear-gradient(135deg, #EE2D24, #b30000); color: white; box-shadow: 0 10px 25px rgba(238, 45, 36, 0.3); }
 
-        /* DASHBOARD STATUS */
-        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
-        .dash-item { padding: 20px; border-radius: 25px; color: white; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .dash-item.green { background: #00b894; }
-        .dash-item.blue { background: #0984e3; }
-        .dash-item.total { background: #2d3436; grid-column: span 2; align-items: center; text-align: center; border: 2px solid #333; }
-        [data-theme="dark"] .dash-item.total { background: #000; border-color: #333; }
+        /* DASHBOARD GRID */
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .dash-item { padding: 20px; border-radius: 25px; color: white; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .dash-item.green { background: linear-gradient(135deg, #00b09b, #96c93d); }
+        .dash-item.blue { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .dash-item.total { background: #1a1a1a; grid-column: span 2; align-items: center; text-align: center; border: 2px solid #333; }
+        [data-theme="dark"] .dash-item.total { background: #000; }
         
-        .dash-item span { font-size: 10px; opacity: 0.8; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
         .dash-item b { font-size: 20px; margin-top: 5px; }
-        .dash-item.total b { font-size: 28px; color: var(--gold); text-shadow: 0 0 20px rgba(255, 184, 28, 0.4); }
+        .dash-item.total b { font-size: 32px; color: var(--gold); text-shadow: 0 0 20px rgba(255, 184, 28, 0.4); }
 
         /* LIST TRANSAKSI (CARD STYLE) */
         .trx-list { display: flex; flex-direction: column; gap: 15px; }
         .trx-card { 
-            background: var(--card); padding: 20px; border-radius: 25px; 
-            box-shadow: var(--shadow-soft); display: flex; flex-direction: column; gap: 12px; 
-            border-left: 5px solid var(--primary); transition: transform 0.2s;
+            background: var(--card-white); padding: 20px; border-radius: 25px; 
+            box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; 
+            border-bottom: 3px solid #eee; transition: transform 0.2s;
         }
         .trx-card:active { transform: scale(0.98); }
         
         .trx-header { display: flex; justify-content: space-between; align-items: center; }
-        .trx-name { font-size: 16px; font-weight: 800; color: var(--text-main); }
-        .trx-meta { font-size: 11px; color: var(--text-sub); font-weight: 500; margin-top: 2px; }
-        .trx-price { font-size: 16px; font-weight: 800; color: var(--primary); }
+        .trx-name { font-size: 16px; font-weight: 800; color: var(--text-dark); }
+        .trx-meta { font-size: 11px; color: var(--text-grey); font-weight: 500; margin-top: 2px; }
+        .trx-price { font-size: 16px; font-weight: 800; color: var(--tsel-red); }
 
-        .trx-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; }
+        .trx-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 8px; }
         .act-btn { 
-            border: none; padding: 12px; border-radius: 15px; font-size: 10px; font-weight: 800; 
+            border: none; padding: 10px; border-radius: 12px; font-size: 11px; font-weight: 800; 
             cursor: pointer; color: white; font-family: 'Poppins', sans-serif;
         }
-        .act-struk { background: #0984e3; }
-        .act-edit { background: #fdcb6e; color: #000; }
-        .act-del { background: #ff7675; color: white; }
+        .act-struk { background: #3498db; }
+        .act-edit { background: #f1c40f; color: #000; }
+        .act-del { background: #e74c3c; color: white; }
 
         /* LIST KERANJANG BELANJA */
         .temp-item { 
-            display: flex; justify-content: space-between; padding: 12px 0; 
-            border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 13px; font-weight: 500;
+            display: flex; justify-content: space-between; padding: 15px; background: var(--bg-color);
+            border-radius: 15px; margin-bottom: 8px; font-size: 13px; font-weight: 600;
         }
-        .temp-qty { font-weight: 800; color: var(--primary); margin-left: 10px; }
+        .temp-qty { color: var(--tsel-red); font-weight: 900; }
 
-        /* MODAL */
-        #loginOverlay, #receiptOverlay { 
-            position: fixed; inset: 0; background: var(--bg-light); z-index: 9999; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        /* STRUK MODERN (COLORFUL) */
+        #receiptOverlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; 
+            display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(8px);
         }
-        #receiptOverlay { background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); }
-        
         .receipt-paper { 
-            background: #fff; width: 320px; padding: 30px; position: relative; color: #000; 
-            font-family: 'Courier New', monospace; box-shadow: 0 30px 60px rgba(0,0,0,0.5); 
-            border-radius: 5px;
+            background: #fff; width: 320px; position: relative; color: #333; 
+            font-family: 'Poppins', sans-serif; box-shadow: 0 30px 60px rgba(0,0,0,0.5); 
+            border-radius: 20px; overflow: hidden;
         }
-        /* Efek Kertas Sobek */
-        .receipt-paper::before { content: ""; position: absolute; top: -10px; left: 0; width: 100%; height: 10px; background: radial-gradient(circle, transparent 70%, #fff 70%) 0 0; background-size: 20px 20px; }
-        .receipt-paper::after { content: ""; position: absolute; bottom: -10px; left: 0; width: 100%; height: 10px; background: radial-gradient(circle, transparent 70%, #fff 70%) 0 0; background-size: 20px 20px; transform: rotate(180deg); }
+        .rec-header {
+            background: var(--tsel-red); color: white; padding: 25px; text-align: center;
+            border-radius: 20px 20px 0 0;
+        }
+        .rec-body { padding: 25px; }
+        .rec-total { 
+            background: #f8f9fa; padding: 20px; margin-top: 10px; border-radius: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .rec-item-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; font-weight: 600; border-bottom: 1px dashed #eee; padding-bottom: 8px; }
+        .rec-qty-badge { background: #eee; padding: 2px 8px; border-radius: 8px; font-size: 11px; color: #555; }
 
         /* PIN LOCK */
+        #loginOverlay { position: fixed; inset: 0; background: var(--bg-color); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: #ccc; margin: 0 8px; transition:0.2s;}
-        .pin-dot.filled { background: var(--primary); transform: scale(1.3); }
+        .pin-dot.filled { background: var(--tsel-red); transform: scale(1.3); }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 30px; }
-        .num-btn { width: 65px; height: 65px; border-radius: 50%; border: none; background: var(--card); font-size: 20px; font-weight: bold; box-shadow: var(--shadow-soft); color: var(--text-main); }
+        .num-btn { width: 70px; height: 70px; border-radius: 50%; border: none; background: var(--card-white); font-size: 22px; font-weight: bold; box-shadow: var(--shadow); color: var(--text-dark); }
     </style>
 </head>
 <body data-theme="light">
 
-    <div id="loginOverlay" style="display:none;">
+    <div id="loginOverlay">
         <div style="text-align:center;">
-            <div style="background:var(--card); padding:15px; border-radius:30px; display:inline-block; margin-bottom:20px; box-shadow:var(--shadow-soft);">
+            <div style="background:white; padding:15px; border-radius:30px; display:inline-block; margin-bottom:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
                 <img src="logo.png" width="60">
             </div>
-            <h2 style="margin:0; font-size:20px;">MASUKKAN PIN</h2>
-            <p style="font-size:12px; color:var(--text-sub); margin-top:5px;">Akses Terkunci</p>
+            <h2 style="margin:0; font-size:22px; color:var(--text-dark);">PIN AKSES</h2>
+            <p style="font-size:12px; color:var(--text-grey); margin-top:5px;">Keamanan Data Sales Pro</p>
         </div>
         <div style="display:flex; justify-content:center; margin-top:25px;" id="pinDisplay">
             <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
@@ -196,9 +215,9 @@
             <button class="num-btn" onclick="enterPin(7)">7</button>
             <button class="num-btn" onclick="enterPin(8)">8</button>
             <button class="num-btn" onclick="enterPin(9)">9</button>
-            <button class="num-btn" style="color:var(--primary)" onclick="clearPin()">C</button>
+            <button class="num-btn" style="color:var(--tsel-red)" onclick="clearPin()">C</button>
             <button class="num-btn" onclick="enterPin(0)">0</button>
-            <button class="num-btn" style="color:var(--primary)" onclick="enterPin(-1)">⌫</button>
+            <button class="num-btn" style="color:var(--tsel-red)" onclick="enterPin(-1)">⌫</button>
         </div>
     </div>
 
@@ -206,7 +225,7 @@
         <button class="theme-btn" onclick="toggleTheme()">🌓 TEMA</button>
         <div class="header-content">
             <h1>MEDIA SWARA PRIMA</h1>
-            <p>SALES PRO 2026</p>
+            <p>TELKOMSEL AUTHORIZED PARTNER</p>
         </div>
         
         <div class="target-box">
@@ -233,7 +252,7 @@
             
             <div style="display:flex; gap:10px;">
                 <input type="date" id="tanggalInput" style="flex:1;">
-                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:16px; border:none; background:var(--text-main); color:var(--bg-light); font-weight:bold; font-size:11px; margin-bottom:12px;">HARI INI</button>
+                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:16px; border:none; background:var(--text-dark); color:var(--bg-color); font-weight:bold; font-size:11px; margin-bottom:15px;">HARI INI</button>
             </div>
 
             <input type="text" id="namaOutlet" placeholder="Nama Outlet" list="outletList">
@@ -254,7 +273,7 @@
             
             <button class="btn btn-black" onclick="addItem()"><span>➕</span> TAMBAH LIST</button>
             
-            <div id="tempList" style="margin-top: 20px; border-top: 2px dashed rgba(0,0,0,0.1); padding-top:10px;"></div>
+            <div id="tempList" style="margin-top: 20px;"></div>
             <button class="btn btn-save" id="mainSaveBtn" style="margin-top:20px; display:none;" onclick="saveTrx()">💾 SIMPAN DATA</button>
         </div>
         
@@ -285,8 +304,8 @@
         <div class="input-group">
             <h3>📦 STOK & LAKU</h3>
             
-            <div style="background: var(--bg-light); padding:15px; border-radius:20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
-                <span style="font-size:11px; font-weight:bold; color:var(--text-sub);">FILTER TANGGAL:</span>
+            <div style="background: var(--bg-color); padding:15px; border-radius:20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:11px; font-weight:bold; color:var(--text-grey);">FILTER TANGGAL:</span>
                 <input type="date" id="stokDateInput" style="margin:0; padding:5px; width:auto; background:transparent; border:none;" onchange="syncDateAndRender(this.value)">
             </div>
 
@@ -294,9 +313,9 @@
                 <table style="width: 100%; border-collapse: separate; border-spacing: 0 10px; font-size: 13px;">
                     <thead>
                         <tr>
-                            <th style="text-align:left; color:var(--text-sub); font-size:10px;">PRODUK</th>
-                            <th style="text-align:center; color:var(--text-sub); font-size:10px;">LAKU</th>
-                            <th style="text-align:right; color:var(--text-sub); font-size:10px;">SISA</th>
+                            <th style="text-align:left; color:var(--text-grey); font-size:10px;">PRODUK</th>
+                            <th style="text-align:center; color:var(--text-grey); font-size:10px;">LAKU</th>
+                            <th style="text-align:right; color:var(--text-grey); font-size:10px;">SISA</th>
                         </tr>
                     </thead>
                     <tbody id="stokTableBody"></tbody>
@@ -314,19 +333,19 @@
     <div id="tab3" class="content">
         <div class="input-group">
             <h3>⚙️ PENGATURAN</h3>
-            <label style="font-size:11px; font-weight:bold; color:var(--text-sub);">TARGET OMSET</label>
+            <label style="font-size:11px; font-weight:bold; color:var(--text-grey);">TARGET OMSET</label>
             <input type="text" id="setTarget" placeholder="Contoh: 5.000.000" oninput="formatInput(this)" onchange="saveSettings()">
             
-            <label style="font-size:11px; font-weight:bold; color:var(--text-sub); margin-top:15px; display:block;">PIN KEAMANAN</label>
+            <label style="font-size:11px; font-weight:bold; color:var(--text-grey); margin-top:15px; display:block;">PIN KEAMANAN</label>
             <div style="display:flex; gap:10px;">
                 <input type="number" id="setPin" placeholder="4 Digit PIN" onchange="saveSettings()">
                 <button class="btn-black" onclick="togglePin()" style="width:auto; padding:0 20px;">🔒 SET</button>
             </div>
-            <p style="font-size:10px; color:var(--primary); margin-top:5px;">*Kosongkan jika tidak butuh PIN</p>
+            <p style="font-size:10px; color:var(--tsel-red); margin-top:5px;">*Kosongkan jika tidak butuh PIN</p>
         </div>
 
         <div class="input-group">
-            <h3>🛠️ UPDATE STOK (CEPAT)</h3>
+            <h3>🛠️ UPDATE STOK</h3>
             <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px;">
                 <table style="width:100%; border-collapse: separate; border-spacing: 0 8px;">
                     <tbody id="stokEditorBulk"></tbody>
@@ -354,25 +373,29 @@
         </div>
     </div>
 
-    <div id="receiptOverlay">
+    <div id="receiptOverlay" style="display:none;">
         <div class="receipt-paper">
-            <div style="text-align:center; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:15px;">
-                <h2 style="margin:0; font-size:22px;">MEDIA SWARA PRIMA</h2>
-                <p style="margin:5px 0 0; font-size:10px; font-weight:bold;">TELKOMSEL AUTHORIZED PARTNER</p>
+            <div class="rec-header">
+                <h2 style="margin:0; font-size:20px; font-weight:900;">MEDIA SWARA PRIMA</h2>
+                <p style="margin:5px 0 0; font-size:10px; opacity:0.9;">TELKOMSEL AUTHORIZED PARTNER</p>
             </div>
-            <div style="border-bottom:1px dashed #000; padding-bottom:15px; margin-bottom:15px;">
-                <span id="rDate" style="font-size:12px;"></span><br>
-                <b id="rName" style="font-size:18px; text-transform:uppercase;"></b>
-            </div>
-            <table style="width:100%; font-size:14px;">
-                <tbody id="rList"></tbody>
-            </table>
-            <div style="border-top:1px dashed #000; margin:15px 0;"></div>
-            <div style="display:flex; justify-content:space-between; font-weight:900; font-size:20px;">
-                <span>TOTAL</span><span id="rTotal">0</span>
-            </div>
-            <div style="text-align:center; margin-top:30px; font-size:11px;">
-                TERIMA KASIH<br>Bukti pembayaran yang sah
+            <div class="rec-body">
+                <div style="text-align:center; margin-bottom:20px; border-bottom:1px dashed #ddd; padding-bottom:10px;">
+                    <b id="rName" style="font-size:18px; text-transform:uppercase; color:var(--text-dark);"></b>
+                    <div id="rDate" style="font-size:11px; color:var(--text-grey); margin-top:5px;"></div>
+                </div>
+                
+                <div id="rList"></div>
+
+                <div class="rec-total">
+                    <span style="font-size:14px; font-weight:bold; color:var(--text-grey);">TOTAL</span>
+                    <span id="rTotal" style="font-size:22px; font-weight:900; color:var(--tsel-red);">0</span>
+                </div>
+                
+                <div style="text-align:center; margin-top:25px;">
+                    <p style="margin:0; font-size:12px; font-weight:bold; color:var(--text-dark);">TERIMA KASIH</p>
+                    <p style="margin:0; font-size:10px; color:var(--text-grey);">Harap simpan bukti pembayaran ini</p>
+                </div>
             </div>
         </div>
         
@@ -410,7 +433,6 @@
         renderAll(); 
     };
 
-    // --- LOGIC UTAMA ---
     function syncDateAndRender(newDate) {
         document.getElementById('filterTgl').value = newDate;
         document.getElementById('stokDateInput').value = newDate;
@@ -468,7 +490,6 @@
         let gt = 0, tc = 0, tf = 0;
         let laku = {}; db.catalog.forEach(v => laku[v.nama] = 0);
 
-        // RENDER LIST TRANSAKSI
         let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => item.data.tgl === filterTgl)
             .filter(item => item.data.nama.toLowerCase().includes(searchKeyword))
@@ -529,24 +550,24 @@
             let terjual = lakuPerTanggal[v.nama] || 0; 
             let color = sisa <= 5 ? '#ff7675' : '#00b894';
             return `<tr>
-                <td style="border-radius:10px 0 0 10px;">${v.nama}</td>
-                <td style="text-align:center;">${terjual}</td>
-                <td style="text-align:right; font-weight:900; color:${color}; border-radius:0 10px 10px 0;">${sisa}</td>
+                <td style="border-radius:10px 0 0 10px; background:white;">${v.nama}</td>
+                <td style="text-align:center; background:white;">${terjual}</td>
+                <td style="text-align:right; font-weight:900; color:${color}; border-radius:0 10px 10px 0; background:white;">${sisa}</td>
             </tr>`;
         }).join('');
         
         document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             return `<tr>
-                <td style="background:var(--bg-light); padding:10px; border-radius:10px 0 0 10px;">${v.nama}</td>
-                <td style="background:var(--bg-light); border-radius:0 10px 10px 0;">
+                <td style="background:var(--bg-color); padding:10px; border-radius:10px 0 0 10px;">${v.nama}</td>
+                <td style="background:var(--bg-color); border-radius:0 10px 10px 0;">
                     <input type="number" style="margin:0; text-align:center; background:white; padding:8px;" value="${db.stok[v.nama]||0}" onchange="db.stok['${v.nama}']=parseInt(this.value)">
                 </td>
             </tr>`;
         }).join('');
 
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-            <div style="background:var(--bg-light); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="background:var(--bg-color); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
                 <b style="font-size:13px;">${v.nama}</b> 
                 <span style="color:red; cursor:pointer; font-size:11px; font-weight:bold;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
             </div>
@@ -602,12 +623,11 @@
     }
 
     function renderTemp() {
-        // FIX: TAMPILAN KERANJANG PAKE SPASI "20 x"
         document.getElementById('tempList').innerHTML = tempItems.map((it, i) => `
             <div class="temp-item">
                 <span>${it.nama}</span>
                 <span>
-                    <span class="temp-qty">${formatRibuan(it.qty)} x</span>
+                    <span class="temp-qty">${formatRibuan(it.qty)} Pcs</span>
                     <span onclick="cancelTempItem(${i})" style="color:red; margin-left:10px; cursor:pointer;">❌</span>
                 </span>
             </div>`).join('');
@@ -649,25 +669,25 @@
         let waText = `*${d.nama}*\n${d.tgl}\n\n`;
         
         document.getElementById('rName').innerText = d.nama;
-        document.getElementById('rDate').innerText = d.tgl + " " + d.jam;
+        document.getElementById('rDate').innerText = d.tgl + " • " + d.jam;
         
         document.getElementById('rList').innerHTML = d.items.map(it => {
             let sub = it.harga * it.qty; total += sub;
-            let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : formatRibuan(it.qty) + ' x';
+            let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : formatRibuan(it.qty) + ' Pcs';
             
             waText += `${it.nama} : ${qtyDisplay} = ${formatRibuan(sub)}\n`;
             
-            // FIX: STRUK PAKE SPASI
-            return `<tr>
-                <td style="padding:5px 0;">${it.nama}<br><small style="color:#666;">${qtyDisplay} @ ${formatRibuan(it.harga)}</small></td>
-                <td align="right" style="vertical-align:top; padding:5px 0;">${formatRibuan(sub)}</td>
-            </tr>`;
+            // TAMPILAN ITEM STRUK MODERN
+            return `<div class="rec-item-row">
+                <div>${it.nama} <span class="rec-qty-badge">${qtyDisplay}</span></div>
+                <div>${formatRibuan(sub)}</div>
+            </div>`;
         }).join('');
         
-        document.getElementById('rTotal').innerText = formatRibuan(total);
+        document.getElementById('rTotal').innerText = "Rp " + formatRibuan(total);
         waText += `\n*TOTAL: ${formatRibuan(total)}*`;
         document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`);
-        document.getElementById('receiptOverlay').style.display = 'block';
+        document.getElementById('receiptOverlay').style.display = 'flex';
     }
 
     function editTrx(i) {
@@ -701,7 +721,7 @@
                 <div><div class="trx-name">${d}</div><div class="trx-meta">Total Harian</div></div>
                 <div>
                     <div class="trx-price">Rp ${formatRibuan(dayTotal)}</div>
-                    <button class="act-btn" style="background:var(--text-main); margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
+                    <button class="act-btn" style="background:var(--text-dark); margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
                 </div>
             </div>`;
         }).join('');
