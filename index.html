@@ -25,16 +25,16 @@
 
     <style>
         :root {
-            --primary: #EE2D24;       
-            --primary-dark: #b30000;  
+            --primary: #EE2D24;       /* Merah Telkomsel */
+            --primary-dark: #b30000;  /* Merah Tua */
             --bg-body: #f4f6f8;       
             --bg-card: #ffffff;       
             --text-main: #2c3e50;     
             --text-sub: #7f8c8d;      
             --gold: #f1c40f;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-            --shadow-lg: 0 10px 30px rgba(238, 45, 36, 0.15);
-            --radius: 16px;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(238, 45, 36, 0.15);
+            --radius: 20px;
         }
 
         body { 
@@ -43,45 +43,43 @@
             color: var(--text-main); 
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden; padding-bottom: 100px; 
-            /* ROBOTIC BACKGROUND PATTERN */
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h1v1h-1zM50 50h1v1h-1zM90 90h1v1h-1z' fill='%23EE2D24' fill-opacity='0.05'/%3E%3Cpath d='M20 20 L30 20 L30 30' stroke='%23EE2D24' stroke-opacity='0.03' fill='none'/%3E%3C/svg%3E");
+            /* BACKGROUND ROBOTIC PATTERN */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ee2d24' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
         
-        /* HEADER CORPORATE + ROBOTIC ANIMATION */
+        /* HEADER MODERN ROBOTIC */
         .header-main { 
-            background: linear-gradient(135deg, #fff 60%, #fff5f5 100%);
+            background: var(--bg-card);
             padding: 30px 20px 50px; text-align: center; 
             border-radius: 0 0 40px 40px; 
             box-shadow: var(--shadow-lg);
             position: relative; overflow: hidden;
-            border-top: 5px solid var(--primary);
+            border-top: 6px solid var(--primary);
+        }
+
+        /* ROBOT ICON IN HEADER */
+        .robot-head {
+            position: absolute; right: -20px; top: 10px; opacity: 0.1; transform: rotate(15deg); width: 120px;
         }
         
-        /* Floating Robot SVG Element */
-        .robot-floating {
-            position: absolute; right: -20px; top: 10px; opacity: 0.1; width: 120px; transform: rotate(15deg);
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes float { 0%, 100% { transform: translateY(0) rotate(15deg); } 50% { transform: translateY(-15px) rotate(20deg); } }
-
-        .header-content h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--primary); }
-        .header-content p { margin: 2px 0 0; font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-        .header-content .loc { font-size: 13px; font-weight: 800; color: #333; margin-top: 5px; display: block; }
+        .header-content h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--primary); text-transform: uppercase; }
+        .header-content p { margin: 5px 0 0; font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+        .header-content .loc { font-size: 12px; color: var(--text-main); font-weight: 800; margin-top: 5px; display: block; }
 
         /* TARGET BAR (CYBER LOOK) */
-        .target-box { margin-top: 20px; background: #fff; padding: 18px; border-radius: 20px; border: 1px solid #eee; box-shadow: var(--shadow-sm); position: relative; z-index: 2; }
-        .target-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
-        .progress-track { background: #f0f0f0; height: 10px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #EE2D24, #ff6b6b); width: 0%; border-radius: 20px; transition: 1s ease; position: relative; }
-        .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shine 2s infinite; }
-        @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+        .target-box { margin-top: 25px; background: #fff; padding: 18px; border-radius: var(--radius); border: 1px solid #eee; box-shadow: var(--shadow-sm); position: relative; z-index: 2; }
+        .target-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
+        .progress-track { background: #f0f0f0; height: 12px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #EE2D24, #ff6b6b); width: 0%; border-radius: 20px; transition: 1.5s cubic-bezier(0.1, 0.7, 1.0, 0.1); position: relative; }
+        .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: sweep 2s infinite; }
+        @keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        /* TABS */
+        /* TABS (NEUMORPHIC ROBOTIC) */
         .tabs-container { 
             display: flex; justify-content: space-between; background: #fff; margin: -25px 20px 20px; border-radius: 50px; 
             padding: 8px; box-shadow: var(--shadow-lg); position: relative; z-index: 90; gap: 8px; border: 1px solid #eee;
         }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-sub); font-weight: 700; cursor: pointer; font-size: 11px; border-radius: 40px; transition:0.3s; font-family: 'Poppins', sans-serif;}
+        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-sub); font-weight: 700; cursor: pointer; font-size: 11px; border-radius: 40px; transition:0.3s; }
         .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(238, 45, 36, 0.4); }
 
         .content { display: none; animation: fadeIn 0.4s ease; padding: 0 20px; }
@@ -89,60 +87,80 @@
         @keyframes fadeIn { from {opacity:0; transform:translateY(15px);} to {opacity:1; transform:translateY(0);} }
 
         /* CARDS */
-        .card { background: var(--bg-card); padding: 25px; border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 25px; border: 1px solid #f0f0f0; position: relative; }
-        .card::before { content: ''; position: absolute; top: 10px; left: 10px; width: 30px; height: 30px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23EE2D24' opacity='0.05'%3E%3Cpath d='M12 2L4.5 20.29L5.21 21L12 18L18.79 21L19.5 20.29L12 2Z'/%3E%3C/svg%3E"); background-size: contain; background-repeat: no-repeat; }
-        
-        h3 { margin: 0 0 15px 0; color: var(--text-main); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        .card { background: var(--bg-card); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 25px; border: 1px solid #f0f0f0; position: relative; }
+        h3 { margin: 0 0 20px 0; color: var(--text-main); font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        h3::before { content: '🤖'; font-size: 18px; }
         
         input, select { 
-            width: 100%; padding: 16px; border: 1.5px solid #eef2f7; background: #f8fafc; 
-            border-radius: 14px; box-sizing: border-box; font-size: 14px; margin-bottom: 12px; 
+            width: 100%; padding: 16px; border: 1.5px solid #eef2f6; background: #f8fafc; 
+            border-radius: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 15px; 
             font-weight: 600; color: var(--text-main); font-family: 'Poppins', sans-serif; transition: 0.3s;
         }
         input:focus, select:focus { background: #fff; border-color: var(--primary); outline:none; box-shadow: 0 0 0 4px rgba(238, 45, 36, 0.1); }
 
-        /* DASHBOARD GRID */
+        /* BUTTONS */
+        .btn { border: none; border-radius: 15px; font-weight: 800; cursor: pointer; text-transform: uppercase; padding: 18px; width: 100%; font-size: 12px; letter-spacing: 1px; transition:0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-primary { background: linear-gradient(135deg, #EE2D24, #b30000); color: white; box-shadow: 0 6px 20px rgba(238, 45, 36, 0.3); }
+        .btn-dark { background: #2c3e50; color: white; box-shadow: 0 6px 15px rgba(44, 62, 80, 0.2); }
+        .btn-outline { background: transparent; border: 2px solid #2c3e50; color: #2c3e50; }
+
+        /* DASHBOARD */
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .dash-item { padding: 20px; border-radius: 20px; color: white; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
-        .dash-item.green { background: linear-gradient(135deg, #10b981, #059669); }
-        .dash-item.blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-        .dash-item.total { background: #1e293b; grid-column: span 2; align-items: center; border: 2px solid #334155; }
-        .dash-item span { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
-        .dash-item b { font-size: 22px; margin-top: 5px; }
+        .dash-item { padding: 20px; border-radius: var(--radius); color: white; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); }
+        .dash-item.green { background: linear-gradient(135deg, #00b894, #00cec9); }
+        .dash-item.blue { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
+        .dash-item.total { background: #1a1a1a; grid-column: span 2; align-items: center; text-align: center; border: 2px solid #333; }
+        .dash-item span { font-size: 10px; font-weight: 800; letter-spacing: 1px; opacity: 0.8; }
+        .dash-item b { font-size: 22px; margin-top: 8px; }
         .dash-item.total b { font-size: 32px; color: var(--gold); text-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
 
-        /* REAL THERMAL STRUK STYLE */
-        #receiptOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        /* TRANSAKSI CARDS */
+        .trx-card { background: #fff; padding: 20px; border-radius: var(--radius); border: 1px solid #f0f0f0; margin-bottom: 15px; box-shadow: var(--shadow-sm); }
+        .trx-name { font-size: 15px; font-weight: 800; color: var(--text-main); }
+        .trx-price { font-size: 16px; font-weight: 800; color: var(--primary); }
+
+        /* REAL THERMAL RECEIPT STYLE */
+        #receiptOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .receipt-paper { 
             background: #fff; width: 300px; padding: 20px; color: #000; 
-            font-family: 'JetBrains Mono', monospace; box-shadow: 0 0 30px rgba(0,0,0,0.5); 
+            font-family: 'JetBrains Mono', monospace; box-shadow: 0 0 50px rgba(0,0,0,0.5); 
             border-radius: 2px; position: relative;
         }
-        .receipt-paper::before { content: ''; position: absolute; top: -10px; left: 0; right: 0; height: 10px; background: linear-gradient(-45deg, #fff 5px, transparent 0), linear-gradient(45deg, #fff 5px, transparent 0); background-size: 10px 10px; }
-        
-        .struk-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 15px; margin-bottom: 15px; }
-        .struk-header h2 { margin: 0; font-size: 18px; font-weight: 700; }
-        .struk-header p { margin: 2px 0; font-size: 11px; font-weight: 400; }
+        .receipt-paper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, #eee, #eee 5px, #fff 5px, #fff 10px); }
+        .rec-head { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 15px; margin-bottom: 15px; }
+        .rec-body { font-size: 12px; line-height: 1.4; }
+        .rec-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .rec-footer { text-align: center; border-top: 1px dashed #000; margin-top: 15px; padding-top: 15px; font-size: 11px; }
 
-        .struk-item { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
-        .struk-total { border-top: 1px dashed #000; margin-top: 15px; padding-top: 10px; display: flex; justify-content: space-between; font-weight: 700; font-size: 15px; }
+        /* STOK TABLE */
+        .stok-table { width: 100%; border-collapse: collapse; }
+        .stok-table th { text-align: left; color: #999; padding: 10px; font-size: 10px; text-transform: uppercase; border-bottom: 2px solid #f0f0f0; }
+        .stok-table td { padding: 15px 10px; border-bottom: 1px solid #f9f9f9; font-weight: 700; font-size: 13px; }
 
-        .btn { border: none; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; padding: 16px; width: 100%; font-size: 12px; letter-spacing: 1px; transition:0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif;}
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 6px 20px rgba(238, 45, 36, 0.3); }
-        .btn-dark { background: #1e293b; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        /* PIN LOCK */
+        #loginOverlay { position: fixed; inset: 0; background: #fff; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .pin-dot { width: 16px; height: 16px; border-radius: 50%; background: #eee; margin: 0 10px; border: 2px solid #ddd; transition: 0.3s; }
+        .pin-dot.filled { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 15px var(--primary); transform: scale(1.2); }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 50px; }
+        .num-btn { width: 70px; height: 70px; border-radius: 50%; border: 1.5px solid #f0f0f0; background: #fff; font-size: 24px; font-weight: 700; color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .num-btn:active { background: var(--primary); color: white; border-color: var(--primary); }
     </style>
 </head>
 <body>
 
+    <svg class="robot-head" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M9,9A1,1 0 0,0 8,10A1,1 0 0,0 9,11A1,1 0 0,0 10,10A1,1 0 0,0 9,9M15,9A1,1 0 0,0 14,10A1,1 0 0,0 15,11A1,1 0 0,0 16,10A1,1 0 0,0 15,9M12,14C10,14 8.2,15.1 7.3,16.7L8.7,17.7C9.3,16.7 10.6,16 12,16C13.4,16 14.7,16.7 15.3,17.7L16.7,16.7C15.8,15.1 14,14 12,14Z" />
+    </svg>
+
     <div id="loginOverlay">
         <div style="text-align:center;">
-            <div style="background:#fff; padding:20px; border-radius:30px; display:inline-block; margin-bottom:20px; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+            <div style="background:#fff; padding:20px; border-radius:30px; display:inline-block; margin-bottom:20px; box-shadow:var(--shadow-lg);">
                 <img src="logo.png" width="60" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/b/bb/Telkomsel_Logo_2021.svg'">
             </div>
-            <h2 style="margin:0; font-size:20px; color:var(--text-main); font-weight: 800;">SECURITY ACCESS</h2>
-            <p style="font-size:11px; color:#999; margin-top:5px; font-weight: 600;">MEDIA SWARA PRIMA - BAGAN BATU</p>
+            <h2 style="margin:0; font-size:20px; color:var(--text-main); font-weight: 800;">SISTEM MEDIA SWARA</h2>
+            <p style="font-size:11px; color:var(--text-sub); margin-top:5px; font-weight: 700;">TAP BAGAN BATU SECURITY</p>
         </div>
-        <div style="display:flex; justify-content:center; margin-top:30px;" id="pinDisplay">
+        <div style="display:flex; justify-content:center; margin-top:40px;" id="pinDisplay">
             <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
         </div>
         <div class="numpad">
@@ -162,10 +180,6 @@
     </div>
 
     <div class="header-main">
-        <svg class="robot-floating" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12,2A2,2 0 0,1 14,4C14,4.74 13.59,5.39 13,5.73V7H14A3,3 0 0,1 17,10V11H18A2,2 0 0,1 20,13V17A2,2 0 0,1 18,19H17V21A1,1 0 0,1 16,22H8A1,1 0 0,1 7,21V19H6A2,2 0 0,1 4,17V13A2,2 0 0,1 6,11H7V10A3,3 0 0,1 10,7H11V5.73C10.41,5.39 10,4.74 10,4A2,2 0 0,1 12,2M7.5,13A1.5,1.5 0 0,0 6,14.5A1.5,1.5 0 0,0 7.5,16A1.5,1.5 0 0,0 9,14.5A1.5,1.5 0 0,0 7.5,13M16.5,13A1.5,1.5 0 0,0 15,14.5A1.5,1.5 0 0,0 16.5,16A1.5,1.5 0 0,0 18,14.5A1.5,1.5 0 0,0 16.5,13M12,18A3,3 0 0,0 15,15H9A3,3 0 0,0 12,18Z" />
-        </svg>
-
         <div class="header-content">
             <h1>MEDIA SWARA PRIMA</h1>
             <p>TELKOMSEL AUTHORIZED PARTNER (TAP)</p>
@@ -174,19 +188,19 @@
         
         <div class="target-box">
             <div class="target-top">
-                <span id="targetLabel">TARGET HARIAN: 0</span>
+                <span id="targetLabel">TARGET: 0</span>
                 <span id="targetPercent">0%</span>
             </div>
             <div class="progress-track">
                 <div class="progress-fill" id="targetBar"></div>
             </div>
-            <div id="targetSisa" style="font-size:11px; font-weight:800; color:var(--primary); margin-top:5px; text-align:right;">Sisa: 0</div>
+            <div id="targetSisa" style="font-size:10px; font-weight:800; color:var(--primary); margin-top:8px; text-align:right;">Sisa: 0</div>
         </div>
     </div>
 
     <div class="tabs-container">
         <button class="tab-btn active" onclick="openTab('tab1', this)">🚀 KASIR</button>
-        <button class="tab-btn" onclick="openTab('tab2', this)">📈 DATA</button>
+        <button class="tab-btn" onclick="openTab('tab2', this)">📊 DATA</button>
         <button class="tab-btn" onclick="openTab('tab3', this)">⚙️ SETTING</button>
     </div>
 
@@ -194,25 +208,25 @@
         <div class="card">
             <h3>INPUT TRANSAKSI</h3>
             
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:12px;">
                 <input type="date" id="tanggalInput" style="flex:1;">
-                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:14px; border:1.5px solid #eee; background:#fff; color:var(--text-main); font-weight:800; font-size:11px; margin-bottom:12px;">HARI INI</button>
+                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:15px; border:1px solid #eee; background:#fff; color:var(--text-main); font-weight:800; font-size:11px; margin-bottom:15px;">HARI INI</button>
             </div>
 
-            <input type="text" id="namaOutlet" placeholder="Nama Outlet (Contoh: Berkah Sel)" list="outletList">
+            <input type="text" id="namaOutlet" placeholder="NAMA OUTLET" list="outletList">
             <datalist id="outletList"></datalist>
             
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                 <select id="metodeBayar">
-                    <option value="CASH">💰 CASH</option>
-                    <option value="TRANSFER">🏦 TRANSFER</option>
+                    <option value="CASH">CASH</option>
+                    <option value="TRANSFER">TRANSFER</option>
                 </select>
                 <select id="pilihanVoucher" onchange="updateHarga()"></select>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <input type="text" id="hargaDisplay" oninput="formatInput(this)" placeholder="Harga Jual">
-                <input type="text" id="jumlahPcs" placeholder="Qty / Nominal" oninput="formatInput(this)" inputmode="numeric">
+                <input type="text" id="hargaDisplay" oninput="formatInput(this)" placeholder="HARGA">
+                <input type="text" id="jumlahPcs" placeholder="QTY / NOMINAL" oninput="formatInput(this)" inputmode="numeric">
             </div>
             
             <button class="btn btn-dark" onclick="addItem()">⚡ TAMBAH KE LIST</button>
@@ -223,7 +237,7 @@
         
         <div class="dash-grid">
             <div class="dash-item green"><span>TOTAL CASH</span><b id="statCash">0</b></div>
-            <div class="dash-item blue"><span>TOTAL TRANSFER</span><b id="statTf">0</b></div>
+            <div class="dash-item blue"><span>TOTAL TF</span><b id="statTf">0</b></div>
             <div class="dash-item total">
                 <span>REKAP OMSET HARI INI</span>
                 <b id="statGrand">0</b>
@@ -233,122 +247,130 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <h3 style="margin:0; border:none; padding:0;">LOG AKTIVITAS</h3>
-                <input type="date" id="filterTgl" onchange="syncDateAndRender(this.value)" style="width:auto; margin:0; padding:10px; font-size:11px; border-radius:12px; border:1px solid #ddd;">
+                <input type="date" id="filterTgl" onchange="syncDateAndRender(this.value)" style="width:auto; margin:0; padding:10px; font-size:11px; border-radius:10px;">
             </div>
             
-            <input type="text" id="searchBox" placeholder="Cari Nama Outlet..." onkeyup="renderAll()" style="border-radius:30px; padding-left:25px; border:1.5px solid #eee;">
+            <input type="text" id="searchBox" placeholder="Cari Nama Outlet..." onkeyup="renderAll()" style="border-radius:30px; padding-left:25px;">
 
-            <div id="historyList" class="trx-list" style="margin-top:20px;"></div>
+            <div id="historyList" class="trx-list" style="margin-top:10px;"></div>
             
-            <button class="btn btn-outline" onclick="copyReport()" style="margin-top:20px; border:2.5px solid #2c3e50; color:#2c3e50; font-weight:800;">📋 SALIN LAPORAN CORPORATE</button>
+            <button class="btn btn-outline" onclick="copyReport()" style="margin-top:20px; font-weight:800;">📋 SALIN LAPORAN HARIAN</button>
         </div>
     </div>
     
     <div id="tab2" class="content">
         <div class="card">
-            <h3>MONITORING STOK</h3>
-            
-            <div style="background: #f8fafc; padding:15px; border-radius:18px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1.5px solid #eef2f7;">
-                <span style="font-size:11px; font-weight:800; color:#64748b;">LIHAT TANGGAL:</span>
+            <h3>STOK MONITORING</h3>
+            <div style="background: #f8fafc; padding:15px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
+                <span style="font-size:11px; font-weight:800; color:var(--text-sub);">DATA TANGGAL:</span>
                 <input type="date" id="stokDateInput" style="margin:0; padding:5px; width:auto; background:transparent; border:none; font-weight:800;" onchange="syncDateAndRender(this.value)">
             </div>
 
             <div style="overflow-x: auto;">
                 <table class="stok-table">
                     <thead>
-                        <tr>
-                            <th>PRODUK</th>
-                            <th style="text-align:center;">TERJUAL</th>
-                            <th style="text-align:right;">SISA</th>
-                        </tr>
+                        <tr><th>PRODUK</th><th style="text-align:center;">LAKU</th><th style="text-align:right;">SISA</th></tr>
                     </thead>
                     <tbody id="stokTableBody"></tbody>
                 </table>
             </div>
-            <button class="btn btn-dark" style="margin-top:20px;" onclick="copyStockReport()">📋 SALIN LAPORAN STOK</button>
+            <button class="btn btn-dark" style="margin-top:20px;" onclick="copyStockReport()">📋 SALIN STATUS STOK</button>
         </div>
 
         <div class="card">
-            <h3>HISTORY REKAP HARIAN</h3>
+            <h3>HISTORY REKAP</h3>
             <div id="riwayatList" class="trx-list"></div>
         </div>
     </div>
 
     <div id="tab3" class="content">
         <div class="card">
-            <h3>KONFIGURASI SISTEM</h3>
-            <label style="font-size:11px; font-weight:800; color:#64748b; margin-bottom:8px; display:block;">TARGET OMSET HARIAN</label>
+            <h3>KONFIGURASI</h3>
+            <label style="font-size:11px; font-weight:800; color:var(--text-sub);">TARGET PENJUALAN</label>
             <input type="text" id="setTarget" placeholder="Contoh: 10.000.000" oninput="formatInput(this)" onchange="saveSettings()">
             
-            <label style="font-size:11px; font-weight:800; color:#64748b; margin-top:15px; display:block;">PIN KEAMANAN AKSES</label>
+            <label style="font-size:11px; font-weight:800; color:var(--text-sub); margin-top:15px; display:block;">PIN KEAMANAN (4 DIGIT)</label>
             <div style="display:flex; gap:10px;">
-                <input type="number" id="setPin" placeholder="4 Digit PIN" onchange="saveSettings()">
+                <input type="number" id="setPin" placeholder="4 Digit" onchange="saveSettings()">
                 <button class="btn btn-dark" onclick="togglePin()" style="width:auto; padding:0 25px;">SET</button>
             </div>
         </div>
 
         <div class="card">
-            <h3>PENGATURAN STOK AWAL</h3>
-            <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px; border-radius:12px; border:1px solid #eee;">
+            <h3>MASTER STOK</h3>
+            <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px;">
                 <table class="stok-table">
                     <tbody id="stokEditorBulk"></tbody>
                 </table>
             </div>
-            <button class="btn btn-primary" onclick="saveAllStok()">💾 UPDATE SEMUA STOK</button>
+            <button class="btn btn-primary" onclick="saveAllStok()">💾 UPDATE STOK</button>
         </div>
 
         <div class="card">
-            <h3>KATALOG PRODUK BARU</h3>
-            <input type="text" id="addName" placeholder="Nama Produk (Contoh: 10GB 30H)">
-            <input type="text" id="addPrice" placeholder="Harga Jual" oninput="formatInput(this)">
-            <button class="btn btn-dark" onclick="addKatalog()">SIMPAN KE KATALOG</button>
+            <h3>KATALOG PRODUK</h3>
+            <input type="text" id="addName" placeholder="NAMA PRODUK">
+            <input type="text" id="addPrice" placeholder="HARGA" oninput="formatInput(this)">
+            <button class="btn btn-dark" onclick="addKatalog()">SIMPAN KATALOG</button>
             <div id="catalogList" style="margin-top:20px;"></div>
         </div>
         
-        <div class="card" style="background:#fffcfc; border: 1px solid #ffebeb;">
-            <h3>MAINTENANCE DATABASE</h3>
+        <div class="card">
+            <h3>SISTEM DATA</h3>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <button class="btn btn-outline" onclick="exportData()">📤 BACKUP</button>
                 <button class="btn btn-outline" onclick="document.getElementById('fileIn').click()">📥 RESTORE</button>
             </div>
             <input type="file" id="fileIn" hidden onchange="importData(event)">
-            <button class="btn" style="background:transparent; color:#EE2D24; margin-top:20px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET SEMUA DATA (PABRIK)</button>
+            <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
         </div>
     </div>
 
     <div id="receiptOverlay">
         <div class="receipt-paper">
-            <div class="struk-header">
-                <h2>MEDIA SWARA PRIMA</h2>
-                <p>TAP TELKOMSEL BAGAN BATU</p>
-                <p>Authorized Partner Telkomsel</p>
-                <p id="rDateFull" style="font-size: 10px; margin-top: 10px;"></p>
-                <p id="rId" style="font-size: 9px;"></p>
+            <div class="rec-head">
+                <div style="font-weight: 800; font-size: 16px;">MEDIA SWARA PRIMA</div>
+                <div style="font-size: 10px;">TAP BAGAN BATU</div>
+                <div style="font-size: 9px; margin-top: 5px;">Rokan Hilir, Riau</div>
             </div>
-            
-            <div style="text-align: center; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; font-size: 14px;" id="rName"></div>
+            <div class="rec-body">
+                <div class="rec-row">
+                    <span>No. Trans</span>
+                    <span id="rNo">#000</span>
+                </div>
+                <div class="rec-row">
+                    <span>Kasir</span>
+                    <span>Admin TAP</span>
+                </div>
+                <div class="rec-row">
+                    <span id="rDateOnly">05/02/2026</span>
+                    <span id="rTimeOnly">13:14</span>
+                </div>
+                <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
+                <div style="font-weight: 800; margin-bottom: 10px; text-align: center;" id="rName">OUTLET NAME</div>
+                
+                <div id="rList"></div>
 
-            <div id="rList"></div>
-
-            <div class="struk-total">
-                <span>TOTAL AKHIR</span>
-                <span id="rTotal"></span>
+                <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
+                <div class="rec-row" style="font-weight: 800; font-size: 14px;">
+                    <span>TOTAL</span>
+                    <span id="rTotal">0</span>
+                </div>
             </div>
-            
-            <div style="text-align: center; margin-top: 20px; font-size: 10px;">
-                <p style="margin:0;">-- TERIMA KASIH --</p>
-                <p style="margin:2px 0;">Bagan Batu, Rokan Hilir</p>
-                <p style="margin:0; opacity: 0.6;">Simpan sebagai bukti sah</p>
+            <div class="rec-footer">
+                <div>TERIMA KASIH</div>
+                <div style="margin-top: 5px;">Bukti Pembayaran Sah</div>
+                <div style="font-size: 8px;">TAP Telkomsel Bagan Batu</div>
             </div>
         </div>
         
-        <div style="text-align:center; margin-top:25px; display:grid; gap:12px; justify-content:center; width:300px;">
-            <button id="waBtn" class="btn" style="background:#25D366; color:white; font-weight: 800;">📤 KIRIM KE WHATSAPP</button>
-            <button class="btn btn-dark" onclick="document.getElementById('receiptOverlay').style.display='none'">KEMBALI</button>
+        <div style="text-align:center; margin-top:30px; display:grid; gap:12px; justify-content:center; width:300px;">
+            <button id="waBtn" class="btn" style="background:#25D366; color:white; font-weight:800;">📤 KIRIM WHATSAPP</button>
+            <button class="btn btn-dark" onclick="document.getElementById('receiptOverlay').style.display='none'">TUTUP</button>
         </div>
     </div>
 
 <script>
+    // --- DATABASE ---
     let defaultCatalog = [
         {nama: "4GB 1H", harga: 6200}, {nama: "5GB 2H", harga: 8200}, {nama: "4GB 3H", harga: 11800},
         {nama: "3GB 5H", harga: 12900}, {nama: "5GB 5H", harga: 15500}, {nama: "8GB 5H", harga: 22500},
@@ -383,28 +405,32 @@
     }
 
     function checkLogin() {
-        if(db.settings.pin && db.settings.pin.length === 4) {
+        if(db.settings.pin && db.settings.pin.toString().length === 4) {
             document.getElementById('loginOverlay').style.display = 'flex';
         }
     }
+
     function enterPin(n) {
         if(n === -1) enteredPin = enteredPin.slice(0, -1);
         else if(enteredPin.length < 4) enteredPin += n;
         updatePinDots();
         if(enteredPin.length === 4) {
-            if(enteredPin === db.settings.pin) {
+            if(enteredPin === db.settings.pin.toString()) {
                 document.getElementById('loginOverlay').style.display = 'none';
             } else {
-                alert("PIN SALAH!");
+                alert("PIN KEAMANAN SALAH!");
                 enteredPin = ""; updatePinDots();
             }
         }
     }
+
     function updatePinDots() {
         let dots = document.querySelectorAll('.pin-dot');
         dots.forEach((d, i) => { d.classList.toggle('filled', i < enteredPin.length); });
     }
+
     function clearPin() { enteredPin = ""; updatePinDots(); }
+
     function saveSettings() {
         let t = parseNo(document.getElementById('setTarget').value) || 0;
         let p = document.getElementById('setPin').value;
@@ -412,7 +438,8 @@
         localStorage.setItem('MSP_SETTINGS', JSON.stringify(db.settings));
         renderAll();
     }
-    function togglePin() { saveSettings(); alert("Pengaturan Tersimpan!"); }
+
+    function togglePin() { saveSettings(); alert("Akses PIN Berhasil Diperbarui!"); }
 
     function saveToDisk() {
         localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
@@ -441,10 +468,10 @@
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
                 return `
                 <div class="trx-card">
-                    <div class="trx-header">
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
                         <div>
                             <div class="trx-name">${ot.nama}</div>
-                            <div class="trx-meta">${ot.metode} • ${ot.jam}</div>
+                            <div style="font-size:10px; font-weight:700; color:#999;">${ot.metode} • ${ot.jam}</div>
                         </div>
                         <div class="trx-price">Rp ${formatRibuan(sub)}</div>
                     </div>
@@ -456,7 +483,7 @@
                 </div>`;
             }).reverse().join('');
         
-        document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Belum ada transaksi</div>';
+        document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Data Kosong...</div>';
 
         let filteredDateData = db.rekap.filter(item => item.tgl === filterTgl);
         filteredDateData.forEach(ot => {
@@ -479,10 +506,10 @@
         let target = db.settings.target || 1;
         let pct = Math.min(100, Math.round((current / target) * 100));
         let sisa = target - current;
-        document.getElementById('targetLabel').innerText = `TARGET HARIAN: RP ${formatRibuan(target)}`;
+        document.getElementById('targetLabel').innerText = `TARGET: RP ${formatRibuan(target)}`;
         document.getElementById('targetPercent').innerText = `${pct}%`;
         document.getElementById('targetBar').style.width = `${pct}%`;
-        document.getElementById('targetSisa').innerText = pct >= 100 ? "TARGET TERCAPAI!" : `Kurang: Rp ${formatRibuan(sisa)}`;
+        document.getElementById('targetSisa').innerText = pct >= 100 ? "🎯 GOAL ACHIEVED!" : `Kurang: Rp ${formatRibuan(sisa)}`;
     }
 
     function renderStokSystem(lakuPerTanggal) {
@@ -490,36 +517,33 @@
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             let sisa = db.stok[v.nama] || 0; 
             let terjual = lakuPerTanggal[v.nama] || 0; 
-            let color = sisa <= 5 ? '#EE2D24' : '#10b981';
+            let color = sisa <= 5 ? 'red' : 'green';
             return `<tr>
                 <td>${v.nama}</td>
                 <td style="text-align:center;">${terjual}</td>
-                <td style="text-align:right; font-weight:800; color:${color};">${sisa}</td>
+                <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
             </tr>`;
         }).join('');
         
         document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             return `<tr>
-                <td style="padding:10px; font-weight:700;">${v.nama}</td>
+                <td style="padding:10px;">${v.nama}</td>
                 <td>
-                    <input type="number" style="margin:0; text-align:center; padding:10px; border-radius:10px;" value="${db.stok[v.nama]||0}" onchange="db.stok['${v.nama}']=parseInt(this.value)">
+                    <input type="number" style="margin:0; text-align:center; padding:8px;" value="${db.stok[v.nama]||0}" onchange="db.stok['${v.nama}']=parseInt(this.value)">
                 </td>
             </tr>`;
         }).join('');
 
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-            <div style="background:#f8fafc; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid #eef2f7;">
-                <b style="font-size:12px;">${v.nama} - Rp ${formatRibuan(v.harga)}</b> 
-                <span style="color:#EE2D24; cursor:pointer; font-size:11px; font-weight:800; background:#fff; padding:5px 12px; border-radius:10px; border:1px solid #ffebeb;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
+            <div style="background:#f9f9f9; padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                <b style="font-size:12px;">${v.nama}</b> 
+                <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
             </div>
         `).join('');
     }
 
-    function saveAllStok() {
-        saveToDisk(); renderAll(); alert("STOK BERHASIL DIUPDATE!");
-    }
-
+    function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
     function parseNo(s) { return parseInt(s.toString().replace(/\./g, '')) || 0; }
     function formatInput(el) { el.value = formatRibuan(parseNo(el.value)); }
@@ -530,13 +554,15 @@
         document.getElementById('tanggalInput').value = iso;
         syncDateAndRender(iso);
     }
+
     function updateHarga() { 
         const sel = document.getElementById('pilihanVoucher');
         const txt = sel.options[sel.selectedIndex].text;
         const isSaldo = txt.includes("LINKAJA") || txt.includes("SEVEN");
         document.getElementById('hargaDisplay').value = isSaldo ? "1" : formatRibuan(sel.value);
-        document.getElementById('jumlahPcs').placeholder = isSaldo ? "Nominal Rupiah" : "Jumlah Pcs";
+        document.getElementById('jumlahPcs').placeholder = isSaldo ? "NOMINAL RP" : "JUMLAH PCS";
     }
+
     function renderOutletSuggestions() {
         let outlets = [...new Set(db.rekap.map(d => d.nama))];
         document.getElementById('outletList').innerHTML = outlets.map(n => `<option value="${n}">`).join('');
@@ -550,7 +576,7 @@
         let namaItem = sel.options[sel.selectedIndex].text;
         if(!namaItem.includes("LINKAJA") && !namaItem.includes("SEVEN")) {
             let sisa = db.stok[namaItem] || 0;
-            if (sisa < qty) { if(!confirm(`⚠️ STOK TIPIS!\nSisa: ${sisa}, Diminta: ${qty}.\nLanjutkan?`)) return; }
+            if (sisa < qty) { if(!confirm(`⚠️ STOK TIPIS!\nSisa: ${sisa}, Diminta: ${qty}.\nTetap Paksa?`)) return; }
             db.stok[namaItem] = sisa - qty;
         }
 
@@ -570,7 +596,7 @@
                 <span>${it.nama}</span>
                 <span>
                     <span class="temp-qty">${formatRibuan(it.qty)} Pcs</span>
-                    <span onclick="cancelTempItem(${i})" style="color:#EE2D24; margin-left:10px; cursor:pointer; font-weight:800;">✖</span>
+                    <span onclick="cancelTempItem(${i})" style="color:red; margin-left:15px; cursor:pointer;">✖</span>
                 </span>
             </div>`).join('');
         if(tempItems.length === 0) document.getElementById('mainSaveBtn').style.display = "none";
@@ -586,7 +612,7 @@
 
     function saveTrx() {
         const nama = document.getElementById('namaOutlet').value.toUpperCase();
-        if(!nama) return alert("Isi Nama Outlet!");
+        if(!nama) return alert("Masukkan Nama Outlet!");
         
         const now = new Date();
         const data = {
@@ -607,32 +633,34 @@
     }
 
     function showStruk(i) {
-        const d = db.rekap[i]; let total = 0; 
+        const d = db.rekap[i]; 
+        let total = 0; 
         let waText = `*MEDIA SWARA PRIMA*\n*TAP BAGAN BATU*\n------------------------\nOutlet: ${d.nama}\nWaktu: ${d.tgl} ${d.jam}\n------------------------\n`;
         
         document.getElementById('rName').innerText = d.nama;
-        document.getElementById('rDateFull').innerText = `${d.tgl} | ${d.jam}`;
-        document.getElementById('rId').innerText = `ID TRX: #MSP-${Math.floor(1000 + Math.random() * 9000)}`;
+        document.getElementById('rDateOnly').innerText = d.tgl;
+        document.getElementById('rTimeOnly').innerText = d.jam;
+        document.getElementById('rNo').innerText = "#" + (Math.floor(Math.random()*900)+100);
         
         document.getElementById('rList').innerHTML = d.items.map(it => {
             let sub = it.harga * it.qty; total += sub;
-            let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : formatRibuan(it.qty) + ' Pcs';
-            let detailPrice = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? "" : `x ${formatRibuan(it.harga)}`;
-
-            waText += `${it.nama} (${qtyDisplay} ${detailPrice}) = ${formatRibuan(sub)}\n`;
+            let qtyText = it.qty + (it.nama.includes("LINKAJA") ? "" : " Pcs");
+            let priceText = "x " + formatRibuan(it.harga);
             
-            return `
-            <div style="margin-bottom: 8px;">
-                <div style="font-weight: 700; font-size: 13px;">${it.nama}</div>
-                <div class="struk-item">
-                    <span>${qtyDisplay} ${detailPrice}</span>
+            waText += `${it.nama}\n(${qtyText} x ${formatRibuan(it.harga)}) = ${formatRibuan(sub)}\n`;
+            
+            return `<div style="margin-bottom: 5px;">
+                <div style="font-weight: 800;">${it.nama}</div>
+                <div class="rec-row">
+                    <span>${qtyText} ${priceText}</span>
                     <span>${formatRibuan(sub)}</span>
                 </div>
             </div>`;
         }).join('');
         
-        document.getElementById('rTotal').innerText = "Rp " + formatRibuan(total);
-        waText += `------------------------\n*TOTAL AKHIR: ${formatRibuan(total)}*\n------------------------\nTAP Telkomsel Bagan Batu`;
+        document.getElementById('rTotal').innerText = formatRibuan(total);
+        waText += `------------------------\n*TOTAL: RP ${formatRibuan(total)}*\n------------------------\nTerima kasih Bolo!`;
+        
         document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`);
         document.getElementById('receiptOverlay').style.display = 'flex';
     }
@@ -655,20 +683,22 @@
             db.rekap.splice(i,1); saveToDisk(); renderAll(); 
         } 
     }
+    
     function addKatalog() {
         let n = document.getElementById('addName').value.toUpperCase();
         let p = parseNo(document.getElementById('addPrice').value);
         if(n && p) { db.catalog.push({nama:n, harga:p}); saveToDisk(); renderAll(); }
     }
+
     function renderRiwayatTab() {
         let dates = [...new Set(db.rekap.map(d => d.tgl))].sort().reverse();
         document.getElementById('riwayatList').innerHTML = dates.map(d => {
             let dayTotal = db.rekap.filter(x => x.tgl === d).reduce((a,b) => a + b.items.reduce((x,y)=>x+(y.harga*y.qty),0), 0);
-            return `<div class="trx-card" style="flex-direction:row; justify-content:space-between; align-items:center;">
-                <div><div class="trx-name">${d}</div><div class="trx-meta">Rekap Penjualan Harian</div></div>
-                <div>
+            return `<div class="trx-card" style="display:flex; justify-content:space-between; align-items:center;">
+                <div><div class="trx-name">${d}</div><div style="font-size:10px; font-weight:700; color:#999;">Rekap Penjualan Harian</div></div>
+                <div style="text-align:right;">
                     <div class="trx-price">Rp ${formatRibuan(dayTotal)}</div>
-                    <button class="act-btn" style="background:#1e293b; margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT DETAIL</button>
+                    <button class="act-btn" style="background:#2c3e50; margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
                 </div>
             </div>`;
         }).join('');
@@ -677,17 +707,12 @@
     function copyReport() {
         let tgl = document.getElementById('filterTgl').value;
         let dataHarian = db.rekap.filter(item => item.tgl === tgl.split('-').reverse().join('-'));
-        
-        if(dataHarian.length === 0) return alert("Belum ada data transaksi tanggal ini.");
+        if(dataHarian.length === 0) return alert("Data hari ini masih kosong!");
 
         let totalCash = 0, totalTf = 0, grandTotal = 0;
         let rincian = "";
-        let trxCount = dataHarian.length;
-
-        let report = `*MEDIA SWARA PRIMA - BAGAN BATU*\n*LAPORAN PENJUALAN HARIAN*\n========================\n`;
-        report += `📅 Tanggal : ${tgl}\n`;
-        report += `🏪 Outlet  : ${trxCount} Transaksi\n`;
-        report += `========================\n\n`;
+        
+        let report = `*MEDIA SWARA PRIMA - BAGAN BATU*\n*LAPORAN PENJUALAN HARIAN*\n========================\n📅 Tanggal : ${tgl}\n🏪 Outlet  : ${dataHarian.length} Trx\n========================\n\n`;
 
         dataHarian.forEach((d, i) => {
             let subtotal = 0;
@@ -695,8 +720,8 @@
             d.items.forEach(it => {
                 let sub = it.harga * it.qty;
                 subtotal += sub;
-                let detailInfo = (it.nama.includes("LINKAJA")) ? formatRibuan(it.qty) : `${it.qty} Pcs x ${formatRibuan(it.harga)}`; 
-                rincian += `   - ${it.nama} (${detailInfo})\n`;
+                let qtyText = it.qty + " Pcs";
+                rincian += `   - ${it.nama} (${qtyText} x ${formatRibuan(it.harga)})\n`;
             });
             rincian += `   Total: Rp ${formatRibuan(subtotal)}\n\n`;
             grandTotal += subtotal;
@@ -704,16 +729,9 @@
         });
 
         report += `*RINCIAN TRANSAKSI:*\n${rincian}`;
-        report += `========================\n`;
-        report += `*RINGKASAN:* \n`;
-        report += `💵 Total Cash     : Rp ${formatRibuan(totalCash)}\n`;
-        report += `🏦 Total Transfer : Rp ${formatRibuan(totalTf)}\n`;
-        report += `------------------------\n`;
-        report += `🔥 *GRAND TOTAL    : Rp ${formatRibuan(grandTotal)}*\n`;
-        report += `========================\n`;
-        report += `Generated by Digital TAP Bagan Batu`;
+        report += `========================\n*RINGKASAN:* \n💵 Cash     : Rp ${formatRibuan(totalCash)}\n🏦 Transfer : Rp ${formatRibuan(totalTf)}\n------------------------\n🔥 *TOTAL    : Rp ${formatRibuan(grandTotal)}*\n========================\nGenerated by Digital TAP Bagan Batu`;
 
-        navigator.clipboard.writeText(report).then(() => alert("Laporan Corporate Berhasil Disalin!"));
+        navigator.clipboard.writeText(report).then(() => alert("Laporan Perusahaan Berhasil Disalin!"));
     }
 
     function copyStockReport() {
@@ -727,26 +745,30 @@
             if(!v.nama.includes("LINKAJA")) {
                 let sisa = db.stok[v.nama]||0;
                 let laku = lakuPerTanggal[v.nama]||0;
-                txt += `${v.nama}\nLaku: ${laku} | Sisa: ${sisa}\n\n`;
+                txt += `${v.nama}\nTerjual: ${laku} | Sisa: ${sisa}\n\n`;
             }
         });
-        navigator.clipboard.writeText(txt).then(() => alert("Laporan Stok Disalin!"));
+        navigator.clipboard.writeText(txt).then(() => alert("Status Stok Disalin!"));
     }
+
     function openTab(id, btn) {
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
     }
+
     function hardReset() { if(confirm("PERINGATAN! Seluruh database akan dihapus. Lanjutkan?")) { localStorage.clear(); location.reload(); } }
+
     function exportData() {
         let a = document.createElement('a');
         a.href = URL.createObjectURL(new Blob([JSON.stringify(db)], {type:'application/json'}));
         a.download = 'BACKUP_TAP_BAGANBATU.json'; a.click();
     }
+
     function importData(e) {
         let r = new FileReader();
-        r.onload = function(evt) { db = JSON.parse(evt.target.result); saveToDisk(); renderAll(); alert("Data Berhasil Direstore!"); }
+        r.onload = function(evt) { db = JSON.parse(evt.target.result); saveToDisk(); renderAll(); alert("Database Berhasil Direstore!"); }
         r.readAsText(e.target.files[0]);
     }
 </script>
