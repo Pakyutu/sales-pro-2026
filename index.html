@@ -288,8 +288,13 @@
             <div style="overflow-x: auto;">
                 <table class="stok-table">
                     <thead>
-                        <tr><th>PRODUK</th><th style="text-align:center;">LAKU</th><th style="text-align:right;">SISA</th></tr>
-                    </thead>
+    <tr>
+        <th>PRODUK</th>
+        <th style="text-align:center;">AWAL</th>
+        <th style="text-align:center;">LAKU</th>
+        <th style="text-align:right;">SISA</th>
+    </tr>
+</thead>
                     <tbody id="stokTableBody"></tbody>
                 </table>
             </div>
@@ -348,7 +353,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.4
+    VERSI APLIKASI: 1.0.5
             </div>
         </div>
     </div>
@@ -413,11 +418,12 @@
     ];
 
     let db = {
-        catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
-        rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
-        stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {},
-        settings: JSON.parse(localStorage.getItem('MSP_SETTINGS')) || { target: 5000000, pin: "" }
-    };
+    catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
+    rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
+    stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {},
+    stokAwal: JSON.parse(localStorage.getItem('MSP_STOK_AWAL')) || {}, // <--- INI PENYIMPANAN BARU
+    settings: JSON.parse(localStorage.getItem('MSP_SETTINGS')) || { target: 5000000, pin: "" }
+};
 
     let tempItems = [];
     let editIdx = -1;
@@ -476,10 +482,11 @@
     function togglePin() { saveSettings(); alert("Akses PIN Berhasil Diperbarui!"); }
 
     function saveToDisk() {
-        localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
-        localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
-        localStorage.setItem('MSP_STOK', JSON.stringify(db.stok));
-    }
+    localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
+    localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
+    localStorage.setItem('MSP_STOK', JSON.stringify(db.stok));
+    localStorage.setItem('MSP_STOK_AWAL', JSON.stringify(db.stokAwal)); // <--- SIMPAN KE MEMORI HP
+}
 
     function renderAll() {
         const sel = document.getElementById('pilihanVoucher');
@@ -547,35 +554,51 @@
     }
 
     function renderStokSystem(lakuPerTanggal) {
-        document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
-            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-            let sisa = db.stok[v.nama] || 0; 
-            let terjual = lakuPerTanggal[v.nama] || 0; 
-            let color = sisa <= 5 ? 'red' : 'green';
-            return `<tr>
-                <td>${v.nama}</td>
-                <td style="text-align:center;">${terjual}</td>
-                <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
-            </tr>`;
-        }).join('');
-        
-        document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
-            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-            return `<tr>
-                <td style="padding:10px;">${v.nama}</td>
-                <td>
-                    <input type="number" style="margin:0; text-align:center; padding:8px;" value="${db.stok[v.nama]||0}" onchange="db.stok['${v.nama}']=parseInt(this.value)">
-                </td>
-            </tr>`;
-        }).join('');
+    // 1. Update Tabel di Tab DATA
+    document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
+        if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+        let awal = db.stokAwal[v.nama] || 0; 
+        let sisa = db.stok[v.nama] || 0; 
+        let terjual = lakuPerTanggal[v.nama] || 0; 
+        let color = sisa <= 5 ? 'red' : 'green';
+        return `<tr>
+            <td>${v.nama}</td>
+            <td style="text-align:center;">${awal}</td>
+            <td style="text-align:center;">${terjual}</td>
+            <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
+        </tr>`;
+    }).join('');
+    
+    // 2. Update Tabel Input di Tab SETTING
+    document.getElementById('stokEditorBulk').innerHTML = `
+        <thead>
+            <tr>
+                <th style="font-size:9px;">PRODUK</th>
+                <th style="font-size:9px; text-align:center;">AWAL</th>
+                <th style="font-size:9px; text-align:center;">SISA</th>
+            </tr>
+        </thead>
+    ` + db.catalog.map(v => {
+        if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+        return `<tr>
+            <td style="padding:10px; font-size:11px;">${v.nama}</td>
+            <td>
+                <input type="number" style="margin:0; text-align:center; padding:5px; font-size:12px;" value="${db.stokAwal[v.nama]||0}" onchange="db.stokAwal['${v.nama}']=parseInt(this.value)">
+            </td>
+            <td>
+                <input type="number" style="margin:0; text-align:center; padding:5px; font-size:12px;" value="${db.stok[v.nama]||0}" onchange="db.stok['${v.nama}']=parseInt(this.value)">
+            </td>
+        </tr>`;
+    }).join('');
 
-        document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-            <div style="background:#f9f9f9; padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                <b style="font-size:12px;">${v.nama}</b> 
-                <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
-            </div>
-        `).join('');
-    }
+    // 3. Update Daftar Katalog
+    document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
+        <div style="background:#f9f9f9; padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+            <b style="font-size:12px;">${v.nama}</b> 
+            <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
+        </div>
+    `).join('');
+}
 
     function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
@@ -842,7 +865,6 @@
 
 </body>
 </html>
-
 
 
 
