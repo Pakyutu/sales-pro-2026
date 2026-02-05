@@ -116,9 +116,8 @@
         .dash-item.green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
         .dash-item.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
         
-        /* FIX TOTAL BOX DARK MODE */
         .dash-item.total { 
-            background: #111; /* Selalu Hitam Premium */
+            background: #111; 
             border: 1px solid #333;
             grid-column: span 2; align-items: center; text-align: center; 
         }
@@ -229,7 +228,7 @@
                 <button onclick="setToday()" class="btn-black" style="width:auto; padding:0 20px; margin-bottom:12px; border-radius:12px;">HARI INI</button>
             </div>
 
-            <input type="text" id="namaOutlet" placeholder="Nama Outlet (Auto-Suggest)" list="outletList">
+            <input type="text" id="namaOutlet" placeholder="Nama Outlet" list="outletList">
             <datalist id="outletList"></datalist>
             
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -263,7 +262,7 @@
         <div class="card" style="padding:15px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                 <h3 style="margin:0; border:none;">📝 DAFTAR PENJUALAN</h3>
-                <input type="date" id="filterTgl" onchange="renderAll()" style="width:auto; margin:0; padding:8px; font-size:11px;">
+                <input type="date" id="filterTgl" onchange="syncDateAndRender(this.value)" style="width:auto; margin:0; padding:8px; font-size:11px;">
             </div>
             
             <div class="search-container">
@@ -279,8 +278,10 @@
     <div id="tab2" class="content">
         <div class="card">
             <h3>📦 MONITORING STOK</h3>
-            <div style="background: rgba(255,255,0,0.1); padding:10px; border-radius:10px; font-size:11px; margin-bottom:15px; border:1px solid #ddd; color:var(--text-main);">
-                📅 Menampilkan Data Penjualan Tanggal: <br><b id="monDateDisplay" style="color:var(--tsel-red); font-size:13px;">-</b>
+            
+            <div style="background: rgba(238, 45, 36, 0.1); padding:12px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border-color); display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:11px; font-weight:bold;">📅 FILTER TANGGAL:</span>
+                <input type="date" id="stokDateInput" style="margin:0; padding:8px; width:auto; border:1px solid var(--tsel-red);" onchange="syncDateAndRender(this.value)">
             </div>
 
             <div style="overflow-x: auto;">
@@ -306,17 +307,17 @@
     <div id="tab3" class="content">
         
         <div class="card">
-            <h3>⚙️ PENGATURAN APLIKASI</h3>
+            <h3>⚙️ PENGATURAN</h3>
             
             <label style="font-size:11px; font-weight:bold; color:var(--text-sub);">TARGET OMSET HARIAN</label>
             <input type="text" id="setTarget" placeholder="Contoh: 5.000.000" oninput="formatInput(this)" onchange="saveSettings()">
             
             <label style="font-size:11px; font-weight:bold; color:var(--text-sub); margin-top:10px; display:block;">KEAMANAN (PIN)</label>
             <div style="display:flex; gap:10px;">
-                <input type="number" id="setPin" placeholder="Set 4 Digit PIN (Kosongkan jika tidak butuh)" onchange="saveSettings()">
+                <input type="number" id="setPin" placeholder="Set 4 Digit PIN" onchange="saveSettings()">
                 <button class="btn-black" onclick="togglePin()" style="width:auto; padding:0 20px; border-radius:10px;">🔒 SET</button>
             </div>
-            <p style="font-size:9px; color:red; margin-top:5px;">*Jika PIN diisi, aplikasi akan terkunci saat dibuka.</p>
+            <p style="font-size:9px; color:red; margin-top:5px;">*Kosongkan jika tidak ingin pakai PIN</p>
         </div>
 
         <div class="card">
@@ -330,9 +331,11 @@
         </div>
 
         <div class="card">
-            <h3>🎨 TAMBAH KATALOG BARU</h3>
-            <input type="text" id="addName" placeholder="Nama Produk (Cth: VCR 10GB)">
-            <input type="text" id="addPrice" placeholder="Harga Jual" oninput="formatInput(this)">
+            <h3>🎨 TAMBAH KATALOG</h3>
+            
+            <input type="text" id="addName" placeholder="Nama Produk">
+            <input type="text" id="addPrice" placeholder="Harga" oninput="formatInput(this)">
+            
             <button class="btn btn-black" onclick="addKatalog()">SIMPAN PRODUK</button>
             <div id="catalogList" style="margin-top:20px;"></div>
         </div>
@@ -377,7 +380,6 @@
     </div>
 
 <script>
-    // --- DATABASE AWAL (Lengkap sesuai permintaan) ---
     let defaultCatalog = [
         {nama: "4GB 1H", harga: 6200}, {nama: "5GB 2H", harga: 8200}, {nama: "4GB 3H", harga: 11800},
         {nama: "3GB 5H", harga: 12900}, {nama: "5GB 5H", harga: 15500}, {nama: "8GB 5H", harga: 22500},
@@ -397,7 +399,6 @@
     let currentReceiptData = ""; 
     let enteredPin = "";
 
-    // INIT
     window.onload = () => { 
         checkLogin();
         setToday(); 
@@ -407,7 +408,15 @@
         renderAll(); 
     };
 
-    // --- SECURITY & LOGIN ---
+    // --- NEW LOGIC: SYNC DATES ---
+    // Fungsi ini menyamakan tanggal di Tab 1 (Kasir) dan Tab 2 (Stok)
+    function syncDateAndRender(newDate) {
+        document.getElementById('filterTgl').value = newDate;
+        document.getElementById('stokDateInput').value = newDate;
+        renderAll();
+    }
+
+    // --- SECURITY ---
     function checkLogin() {
         if(db.settings.pin && db.settings.pin.length === 4) {
             document.getElementById('loginOverlay').style.display = 'flex';
@@ -440,7 +449,7 @@
     }
     function togglePin() { saveSettings(); alert("Pengaturan Keamanan Disimpan!"); }
 
-    // --- CORE LOGIC ---
+    // --- CORE ---
     function saveToDisk() {
         localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
         localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
@@ -448,7 +457,6 @@
     }
 
     function renderAll() {
-        // Render Dropdown
         const sel = document.getElementById('pilihanVoucher');
         if(sel.options.length !== db.catalog.length) {
             sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
@@ -458,13 +466,9 @@
         let filterTgl = document.getElementById('filterTgl').value.split('-').reverse().join('-');
         let searchKeyword = document.getElementById('searchBox').value.toLowerCase(); 
 
-        // Update Date Display in Monitoring Tab
-        document.getElementById('monDateDisplay').innerText = filterTgl;
-
         let gt = 0, tc = 0, tf = 0;
         let laku = {}; db.catalog.forEach(v => laku[v.nama] = 0);
 
-        // LIST RENDER
         let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => item.data.tgl === filterTgl)
             .filter(item => item.data.nama.toLowerCase().includes(searchKeyword))
@@ -474,10 +478,7 @@
                 return `
                 <div class="hist-item">
                     <div class="hist-header">
-                        <div>
-                            <b style="font-size:14px; text-transform:uppercase;">${ot.nama}</b>
-                            <div class="hist-meta">${ot.metode} • ${ot.jam}</div>
-                        </div>
+                        <div><b style="font-size:14px; text-transform:uppercase;">${ot.nama}</b><div class="hist-meta">${ot.metode} • ${ot.jam}</div></div>
                         <div class="hist-price">Rp ${formatRibuan(sub)}</div>
                     </div>
                     <div class="action-row">
@@ -490,7 +491,6 @@
         
         document.getElementById('historyList').innerHTML = html || '<p style="text-align:center; opacity:0.5; font-size:12px;">Tidak ada transaksi</p>';
 
-        // STATS CALCULATION (Termasuk tanggal ini saja)
         let filteredDateData = db.rekap.filter(item => item.tgl === filterTgl);
         filteredDateData.forEach(ot => {
             let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
@@ -503,9 +503,7 @@
         document.getElementById('statTf').innerText = formatRibuan(tf);
         document.getElementById('statGrand').innerText = formatRibuan(gt);
 
-        // Update Target Bar
         updateTargetBar(gt);
-
         renderStokSystem(laku);
         renderRiwayatTab();
     }
@@ -536,10 +534,7 @@
         
         document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-            return `<tr>
-                <td>${v.nama}</td>
-                <td><input type="number" class="stok-input" id="stok_input_${v.nama}" value="${db.stok[v.nama]||0}"></td>
-            </tr>`;
+            return `<tr><td>${v.nama}</td><td><input type="number" class="stok-input" id="stok_input_${v.nama}" value="${db.stok[v.nama]||0}"></td></tr>`;
         }).join('');
 
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
@@ -560,16 +555,15 @@
         saveToDisk(); renderAll(); alert("STOK BERHASIL DIUPDATE!");
     }
 
-    // --- UTILITIES ---
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
     function parseNo(s) { return parseInt(s.toString().replace(/\./g, '')) || 0; }
     function formatInput(el) { el.value = formatRibuan(parseNo(el.value)); }
+    
     function setToday() { 
         let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
         let iso = d.toISOString().slice(0,10);
         document.getElementById('tanggalInput').value = iso;
-        document.getElementById('filterTgl').value = iso;
-        renderAll();
+        syncDateAndRender(iso); // Sync all date inputs
     }
     function updateHarga() { 
         const sel = document.getElementById('pilihanVoucher');
@@ -579,19 +573,16 @@
         document.getElementById('jumlahPcs').placeholder = isSaldo ? "Nominal (Rp)" : "Jumlah (Pcs)";
     }
     function renderOutletSuggestions() {
-        // Ambil unik nama outlet dari rekap
         let outlets = [...new Set(db.rekap.map(d => d.nama))];
         document.getElementById('outletList').innerHTML = outlets.map(n => `<option value="${n}">`).join('');
     }
 
-    // --- TRANSACTION LOGIC ---
     function addItem() {
         const sel = document.getElementById('pilihanVoucher');
         const qty = parseNo(document.getElementById('jumlahPcs').value);
         if(!qty) return;
         
         let namaItem = sel.options[sel.selectedIndex].text;
-        
         if(!namaItem.includes("LINKAJA") && !namaItem.includes("SEVEN")) {
             let sisa = db.stok[namaItem] || 0;
             if (sisa < qty) { if(!confirm(`⚠️ STOK KURANG!\nSisa: ${sisa}, Minta: ${qty}.\nLanjutkan?`)) return; }
@@ -603,7 +594,6 @@
             harga: parseNo(document.getElementById('hargaDisplay').value),
             qty: qty
         });
-        
         document.getElementById('jumlahPcs').value = "";
         renderTemp();
         document.getElementById('mainSaveBtn').style.display = "block";
@@ -648,7 +638,6 @@
         document.getElementById('mainSaveBtn').style.display = "none";
     }
 
-    // --- PRINTING & TOOLS ---
     function showStruk(i) {
         const d = db.rekap[i]; let total = 0; 
         let waText = `*${d.nama}*\n${d.tgl}\n\n`;
@@ -707,12 +696,11 @@
         let dates = [...new Set(db.rekap.map(d => d.tgl))].sort().reverse();
         document.getElementById('riwayatList').innerHTML = dates.map(d => {
             let dayTotal = db.rekap.filter(x => x.tgl === d).reduce((a,b) => a + b.items.reduce((x,y)=>x+(y.harga*y.qty),0), 0);
-            let isoDate = d.split('-').reverse().join('-');
             return `<div class="hist-item" style="display:flex; justify-content:space-between; align-items:center;">
                 <div><b>${d}</b><div class="text-sub">Total Omset</div></div>
                 <div>
                     <b style="color:var(--tsel-red); font-size:14px;">Rp ${formatRibuan(dayTotal)}</b>
-                    <button class="btn-mini" style="background:#333; margin-left:10px;" onclick="document.getElementById('filterTgl').value='${isoDate}'; renderAll(); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
+                    <button class="btn-mini" style="background:#333; margin-left:10px;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
                 </div>
             </div>`;
         }).join('');
