@@ -693,7 +693,7 @@
         }).join('');
     }
 
-    // --- FITUR LAPORAN PROFESIONAL (UPDATE V7.0) ---
+    // --- FITUR LAPORAN PROFESIONAL (UPDATE V7.1) ---
     function copyReport() {
         let tgl = document.getElementById('filterTgl').value;
         let dataHarian = db.rekap.filter(item => item.tgl === tgl.split('-').reverse().join('-'));
@@ -717,8 +717,16 @@
             d.items.forEach(it => {
                 let sub = it.harga * it.qty;
                 subtotal += sub;
-                let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : it.qty + ' Pcs';
-                rincian += `   - ${it.nama} (${qtyDisplay})\n`;
+                
+                // LOGIC BARU: Rincian (Qty Pcs x @ Harga)
+                let detailInfo = "";
+                if(it.nama.includes("LINKAJA") || it.nama.includes("SEVEN")) {
+                    detailInfo = formatRibuan(it.qty); 
+                } else {
+                    detailInfo = `${it.qty} Pcs x @ ${formatRibuan(it.harga)}`; 
+                }
+
+                rincian += `   - ${it.nama} (${detailInfo})\n`;
             });
             rincian += `   Total: Rp ${formatRibuan(subtotal)}\n\n`;
 
