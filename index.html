@@ -353,7 +353,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.5
+    VERSI APLIKASI: 1.0.6
             </div>
         </div>
     </div>
@@ -417,19 +417,33 @@
         {nama: "SA BYU 3GB", harga: 30000}, {nama: "LINKAJA", harga: 1}, {nama: "SEVEN", harga: 1}
     ];
 
-    let db = {
-    catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
-    rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
-    stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {},
-    stokAwal: JSON.parse(localStorage.getItem('MSP_STOK_AWAL')) || {}, // <--- INI PENYIMPANAN BARU
-    settings: JSON.parse(localStorage.getItem('MSP_SETTINGS')) || { target: 5000000, pin: "" }
-};
+        let db = {
+        catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
+        rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
+        stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {},
+        stokAwal: JSON.parse(localStorage.getItem('MSP_STOK_AWAL')) || {},
+        lastUpdate: localStorage.getItem('MSP_LAST_DATE') || "",
+        settings: JSON.parse(localStorage.getItem('MSP_SETTINGS')) || { target: 5000000, pin: "" }
+    };
+
+    // FUNGSI OTOMATIS PINDAH STOK
+    function autoUpdateStokAwal() {
+        let d = new Date();
+        let hariIni = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+        if (db.lastUpdate !== hariIni) {
+            db.stokAwal = JSON.parse(JSON.stringify(db.stok));
+            db.lastUpdate = hariIni;
+            saveToDisk();
+            console.log("Stok awal otomatis diperbarui!");
+        }
+    }
 
     let tempItems = [];
     let editIdx = -1;
     let enteredPin = "";
 
-    window.onload = () => { 
+        window.onload = () => { 
+        autoUpdateStokAwal(); // <--- Ini yang bikin sistem langsung cek tanggal pas buka
         checkLogin();
         setToday(); 
         document.getElementById('setTarget').value = formatRibuan(db.settings.target);
@@ -481,12 +495,13 @@
 
     function togglePin() { saveSettings(); alert("Akses PIN Berhasil Diperbarui!"); }
 
-    function saveToDisk() {
-    localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
-    localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
-    localStorage.setItem('MSP_STOK', JSON.stringify(db.stok));
-    localStorage.setItem('MSP_STOK_AWAL', JSON.stringify(db.stokAwal)); // <--- SIMPAN KE MEMORI HP
-}
+        function saveToDisk() {
+        localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
+        localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
+        localStorage.setItem('MSP_STOK', JSON.stringify(db.stok));
+        localStorage.setItem('MSP_STOK_AWAL', JSON.stringify(db.stokAwal));
+        localStorage.setItem('MSP_LAST_DATE', db.lastUpdate); // <--- Biar tanggalnya gak lupa
+    }
 
     function renderAll() {
         const sel = document.getElementById('pilihanVoucher');
@@ -865,6 +880,5 @@
 
 </body>
 </html>
-
 
 
