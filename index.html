@@ -322,10 +322,10 @@
 
         <div class="card">
     <h3>MASTER STOK</h3>
-    <div style="background: #f8fafc; padding:12px; border-radius:12px; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
-        <span style="font-size:10px; font-weight:800; color:var(--text-sub);">TGL UPDATE:</span>
-  <input type="text" id="tglMasterStok" style="margin:0; padding:5px; width:auto; background:transparent; border-bottom:1px dashed var(--primary); font-weight:800; text-align:right; color:var(--primary);" onchange="db.lastUpdate=this.value;saveToDisk();alert('Tanggal Berhasil Diubah!')">
-    </div>
+<div style="background: #f8fafc; padding:15px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
+    <span style="font-size:11px; font-weight:800; color:var(--text-sub);">TGL UPDATE STOK:</span>
+    <input type="date" id="tglMasterStok" style="margin:0; padding:5px; width:auto; background:transparent; border:none; font-weight:800; color:var(--primary);" onchange="updateTglManual(this.value)">
+</div>
     
     <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px;">
                 <table class="stok-table">
@@ -582,7 +582,12 @@
 
     function renderStokSystem(lakuPerTanggal) {
     
-    document.getElementById('tglMasterStok').value = db.lastUpdate || "-";
+        if(db.lastUpdate) {
+        let p = db.lastUpdate.split('-');
+        document.getElementById('tglMasterStok').value = p[2] + "-" + p[1] + "-" + p[2]; 
+        // Baris di atas memastikan kalender terisi otomatis saat dibuka
+    }
+
     
     // 1. Update Tabel di Tab DATA
     document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
@@ -890,6 +895,19 @@
             window.location.reload(true);
         }
     }
+    
+    function updateTglManual(val) {
+        if(!val) return;
+        // Mengubah format YYYY-MM-DD (dari kalender) ke DD-MM-YYYY (sistem)
+        let parts = val.split('-');
+        let tglBaru = parts[2] + "-" + parts[1] + "-" + parts[0];
+        
+        db.lastUpdate = tglBaru;
+        saveToDisk();
+        renderAll();
+        alert("Tanggal Update Stok Berhasil Diset ke: " + tglBaru);
+    }
+
     
 </script>
 
