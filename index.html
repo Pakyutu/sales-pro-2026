@@ -324,7 +324,7 @@
     <h3>MASTER STOK</h3>
     <div style="background: #f8fafc; padding:12px; border-radius:12px; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
         <span style="font-size:10px; font-weight:800; color:var(--text-sub);">TGL UPDATE:</span>
-        <input type="text" id="tglMasterStok" style="margin:0; padding:5px; width:auto; background:transparent; border:none; font-weight:800; text-align:right; color:var(--primary);" readonly>
+  <input type="text" id="tglMasterStok" style="margin:0; padding:5px; width:auto; background:transparent; border-bottom:1px dashed var(--primary); font-weight:800; text-align:right; color:var(--primary);" onchange="db.lastUpdate=this.value;saveToDisk();alert('Tanggal Berhasil Diubah!')">
     </div>
     
     <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px;">
@@ -432,16 +432,23 @@
     };
 
     // FUNGSI OTOMATIS PINDAH STOK
-    function autoUpdateStokAwal() {
+        function autoUpdateStokAwal() {
         let d = new Date();
-        let hariIni = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+        // Pakai String().padStart(2, '0') supaya angka 1-9 jadi 01-09
+        let day = String(d.getDate()).padStart(2, '0');
+        let month = String(d.getMonth() + 1).padStart(2, '0');
+        let year = d.getFullYear();
+        
+        let hariIni = day + "-" + month + "-" + year;
+
         if (db.lastUpdate !== hariIni) {
             db.stokAwal = JSON.parse(JSON.stringify(db.stok));
             db.lastUpdate = hariIni;
             saveToDisk();
-            console.log("Stok awal otomatis diperbarui!");
+            console.log("Stok awal otomatis diperbarui dengan format baru!");
         }
     }
+    
 
     let tempItems = [];
     let editIdx = -1;
