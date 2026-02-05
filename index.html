@@ -2,17 +2,36 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MEDIA SWARA PRIMA | BAGAN BATU</title>
     
     <link rel="manifest" href="manifest.json">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js');
-            });
-        }
-    </script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                // Paksa cek update ke server setiap kali aplikasi dibuka
+                reg.update();
+
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed') {
+                            if (navigator.serviceWorker.controller) {
+                                // Jika ada file baru di GitHub, aplikasi akan reload otomatis
+                                console.log('Versi baru ditemukan! Mengupdate...');
+                                window.location.reload();
+                            }
+                        }
+                    };
+                };
+            }).catch(err => console.error("Update Gagal:", err));
+        });
+    }
+</script>
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -784,6 +803,8 @@
         r.readAsText(e.target.files[0]);
     }
 </script>
+<div id="appVersion" style="position:fixed; bottom:5px; right:10px; font-size:9px; color:gray; opacity:0.5; z-index:9999; font-family:sans-serif;">
+    Versi: 1.0.1
+</div>
 </body>
 </html>
-
