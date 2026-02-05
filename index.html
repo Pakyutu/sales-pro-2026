@@ -335,6 +335,12 @@
         
         <div class="card">
             <h3>SISTEM DATA</h3>
+            <button class="btn btn-dark" onclick="checkForUpdate()" style="background: linear-gradient(135deg, #2c3e50, #000); margin-bottom: 10px;">
+    🔄 CEK UPDATE APLIKASI
+</button>
+<div id="updateStatus" style="font-size: 10px; text-align: center; color: var(--text-sub); font-weight: 800; margin-bottom: 15px;">
+    Klik untuk sinkronisasi dengan GitHub
+</div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <button class="btn btn-outline" onclick="exportData()">📤 BACKUP</button>
                 <button class="btn btn-outline" onclick="document.getElementById('fileIn').click()">📥 RESTORE</button>
@@ -802,9 +808,36 @@
         r.onload = function(evt) { db = JSON.parse(evt.target.result); saveToDisk(); renderAll(); alert("Database Berhasil Direstore!"); }
         r.readAsText(e.target.files[0]);
     }
+    function checkForUpdate() {
+        const statusBox = document.getElementById('updateStatus');
+        statusBox.innerText = "⏳ SEDANG MENGECEK... MOHON TUNGGU";
+        statusBox.style.color = "orange";
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then(reg => {
+                if (reg) {
+                    reg.update().then(() => {
+                        statusBox.innerText = "🚀 UPDATE DITEMUKAN! MENGUNDUH...";
+                        statusBox.style.color = "green";
+                        setTimeout(() => {
+                            window.location.reload(true);
+                        }, 1500);
+                    });
+                } else {
+                    window.location.reload(true);
+                }
+            }).catch(err => {
+                console.error("Update Gagal:", err);
+                window.location.reload(true);
+            });
+        } else {
+            window.location.reload(true);
+        }
+    }
+    
 </script>
 <div id="appVersion" style="position:fixed; bottom:5px; right:10px; font-size:9px; color:gray; opacity:0.5; z-index:9999; font-family:sans-serif;">
-    Versi: 1.0.1
+    Versi: 1.0.2
 </div>
 </body>
 </html>
