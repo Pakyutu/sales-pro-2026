@@ -321,8 +321,13 @@
         </div>
 
         <div class="card">
-            <h3>MASTER STOK</h3>
-            <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px;">
+    <h3>MASTER STOK</h3>
+    <div style="background: #f8fafc; padding:12px; border-radius:12px; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
+        <span style="font-size:10px; font-weight:800; color:var(--text-sub);">TGL UPDATE:</span>
+        <input type="text" id="tglMasterStok" style="margin:0; padding:5px; width:auto; background:transparent; border:none; font-weight:800; text-align:right; color:var(--primary);" readonly>
+    </div>
+    
+    <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px;">
                 <table class="stok-table">
                     <tbody id="stokEditorBulk"></tbody>
                 </table>
@@ -569,6 +574,9 @@
     }
 
     function renderStokSystem(lakuPerTanggal) {
+    
+    document.getElementById('tglMasterStok').value = db.lastUpdate || "-";
+    
     // 1. Update Tabel di Tab DATA
     document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
         if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
@@ -880,6 +888,5 @@
 
 </body>
 </html>
-
 
 
