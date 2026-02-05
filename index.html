@@ -1,264 +1,754 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>MEDIA SWARA PRIMA | BAGAN BATU</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MEDIA SWARA PRIMA | BAGAN BATU</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
 
-<meta name="theme-color" content="#EE2D24">
-<link rel="icon" type="image/png" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#EE2D24">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
 
-<style>
-/* ===== GLOBAL ===== */
-:root{
- --primary:#EE2D24;
- --primary-dark:#b30000;
- --bg:#f4f6f8;
- --card:#ffffff;
- --text:#2c3e50;
-}
-*{box-sizing:border-box}
-body{
- margin:0;
- font-family:Poppins,sans-serif;
- background:var(--bg);
- color:var(--text);
- padding-bottom:120px;
-}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-/* ===== HEADER ===== */
-.header{
- background:#fff;
- padding:28px 20px 45px;
- text-align:center;
- border-bottom-left-radius:40px;
- border-bottom-right-radius:40px;
- border-top:6px solid var(--primary);
- box-shadow:0 10px 35px rgba(238,45,36,.15);
-}
-.header h1{
- margin:0;
- font-weight:800;
- color:var(--primary);
-}
-.header p{
- margin:5px 0 0;
- font-size:11px;
- font-weight:700;
- letter-spacing:1.5px;
-}
-.header span{
- display:block;
- margin-top:6px;
- font-weight:800;
-}
+    <style>
+        :root {
+            --primary: #EE2D24;       
+            --primary-dark: #b30000;  
+            --bg-body: #f4f6f8;       
+            --bg-card: #ffffff;       
+            --text-main: #2c3e50;     
+            --text-sub: #7f8c8d;      
+            --gold: #f1c40f;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 30px rgba(238, 45, 36, 0.15);
+            --radius: 16px;
+        }
 
-/* ===== CARD ===== */
-.card{
- background:var(--card);
- padding:22px;
- border-radius:20px;
- margin:20px;
- box-shadow:0 4px 12px rgba(0,0,0,.08);
-}
-h3{
- margin:0 0 15px;
- font-size:13px;
- font-weight:800;
- letter-spacing:1px;
-}
+        body { 
+            font-family: 'Poppins', sans-serif; padding: 0; margin: 0; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; padding-bottom: 100px; 
+            /* ROBOTIC BACKGROUND PATTERN */
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h1v1h-1zM50 50h1v1h-1zM90 90h1v1h-1z' fill='%23EE2D24' fill-opacity='0.05'/%3E%3Cpath d='M20 20 L30 20 L30 30' stroke='%23EE2D24' stroke-opacity='0.03' fill='none'/%3E%3C/svg%3E");
+        }
+        
+        /* HEADER CORPORATE + ROBOTIC ANIMATION */
+        .header-main { 
+            background: linear-gradient(135deg, #fff 60%, #fff5f5 100%);
+            padding: 30px 20px 50px; text-align: center; 
+            border-radius: 0 0 40px 40px; 
+            box-shadow: var(--shadow-lg);
+            position: relative; overflow: hidden;
+            border-top: 5px solid var(--primary);
+        }
+        
+        /* Floating Robot SVG Element */
+        .robot-floating {
+            position: absolute; right: -20px; top: 10px; opacity: 0.1; width: 120px; transform: rotate(15deg);
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(15deg); } 50% { transform: translateY(-15px) rotate(20deg); } }
 
-/* ===== FORM ===== */
-input,select{
- width:100%;
- padding:14px;
- border-radius:14px;
- border:1px solid #eee;
- font-weight:600;
- margin-bottom:12px;
-}
-button{
- width:100%;
- padding:16px;
- border:none;
- border-radius:16px;
- background:linear-gradient(135deg,var(--primary),var(--primary-dark));
- color:#fff;
- font-weight:800;
- letter-spacing:1px;
- cursor:pointer;
-}
+        .header-content h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--primary); }
+        .header-content p { margin: 2px 0 0; font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+        .header-content .loc { font-size: 13px; font-weight: 800; color: #333; margin-top: 5px; display: block; }
 
-/* ===== LIST ===== */
-.list-item{
- background:#fafafa;
- padding:12px;
- border-radius:14px;
- display:flex;
- justify-content:space-between;
- margin-bottom:8px;
- font-size:13px;
-}
+        /* TARGET BAR (CYBER LOOK) */
+        .target-box { margin-top: 20px; background: #fff; padding: 18px; border-radius: 20px; border: 1px solid #eee; box-shadow: var(--shadow-sm); position: relative; z-index: 2; }
+        .target-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+        .progress-track { background: #f0f0f0; height: 10px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #EE2D24, #ff6b6b); width: 0%; border-radius: 20px; transition: 1s ease; position: relative; }
+        .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shine 2s infinite; }
+        @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
 
-/* ===== RECEIPT THERMAL ===== */
-#receiptOverlay{
- position:fixed;
- inset:0;
- background:rgba(0,0,0,.7);
- display:none;
- align-items:center;
- justify-content:center;
- z-index:9999;
-}
-.receipt-paper{
- width:280px;
- background:#fff;
- padding:18px 14px;
- font-family:'JetBrains Mono',monospace;
- color:#000;
- box-shadow:0 0 30px rgba(0,0,0,.5);
-}
-.receipt-paper h4{
- margin:0;
- text-align:center;
- font-size:15px;
-}
-.receipt-paper small{
- display:block;
- text-align:center;
- font-size:9px;
-}
-.dashed{
- border-bottom:1px dashed #000;
- margin:8px 0;
-}
-.row{
- display:flex;
- justify-content:space-between;
- font-size:12px;
- margin:3px 0;
-}
-.center{text-align:center}
+        /* TABS */
+        .tabs-container { 
+            display: flex; justify-content: space-between; background: #fff; margin: -25px 20px 20px; border-radius: 50px; 
+            padding: 8px; box-shadow: var(--shadow-lg); position: relative; z-index: 90; gap: 8px; border: 1px solid #eee;
+        }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-sub); font-weight: 700; cursor: pointer; font-size: 11px; border-radius: 40px; transition:0.3s; font-family: 'Poppins', sans-serif;}
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(238, 45, 36, 0.4); }
 
-/* ===== ACTION ===== */
-.close-btn{
- margin-top:15px;
- background:#2c3e50;
-}
-</style>
+        .content { display: none; animation: fadeIn 0.4s ease; padding: 0 20px; }
+        .content.active { display: block; }
+        @keyframes fadeIn { from {opacity:0; transform:translateY(15px);} to {opacity:1; transform:translateY(0);} }
+
+        /* CARDS */
+        .card { background: var(--bg-card); padding: 25px; border-radius: 20px; box-shadow: var(--shadow-sm); margin-bottom: 25px; border: 1px solid #f0f0f0; position: relative; }
+        .card::before { content: ''; position: absolute; top: 10px; left: 10px; width: 30px; height: 30px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23EE2D24' opacity='0.05'%3E%3Cpath d='M12 2L4.5 20.29L5.21 21L12 18L18.79 21L19.5 20.29L12 2Z'/%3E%3C/svg%3E"); background-size: contain; background-repeat: no-repeat; }
+        
+        h3 { margin: 0 0 15px 0; color: var(--text-main); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        
+        input, select { 
+            width: 100%; padding: 16px; border: 1.5px solid #eef2f7; background: #f8fafc; 
+            border-radius: 14px; box-sizing: border-box; font-size: 14px; margin-bottom: 12px; 
+            font-weight: 600; color: var(--text-main); font-family: 'Poppins', sans-serif; transition: 0.3s;
+        }
+        input:focus, select:focus { background: #fff; border-color: var(--primary); outline:none; box-shadow: 0 0 0 4px rgba(238, 45, 36, 0.1); }
+
+        /* DASHBOARD GRID */
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .dash-item { padding: 20px; border-radius: 20px; color: white; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+        .dash-item.green { background: linear-gradient(135deg, #10b981, #059669); }
+        .dash-item.blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .dash-item.total { background: #1e293b; grid-column: span 2; align-items: center; border: 2px solid #334155; }
+        .dash-item span { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
+        .dash-item b { font-size: 22px; margin-top: 5px; }
+        .dash-item.total b { font-size: 32px; color: var(--gold); text-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
+
+        /* REAL THERMAL STRUK STYLE */
+        #receiptOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .receipt-paper { 
+            background: #fff; width: 300px; padding: 20px; color: #000; 
+            font-family: 'JetBrains Mono', monospace; box-shadow: 0 0 30px rgba(0,0,0,0.5); 
+            border-radius: 2px; position: relative;
+        }
+        .receipt-paper::before { content: ''; position: absolute; top: -10px; left: 0; right: 0; height: 10px; background: linear-gradient(-45deg, #fff 5px, transparent 0), linear-gradient(45deg, #fff 5px, transparent 0); background-size: 10px 10px; }
+        
+        .struk-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 15px; margin-bottom: 15px; }
+        .struk-header h2 { margin: 0; font-size: 18px; font-weight: 700; }
+        .struk-header p { margin: 2px 0; font-size: 11px; font-weight: 400; }
+
+        .struk-item { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+        .struk-total { border-top: 1px dashed #000; margin-top: 15px; padding-top: 10px; display: flex; justify-content: space-between; font-weight: 700; font-size: 15px; }
+
+        .btn { border: none; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; padding: 16px; width: 100%; font-size: 12px; letter-spacing: 1px; transition:0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif;}
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 6px 20px rgba(238, 45, 36, 0.3); }
+        .btn-dark { background: #1e293b; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    </style>
 </head>
-
 <body>
 
-<div class="header">
- <h1>MEDIA SWARA PRIMA</h1>
- <p>TELKOMSEL AUTHORIZED PARTNER (TAP)</p>
- <span>📍 BAGAN BATU</span>
-</div>
+    <div id="loginOverlay">
+        <div style="text-align:center;">
+            <div style="background:#fff; padding:20px; border-radius:30px; display:inline-block; margin-bottom:20px; box-shadow:0 10px 40px rgba(0,0,0,0.15);">
+                <img src="logo.png" width="60" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/b/bb/Telkomsel_Logo_2021.svg'">
+            </div>
+            <h2 style="margin:0; font-size:20px; color:var(--text-main); font-weight: 800;">SECURITY ACCESS</h2>
+            <p style="font-size:11px; color:#999; margin-top:5px; font-weight: 600;">MEDIA SWARA PRIMA - BAGAN BATU</p>
+        </div>
+        <div style="display:flex; justify-content:center; margin-top:30px;" id="pinDisplay">
+            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+        </div>
+        <div class="numpad">
+            <button class="num-btn" onclick="enterPin(1)">1</button>
+            <button class="num-btn" onclick="enterPin(2)">2</button>
+            <button class="num-btn" onclick="enterPin(3)">3</button>
+            <button class="num-btn" onclick="enterPin(4)">4</button>
+            <button class="num-btn" onclick="enterPin(5)">5</button>
+            <button class="num-btn" onclick="enterPin(6)">6</button>
+            <button class="num-btn" onclick="enterPin(7)">7</button>
+            <button class="num-btn" onclick="enterPin(8)">8</button>
+            <button class="num-btn" onclick="enterPin(9)">9</button>
+            <button class="num-btn" style="color:var(--primary)" onclick="clearPin()">C</button>
+            <button class="num-btn" onclick="enterPin(0)">0</button>
+            <button class="num-btn" style="color:var(--primary)" onclick="enterPin(-1)">⌫</button>
+        </div>
+    </div>
 
-<div class="card">
- <h3>INPUT PENJUALAN</h3>
- <input id="outlet" placeholder="Nama Outlet">
- <select id="produk">
-  <option value="6200">4GB 1H</option>
-  <option value="8200">5GB 2H</option>
-  <option value="11800">4GB 3H</option>
-  <option value="15500">5GB 5H</option>
-  <option value="22500">8GB 5H</option>
-  <option value="37000">12GB 30H</option>
- </select>
- <input id="qty" placeholder="Qty / Nominal">
- <button onclick="addItem()">TAMBAH</button>
-</div>
+    <div class="header-main">
+        <svg class="robot-floating" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12,2A2,2 0 0,1 14,4C14,4.74 13.59,5.39 13,5.73V7H14A3,3 0 0,1 17,10V11H18A2,2 0 0,1 20,13V17A2,2 0 0,1 18,19H17V21A1,1 0 0,1 16,22H8A1,1 0 0,1 7,21V19H6A2,2 0 0,1 4,17V13A2,2 0 0,1 6,11H7V10A3,3 0 0,1 10,7H11V5.73C10.41,5.39 10,4.74 10,4A2,2 0 0,1 12,2M7.5,13A1.5,1.5 0 0,0 6,14.5A1.5,1.5 0 0,0 7.5,16A1.5,1.5 0 0,0 9,14.5A1.5,1.5 0 0,0 7.5,13M16.5,13A1.5,1.5 0 0,0 15,14.5A1.5,1.5 0 0,0 16.5,16A1.5,1.5 0 0,0 18,14.5A1.5,1.5 0 0,0 16.5,13M12,18A3,3 0 0,0 15,15H9A3,3 0 0,0 12,18Z" />
+        </svg>
 
-<div class="card">
- <h3>DAFTAR PENJUALAN</h3>
- <div id="list"></div>
- <button onclick="showReceipt()">SIMPAN & STRUK</button>
-</div>
+        <div class="header-content">
+            <h1>MEDIA SWARA PRIMA</h1>
+            <p>TELKOMSEL AUTHORIZED PARTNER (TAP)</p>
+            <span class="loc">📍 BAGAN BATU</span>
+        </div>
+        
+        <div class="target-box">
+            <div class="target-top">
+                <span id="targetLabel">TARGET HARIAN: 0</span>
+                <span id="targetPercent">0%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="targetBar"></div>
+            </div>
+            <div id="targetSisa" style="font-size:11px; font-weight:800; color:var(--primary); margin-top:5px; text-align:right;">Sisa: 0</div>
+        </div>
+    </div>
 
-<div id="receiptOverlay">
- <div class="receipt-paper">
-  <h4>TELKOMSEL</h4>
-  <h4>MEDIA SWARA PRIMA</h4>
-  <small>TAP BAGAN BATU</small>
-  <small>Rokan Hilir, Riau</small>
-  <div class="dashed"></div>
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="openTab('tab1', this)">🚀 KASIR</button>
+        <button class="tab-btn" onclick="openTab('tab2', this)">📈 DATA</button>
+        <button class="tab-btn" onclick="openTab('tab3', this)">⚙️ SETTING</button>
+    </div>
 
-  <div class="row"><span>Tanggal</span><span id="rDate"></span></div>
-  <div class="row"><span>Jam</span><span id="rTime"></span></div>
-  <div class="row"><span>Outlet</span><span id="rOutlet"></span></div>
+    <div id="tab1" class="content active">
+        <div class="card">
+            <h3>INPUT TRANSAKSI</h3>
+            
+            <div style="display:flex; gap:10px;">
+                <input type="date" id="tanggalInput" style="flex:1;">
+                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:14px; border:1.5px solid #eee; background:#fff; color:var(--text-main); font-weight:800; font-size:11px; margin-bottom:12px;">HARI INI</button>
+            </div>
 
-  <div class="dashed"></div>
-  <div id="rItems"></div>
-  <div class="dashed"></div>
+            <input type="text" id="namaOutlet" placeholder="Nama Outlet (Contoh: Berkah Sel)" list="outletList">
+            <datalist id="outletList"></datalist>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <select id="metodeBayar">
+                    <option value="CASH">💰 CASH</option>
+                    <option value="TRANSFER">🏦 TRANSFER</option>
+                </select>
+                <select id="pilihanVoucher" onchange="updateHarga()"></select>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <input type="text" id="hargaDisplay" oninput="formatInput(this)" placeholder="Harga Jual">
+                <input type="text" id="jumlahPcs" placeholder="Qty / Nominal" oninput="formatInput(this)" inputmode="numeric">
+            </div>
+            
+            <button class="btn btn-dark" onclick="addItem()">⚡ TAMBAH KE LIST</button>
+            
+            <div id="tempList" style="margin-top: 20px;"></div>
+            <button class="btn btn-primary" id="mainSaveBtn" style="margin-top:20px; display:none;" onclick="saveTrx()">💾 SIMPAN PERMANEN</button>
+        </div>
+        
+        <div class="dash-grid">
+            <div class="dash-item green"><span>TOTAL CASH</span><b id="statCash">0</b></div>
+            <div class="dash-item blue"><span>TOTAL TRANSFER</span><b id="statTf">0</b></div>
+            <div class="dash-item total">
+                <span>REKAP OMSET HARI INI</span>
+                <b id="statGrand">0</b>
+            </div>
+        </div>
 
-  <div class="row" style="font-weight:700">
-   <span>TOTAL</span><span id="rTotal"></span>
-  </div>
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0; border:none; padding:0;">LOG AKTIVITAS</h3>
+                <input type="date" id="filterTgl" onchange="syncDateAndRender(this.value)" style="width:auto; margin:0; padding:10px; font-size:11px; border-radius:12px; border:1px solid #ddd;">
+            </div>
+            
+            <input type="text" id="searchBox" placeholder="Cari Nama Outlet..." onkeyup="renderAll()" style="border-radius:30px; padding-left:25px; border:1.5px solid #eee;">
 
-  <div class="dashed"></div>
-  <div class="center">
-   <small>Terima Kasih</small>
-   <small>Bukti Pembayaran Sah</small>
-   <small>TAP Telkomsel Bagan Batu</small>
-  </div>
- </div>
- <div style="width:280px">
-  <button class="close-btn" onclick="receiptOverlay.style.display='none'">TUTUP</button>
- </div>
-</div>
+            <div id="historyList" class="trx-list" style="margin-top:20px;"></div>
+            
+            <button class="btn btn-outline" onclick="copyReport()" style="margin-top:20px; border:2.5px solid #2c3e50; color:#2c3e50; font-weight:800;">📋 SALIN LAPORAN CORPORATE</button>
+        </div>
+    </div>
+    
+    <div id="tab2" class="content">
+        <div class="card">
+            <h3>MONITORING STOK</h3>
+            
+            <div style="background: #f8fafc; padding:15px; border-radius:18px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1.5px solid #eef2f7;">
+                <span style="font-size:11px; font-weight:800; color:#64748b;">LIHAT TANGGAL:</span>
+                <input type="date" id="stokDateInput" style="margin:0; padding:5px; width:auto; background:transparent; border:none; font-weight:800;" onchange="syncDateAndRender(this.value)">
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="stok-table">
+                    <thead>
+                        <tr>
+                            <th>PRODUK</th>
+                            <th style="text-align:center;">TERJUAL</th>
+                            <th style="text-align:right;">SISA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stokTableBody"></tbody>
+                </table>
+            </div>
+            <button class="btn btn-dark" style="margin-top:20px;" onclick="copyStockReport()">📋 SALIN LAPORAN STOK</button>
+        </div>
+
+        <div class="card">
+            <h3>HISTORY REKAP HARIAN</h3>
+            <div id="riwayatList" class="trx-list"></div>
+        </div>
+    </div>
+
+    <div id="tab3" class="content">
+        <div class="card">
+            <h3>KONFIGURASI SISTEM</h3>
+            <label style="font-size:11px; font-weight:800; color:#64748b; margin-bottom:8px; display:block;">TARGET OMSET HARIAN</label>
+            <input type="text" id="setTarget" placeholder="Contoh: 10.000.000" oninput="formatInput(this)" onchange="saveSettings()">
+            
+            <label style="font-size:11px; font-weight:800; color:#64748b; margin-top:15px; display:block;">PIN KEAMANAN AKSES</label>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="setPin" placeholder="4 Digit PIN" onchange="saveSettings()">
+                <button class="btn btn-dark" onclick="togglePin()" style="width:auto; padding:0 25px;">SET</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>PENGATURAN STOK AWAL</h3>
+            <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px; border-radius:12px; border:1px solid #eee;">
+                <table class="stok-table">
+                    <tbody id="stokEditorBulk"></tbody>
+                </table>
+            </div>
+            <button class="btn btn-primary" onclick="saveAllStok()">💾 UPDATE SEMUA STOK</button>
+        </div>
+
+        <div class="card">
+            <h3>KATALOG PRODUK BARU</h3>
+            <input type="text" id="addName" placeholder="Nama Produk (Contoh: 10GB 30H)">
+            <input type="text" id="addPrice" placeholder="Harga Jual" oninput="formatInput(this)">
+            <button class="btn btn-dark" onclick="addKatalog()">SIMPAN KE KATALOG</button>
+            <div id="catalogList" style="margin-top:20px;"></div>
+        </div>
+        
+        <div class="card" style="background:#fffcfc; border: 1px solid #ffebeb;">
+            <h3>MAINTENANCE DATABASE</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <button class="btn btn-outline" onclick="exportData()">📤 BACKUP</button>
+                <button class="btn btn-outline" onclick="document.getElementById('fileIn').click()">📥 RESTORE</button>
+            </div>
+            <input type="file" id="fileIn" hidden onchange="importData(event)">
+            <button class="btn" style="background:transparent; color:#EE2D24; margin-top:20px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET SEMUA DATA (PABRIK)</button>
+        </div>
+    </div>
+
+    <div id="receiptOverlay">
+        <div class="receipt-paper">
+            <div class="struk-header">
+                <h2>MEDIA SWARA PRIMA</h2>
+                <p>TAP TELKOMSEL BAGAN BATU</p>
+                <p>Authorized Partner Telkomsel</p>
+                <p id="rDateFull" style="font-size: 10px; margin-top: 10px;"></p>
+                <p id="rId" style="font-size: 9px;"></p>
+            </div>
+            
+            <div style="text-align: center; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; font-size: 14px;" id="rName"></div>
+
+            <div id="rList"></div>
+
+            <div class="struk-total">
+                <span>TOTAL AKHIR</span>
+                <span id="rTotal"></span>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; font-size: 10px;">
+                <p style="margin:0;">-- TERIMA KASIH --</p>
+                <p style="margin:2px 0;">Bagan Batu, Rokan Hilir</p>
+                <p style="margin:0; opacity: 0.6;">Simpan sebagai bukti sah</p>
+            </div>
+        </div>
+        
+        <div style="text-align:center; margin-top:25px; display:grid; gap:12px; justify-content:center; width:300px;">
+            <button id="waBtn" class="btn" style="background:#25D366; color:white; font-weight: 800;">📤 KIRIM KE WHATSAPP</button>
+            <button class="btn btn-dark" onclick="document.getElementById('receiptOverlay').style.display='none'">KEMBALI</button>
+        </div>
+    </div>
 
 <script>
-let items=[]
+    let defaultCatalog = [
+        {nama: "4GB 1H", harga: 6200}, {nama: "5GB 2H", harga: 8200}, {nama: "4GB 3H", harga: 11800},
+        {nama: "3GB 5H", harga: 12900}, {nama: "5GB 5H", harga: 15500}, {nama: "8GB 5H", harga: 22500},
+        {nama: "7GB 7H", harga: 20500}, {nama: "12GB 30H", harga: 37000}, {nama: "SA 3GB", harga: 30000},
+        {nama: "SA BYU 3GB", harga: 30000}, {nama: "LINKAJA", harga: 1}, {nama: "SEVEN", harga: 1}
+    ];
 
-function addItem(){
- let p=document.getElementById('produk')
- let nama=p.options[p.selectedIndex].text
- let harga=parseInt(p.value)
- let qty=parseInt(document.getElementById('qty').value||0)
- if(!qty)return
- items.push({nama,harga,qty})
- document.getElementById('qty').value=''
- renderList()
-}
+    let db = {
+        catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
+        rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
+        stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {},
+        settings: JSON.parse(localStorage.getItem('MSP_SETTINGS')) || { target: 5000000, pin: "" }
+    };
 
-function renderList(){
- list.innerHTML=items.map((i,idx)=>`
-  <div class="list-item">
-   <span>${i.nama} x ${i.qty}</span>
-   <b>${format(i.harga*i.qty)}</b>
-  </div>
- `).join('')
-}
+    let tempItems = [];
+    let editIdx = -1;
+    let enteredPin = "";
 
-function showReceipt(){
- if(items.length===0)return
- let total=0
- rItems.innerHTML=items.map(i=>{
-  let sub=i.harga*i.qty
-  total+=sub
-  return `<div>
-   <div style="font-weight:700">${i.nama}</div>
-   <div class="row">
-    <span>${i.qty} x ${format(i.harga)}</span>
-    <span>${format(sub)}</span>
-   </div>
-  </div>`
- }).join('')
- let d=new Date()
- rDate.innerText=d.toLocaleDateString('id-ID')
- rTime.innerText=d.toLocaleTimeString('id-ID').slice(0,5)
- rOutlet.innerText=document.getElementById('outlet').value||'-'
- rTotal.innerText=format(total)
- receiptOverlay.style.display='flex'
-}
+    window.onload = () => { 
+        checkLogin();
+        setToday(); 
+        document.getElementById('setTarget').value = formatRibuan(db.settings.target);
+        document.getElementById('setPin').value = db.settings.pin;
+        renderOutletSuggestions();
+        renderAll(); 
+    };
 
-function format(n){
- return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')
-}
+    function syncDateAndRender(newDate) {
+        document.getElementById('filterTgl').value = newDate;
+        document.getElementById('stokDateInput').value = newDate;
+        renderAll();
+    }
+
+    function checkLogin() {
+        if(db.settings.pin && db.settings.pin.length === 4) {
+            document.getElementById('loginOverlay').style.display = 'flex';
+        }
+    }
+    function enterPin(n) {
+        if(n === -1) enteredPin = enteredPin.slice(0, -1);
+        else if(enteredPin.length < 4) enteredPin += n;
+        updatePinDots();
+        if(enteredPin.length === 4) {
+            if(enteredPin === db.settings.pin) {
+                document.getElementById('loginOverlay').style.display = 'none';
+            } else {
+                alert("PIN SALAH!");
+                enteredPin = ""; updatePinDots();
+            }
+        }
+    }
+    function updatePinDots() {
+        let dots = document.querySelectorAll('.pin-dot');
+        dots.forEach((d, i) => { d.classList.toggle('filled', i < enteredPin.length); });
+    }
+    function clearPin() { enteredPin = ""; updatePinDots(); }
+    function saveSettings() {
+        let t = parseNo(document.getElementById('setTarget').value) || 0;
+        let p = document.getElementById('setPin').value;
+        db.settings = { target: t, pin: p };
+        localStorage.setItem('MSP_SETTINGS', JSON.stringify(db.settings));
+        renderAll();
+    }
+    function togglePin() { saveSettings(); alert("Pengaturan Tersimpan!"); }
+
+    function saveToDisk() {
+        localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
+        localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
+        localStorage.setItem('MSP_STOK', JSON.stringify(db.stok));
+    }
+
+    function renderAll() {
+        const sel = document.getElementById('pilihanVoucher');
+        if(sel.options.length !== db.catalog.length) {
+            sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
+            updateHarga();
+        }
+
+        let filterTgl = document.getElementById('filterTgl').value.split('-').reverse().join('-');
+        let searchKeyword = document.getElementById('searchBox').value.toLowerCase(); 
+
+        let gt = 0, tc = 0, tf = 0;
+        let laku = {}; db.catalog.forEach(v => laku[v.nama] = 0);
+
+        let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
+            .filter(item => item.data.tgl === filterTgl)
+            .filter(item => item.data.nama.toLowerCase().includes(searchKeyword))
+            .map(item => {
+                let ot = item.data;
+                let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
+                return `
+                <div class="trx-card">
+                    <div class="trx-header">
+                        <div>
+                            <div class="trx-name">${ot.nama}</div>
+                            <div class="trx-meta">${ot.metode} • ${ot.jam}</div>
+                        </div>
+                        <div class="trx-price">Rp ${formatRibuan(sub)}</div>
+                    </div>
+                    <div class="trx-actions">
+                        <button class="act-btn act-struk" onclick="showStruk(${item.idx})">STRUK</button>
+                        <button class="act-btn act-edit" onclick="editTrx(${item.idx})">EDIT</button>
+                        <button class="act-btn act-del" onclick="delTrx(${item.idx})">HAPUS</button>
+                    </div>
+                </div>`;
+            }).reverse().join('');
+        
+        document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Belum ada transaksi</div>';
+
+        let filteredDateData = db.rekap.filter(item => item.tgl === filterTgl);
+        filteredDateData.forEach(ot => {
+            let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
+            gt += sub;
+            if(ot.metode === "CASH") tc += sub; else tf += sub;
+            ot.items.forEach(it => { laku[it.nama] = (laku[it.nama] || 0) + it.qty });
+        });
+
+        document.getElementById('statCash').innerText = formatRibuan(tc);
+        document.getElementById('statTf').innerText = formatRibuan(tf);
+        document.getElementById('statGrand').innerText = formatRibuan(gt);
+
+        updateTargetBar(gt);
+        renderStokSystem(laku);
+        renderRiwayatTab();
+    }
+
+    function updateTargetBar(current) {
+        let target = db.settings.target || 1;
+        let pct = Math.min(100, Math.round((current / target) * 100));
+        let sisa = target - current;
+        document.getElementById('targetLabel').innerText = `TARGET HARIAN: RP ${formatRibuan(target)}`;
+        document.getElementById('targetPercent').innerText = `${pct}%`;
+        document.getElementById('targetBar').style.width = `${pct}%`;
+        document.getElementById('targetSisa').innerText = pct >= 100 ? "TARGET TERCAPAI!" : `Kurang: Rp ${formatRibuan(sisa)}`;
+    }
+
+    function renderStokSystem(lakuPerTanggal) {
+        document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
+            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+            let sisa = db.stok[v.nama] || 0; 
+            let terjual = lakuPerTanggal[v.nama] || 0; 
+            let color = sisa <= 5 ? '#EE2D24' : '#10b981';
+            return `<tr>
+                <td>${v.nama}</td>
+                <td style="text-align:center;">${terjual}</td>
+                <td style="text-align:right; font-weight:800; color:${color};">${sisa}</td>
+            </tr>`;
+        }).join('');
+        
+        document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
+            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+            return `<tr>
+                <td style="padding:10px; font-weight:700;">${v.nama}</td>
+                <td>
+                    <input type="number" style="margin:0; text-align:center; padding:10px; border-radius:10px;" value="${db.stok[v.nama]||0}" onchange="db.stok['${v.nama}']=parseInt(this.value)">
+                </td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
+            <div style="background:#f8fafc; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid #eef2f7;">
+                <b style="font-size:12px;">${v.nama} - Rp ${formatRibuan(v.harga)}</b> 
+                <span style="color:#EE2D24; cursor:pointer; font-size:11px; font-weight:800; background:#fff; padding:5px 12px; border-radius:10px; border:1px solid #ffebeb;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
+            </div>
+        `).join('');
+    }
+
+    function saveAllStok() {
+        saveToDisk(); renderAll(); alert("STOK BERHASIL DIUPDATE!");
+    }
+
+    function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+    function parseNo(s) { return parseInt(s.toString().replace(/\./g, '')) || 0; }
+    function formatInput(el) { el.value = formatRibuan(parseNo(el.value)); }
+    
+    function setToday() { 
+        let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        let iso = d.toISOString().slice(0,10);
+        document.getElementById('tanggalInput').value = iso;
+        syncDateAndRender(iso);
+    }
+    function updateHarga() { 
+        const sel = document.getElementById('pilihanVoucher');
+        const txt = sel.options[sel.selectedIndex].text;
+        const isSaldo = txt.includes("LINKAJA") || txt.includes("SEVEN");
+        document.getElementById('hargaDisplay').value = isSaldo ? "1" : formatRibuan(sel.value);
+        document.getElementById('jumlahPcs').placeholder = isSaldo ? "Nominal Rupiah" : "Jumlah Pcs";
+    }
+    function renderOutletSuggestions() {
+        let outlets = [...new Set(db.rekap.map(d => d.nama))];
+        document.getElementById('outletList').innerHTML = outlets.map(n => `<option value="${n}">`).join('');
+    }
+
+    function addItem() {
+        const sel = document.getElementById('pilihanVoucher');
+        const qty = parseNo(document.getElementById('jumlahPcs').value);
+        if(!qty) return;
+        
+        let namaItem = sel.options[sel.selectedIndex].text;
+        if(!namaItem.includes("LINKAJA") && !namaItem.includes("SEVEN")) {
+            let sisa = db.stok[namaItem] || 0;
+            if (sisa < qty) { if(!confirm(`⚠️ STOK TIPIS!\nSisa: ${sisa}, Diminta: ${qty}.\nLanjutkan?`)) return; }
+            db.stok[namaItem] = sisa - qty;
+        }
+
+        tempItems.push({
+            nama: namaItem,
+            harga: parseNo(document.getElementById('hargaDisplay').value),
+            qty: qty
+        });
+        document.getElementById('jumlahPcs').value = "";
+        renderTemp();
+        document.getElementById('mainSaveBtn').style.display = "block";
+    }
+
+    function renderTemp() {
+        document.getElementById('tempList').innerHTML = tempItems.map((it, i) => `
+            <div class="temp-item">
+                <span>${it.nama}</span>
+                <span>
+                    <span class="temp-qty">${formatRibuan(it.qty)} Pcs</span>
+                    <span onclick="cancelTempItem(${i})" style="color:#EE2D24; margin-left:10px; cursor:pointer; font-weight:800;">✖</span>
+                </span>
+            </div>`).join('');
+        if(tempItems.length === 0) document.getElementById('mainSaveBtn').style.display = "none";
+    }
+
+    function cancelTempItem(i) {
+        let it = tempItems[i];
+        if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
+            db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty;
+        }
+        tempItems.splice(i,1); renderTemp();
+    }
+
+    function saveTrx() {
+        const nama = document.getElementById('namaOutlet').value.toUpperCase();
+        if(!nama) return alert("Isi Nama Outlet!");
+        
+        const now = new Date();
+        const data = {
+            nama: nama,
+            metode: document.getElementById('metodeBayar').value,
+            items: [...tempItems],
+            jam: now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'),
+            tgl: document.getElementById('tanggalInput').value.split('-').reverse().join('-')
+        };
+
+        if(editIdx > -1) { db.rekap[editIdx] = data; editIdx = -1; } 
+        else { db.rekap.push(data); }
+
+        tempItems = []; document.getElementById('namaOutlet').value = ""; document.getElementById('tempList').innerHTML = "";
+        saveToDisk(); renderAll(); renderOutletSuggestions();
+        document.getElementById('mainSaveBtn').innerText = "SIMPAN DATA";
+        document.getElementById('mainSaveBtn').style.display = "none";
+    }
+
+    function showStruk(i) {
+        const d = db.rekap[i]; let total = 0; 
+        let waText = `*MEDIA SWARA PRIMA*\n*TAP BAGAN BATU*\n------------------------\nOutlet: ${d.nama}\nWaktu: ${d.tgl} ${d.jam}\n------------------------\n`;
+        
+        document.getElementById('rName').innerText = d.nama;
+        document.getElementById('rDateFull').innerText = `${d.tgl} | ${d.jam}`;
+        document.getElementById('rId').innerText = `ID TRX: #MSP-${Math.floor(1000 + Math.random() * 9000)}`;
+        
+        document.getElementById('rList').innerHTML = d.items.map(it => {
+            let sub = it.harga * it.qty; total += sub;
+            let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : formatRibuan(it.qty) + ' Pcs';
+            let detailPrice = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? "" : `x ${formatRibuan(it.harga)}`;
+
+            waText += `${it.nama} (${qtyDisplay} ${detailPrice}) = ${formatRibuan(sub)}\n`;
+            
+            return `
+            <div style="margin-bottom: 8px;">
+                <div style="font-weight: 700; font-size: 13px;">${it.nama}</div>
+                <div class="struk-item">
+                    <span>${qtyDisplay} ${detailPrice}</span>
+                    <span>${formatRibuan(sub)}</span>
+                </div>
+            </div>`;
+        }).join('');
+        
+        document.getElementById('rTotal').innerText = "Rp " + formatRibuan(total);
+        waText += `------------------------\n*TOTAL AKHIR: ${formatRibuan(total)}*\n------------------------\nTAP Telkomsel Bagan Batu`;
+        document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`);
+        document.getElementById('receiptOverlay').style.display = 'flex';
+    }
+
+    function editTrx(i) {
+        let d = db.rekap[i]; editIdx = i;
+        document.getElementById('namaOutlet').value = d.nama;
+        d.items.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty; });
+        tempItems = [...d.items]; 
+        tempItems.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] -= it.qty; });
+        renderTemp();
+        document.getElementById('mainSaveBtn').innerText = "UPDATE DATA SEKARANG";
+        document.getElementById('mainSaveBtn').style.display = "block";
+        openTab('tab1', document.querySelectorAll('.tab-btn')[0]);
+    }
+    
+    function delTrx(i) { 
+        if(confirm("Hapus Permanen? Stok akan dikembalikan ke gudang.")) { 
+            db.rekap[i].items.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty; });
+            db.rekap.splice(i,1); saveToDisk(); renderAll(); 
+        } 
+    }
+    function addKatalog() {
+        let n = document.getElementById('addName').value.toUpperCase();
+        let p = parseNo(document.getElementById('addPrice').value);
+        if(n && p) { db.catalog.push({nama:n, harga:p}); saveToDisk(); renderAll(); }
+    }
+    function renderRiwayatTab() {
+        let dates = [...new Set(db.rekap.map(d => d.tgl))].sort().reverse();
+        document.getElementById('riwayatList').innerHTML = dates.map(d => {
+            let dayTotal = db.rekap.filter(x => x.tgl === d).reduce((a,b) => a + b.items.reduce((x,y)=>x+(y.harga*y.qty),0), 0);
+            return `<div class="trx-card" style="flex-direction:row; justify-content:space-between; align-items:center;">
+                <div><div class="trx-name">${d}</div><div class="trx-meta">Rekap Penjualan Harian</div></div>
+                <div>
+                    <div class="trx-price">Rp ${formatRibuan(dayTotal)}</div>
+                    <button class="act-btn" style="background:#1e293b; margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT DETAIL</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function copyReport() {
+        let tgl = document.getElementById('filterTgl').value;
+        let dataHarian = db.rekap.filter(item => item.tgl === tgl.split('-').reverse().join('-'));
+        
+        if(dataHarian.length === 0) return alert("Belum ada data transaksi tanggal ini.");
+
+        let totalCash = 0, totalTf = 0, grandTotal = 0;
+        let rincian = "";
+        let trxCount = dataHarian.length;
+
+        let report = `*MEDIA SWARA PRIMA - BAGAN BATU*\n*LAPORAN PENJUALAN HARIAN*\n========================\n`;
+        report += `📅 Tanggal : ${tgl}\n`;
+        report += `🏪 Outlet  : ${trxCount} Transaksi\n`;
+        report += `========================\n\n`;
+
+        dataHarian.forEach((d, i) => {
+            let subtotal = 0;
+            rincian += `${i+1}. ${d.nama} (${d.metode})\n`;
+            d.items.forEach(it => {
+                let sub = it.harga * it.qty;
+                subtotal += sub;
+                let detailInfo = (it.nama.includes("LINKAJA")) ? formatRibuan(it.qty) : `${it.qty} Pcs x ${formatRibuan(it.harga)}`; 
+                rincian += `   - ${it.nama} (${detailInfo})\n`;
+            });
+            rincian += `   Total: Rp ${formatRibuan(subtotal)}\n\n`;
+            grandTotal += subtotal;
+            if(d.metode === 'CASH') totalCash += subtotal; else totalTf += subtotal;
+        });
+
+        report += `*RINCIAN TRANSAKSI:*\n${rincian}`;
+        report += `========================\n`;
+        report += `*RINGKASAN:* \n`;
+        report += `💵 Total Cash     : Rp ${formatRibuan(totalCash)}\n`;
+        report += `🏦 Total Transfer : Rp ${formatRibuan(totalTf)}\n`;
+        report += `------------------------\n`;
+        report += `🔥 *GRAND TOTAL    : Rp ${formatRibuan(grandTotal)}*\n`;
+        report += `========================\n`;
+        report += `Generated by Digital TAP Bagan Batu`;
+
+        navigator.clipboard.writeText(report).then(() => alert("Laporan Corporate Berhasil Disalin!"));
+    }
+
+    function copyStockReport() {
+        let tgl = document.getElementById('filterTgl').value;
+        let txt = `*STOK & PENJUALAN TAP BAGAN BATU*\n*TANGGAL: ${tgl}*\n\n`;
+        let lakuPerTanggal = {}; 
+        db.rekap.filter(i => i.tgl === tgl.split('-').reverse().join('-')).forEach(ot => {
+             ot.items.forEach(it => { lakuPerTanggal[it.nama] = (lakuPerTanggal[it.nama] || 0) + it.qty });
+        });
+        db.catalog.forEach(v => {
+            if(!v.nama.includes("LINKAJA")) {
+                let sisa = db.stok[v.nama]||0;
+                let laku = lakuPerTanggal[v.nama]||0;
+                txt += `${v.nama}\nLaku: ${laku} | Sisa: ${sisa}\n\n`;
+            }
+        });
+        navigator.clipboard.writeText(txt).then(() => alert("Laporan Stok Disalin!"));
+    }
+    function openTab(id, btn) {
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+    }
+    function hardReset() { if(confirm("PERINGATAN! Seluruh database akan dihapus. Lanjutkan?")) { localStorage.clear(); location.reload(); } }
+    function exportData() {
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(db)], {type:'application/json'}));
+        a.download = 'BACKUP_TAP_BAGANBATU.json'; a.click();
+    }
+    function importData(e) {
+        let r = new FileReader();
+        r.onload = function(evt) { db = JSON.parse(evt.target.result); saveToDisk(); renderAll(); alert("Data Berhasil Direstore!"); }
+        r.readAsText(e.target.files[0]);
+    }
 </script>
-
 </body>
 </html>
