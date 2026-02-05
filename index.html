@@ -710,7 +710,7 @@
                 <div><div class="trx-name">${d}</div><div style="font-size:10px; font-weight:700; color:#999;">Rekap Penjualan Harian</div></div>
                 <div style="text-align:right;">
                     <div class="trx-price">Rp ${formatRibuan(dayTotal)}</div>
-                    <button class="act-btn" style="background:#2c3e50; margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
+                    <button class="act-btn" style="background:#2c3e50; color:white; margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
                 </div>
             </div>`;
         }).join('');
