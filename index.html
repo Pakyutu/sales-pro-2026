@@ -16,171 +16,158 @@
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#8b0000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#EE2D24">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* PALET WARNA DARK TELKOMSEL */
-            --primary: #EE2D24;       /* Merah Menyala */
-            --primary-dark: #b30000;  /* Merah Darah */
-            --bg-body: #050505;       /* Hitam Hampir Pekat */
-            --bg-card: #141414;       /* Abu Sangat Gelap */
-            --bg-input: #1f1f1f;      /* Abu Gelap untuk Input */
-            --text-main: #ffffff;     /* Putih Bersih */
-            --text-muted: #aaaaaa;    /* Abu Perak */
-            --gold: #FFD700;          /* Emas Mewah */
-            --border: #333333;        /* Garis Batas Halus */
-            --shadow: 0 8px 20px rgba(0,0,0,0.6);
+            --primary: #EE2D24;       /* Merah Telkomsel */
+            --primary-dark: #b30000;  /* Merah Tua */
+            --bg-body: #f4f6f8;       /* Abu-abu Corporate */
+            --bg-card: #ffffff;       /* Putih Bersih */
+            --text-main: #2c3e50;     /* Biru Gelap Professional */
+            --text-sub: #7f8c8d;      /* Abu Professional */
+            --gold: #f1c40f;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
+            --radius: 16px;
         }
 
         body { 
             font-family: 'Poppins', sans-serif; padding: 0; margin: 0; 
             background-color: var(--bg-body); 
             color: var(--text-main); 
-            /* BACKGROUND MOTIF TELKOMSEL */
-            background-image: radial-gradient(var(--primary-dark) 1px, transparent 1px);
-            background-size: 30px 30px;
+            -webkit-font-smoothing: antialiased;
             overflow-x: hidden; padding-bottom: 100px; 
         }
         
-        /* HEADER GAHAR */
+        /* HEADER CORPORATE */
         .header-main { 
-            background: linear-gradient(180deg, #EE2D24 0%, #5a0000 100%);
-            padding: 40px 20px 60px; text-align: center; 
+            background: var(--bg-card);
+            padding: 20px 20px 40px; text-align: center; 
             border-radius: 0 0 40px 40px; 
-            box-shadow: 0 10px 40px rgba(238, 45, 36, 0.3);
+            box-shadow: var(--shadow-lg);
             position: relative; overflow: hidden;
-            border-bottom: 2px solid var(--primary);
+            border-top: 5px solid var(--primary);
         }
         
-        .header-content h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .header-content p { margin: 5px 0 0; font-size: 10px; opacity: 1; letter-spacing: 2px; font-weight: 700; background: rgba(0,0,0,0.4); display: inline-block; padding: 4px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
-        
-        /* TARGET BAR GLOWING */
-        .target-box { margin-top: 25px; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid var(--primary-dark); box-shadow: 0 0 15px rgba(238, 45, 36, 0.2); }
-        .target-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .progress-track { background: rgba(255,255,255,0.1); height: 8px; border-radius: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--gold); width: 0%; border-radius: 20px; transition: 1s ease; box-shadow: 0 0 15px var(--gold); }
+        .header-content h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; color: var(--primary); }
+        .header-content p { margin: 2px 0 0; font-size: 11px; color: var(--text-sub); font-weight: 600; letter-spacing: 1px; }
 
-        /* TABS ELEGAN */
+        /* TARGET BAR (CLEAN LOOK) */
+        .target-box { margin-top: 20px; background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; box-shadow: var(--shadow-sm); }
+        .target-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+        .progress-track { background: #eee; height: 8px; border-radius: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ff9966, #ff5e62); width: 0%; border-radius: 20px; transition: 1s ease; }
+        #targetSisa { font-size: 10px; color: var(--text-sub); margin-top: 5px; text-align: right; }
+
+        /* TABS (PILL STYLE) */
         .tabs-container { 
-            display: flex; justify-content: space-between; background: var(--bg-card); margin: -35px 20px 20px; border-radius: 30px; 
-            padding: 8px; box-shadow: var(--shadow); position: relative; z-index: 90; gap: 8px; border: 1px solid var(--border);
+            display: flex; justify-content: space-between; background: #fff; margin: -25px 20px 20px; border-radius: 50px; 
+            padding: 6px; box-shadow: var(--shadow-lg); position: relative; z-index: 90; gap: 5px;
         }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; font-size: 11px; border-radius: 22px; transition:0.3s; font-family: 'Poppins', sans-serif;}
-        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 0 15px rgba(238, 45, 36, 0.5); }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-sub); font-weight: 600; cursor: pointer; font-size: 11px; border-radius: 40px; transition:0.3s; font-family: 'Poppins', sans-serif;}
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(238, 45, 36, 0.3); }
 
-        .content { display: none; animation: slideUp 0.4s ease; padding: 0 20px; }
+        .content { display: none; animation: fadeIn 0.4s ease; padding: 0 20px; }
         .content.active { display: block; }
-        @keyframes slideUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+        @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
-        /* INPUT & CARDS (DARK THEME) */
-        .input-group { background: var(--bg-card); padding: 25px; border-radius: 25px; box-shadow: var(--shadow); margin-bottom: 25px; border: 1px solid var(--border); position: relative; overflow: hidden; }
-        .input-group::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); }
+        /* INPUT & CARDS (WHITE THEME) */
+        .card { background: var(--bg-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 20px; border: 1px solid #f0f0f0; }
         
-        h3 { margin: 0 0 20px 0; color: var(--primary); font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display:flex; align-items:center; gap:10px; text-shadow: 0 0 10px rgba(238, 45, 36, 0.3);}
+        h3 { margin: 0 0 15px 0; color: var(--text-main); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-left: 4px solid var(--primary); padding-left: 10px; }
         
         input, select { 
-            width: 100%; padding: 16px; border: 1px solid var(--border); background: var(--bg-input); 
-            border-radius: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 15px; 
-            font-weight: 600; color: var(--text-main); font-family: 'Poppins', sans-serif; transition: 0.3s;
+            width: 100%; padding: 14px; border: 1px solid #e0e0e0; background: #f9f9f9; 
+            border-radius: 12px; box-sizing: border-box; font-size: 13px; margin-bottom: 12px; 
+            font-weight: 500; color: var(--text-main); font-family: 'Poppins', sans-serif; transition: 0.3s;
         }
-        input:focus, select:focus { background: #000; border-color: var(--primary); outline:none; box-shadow: 0 0 10px rgba(238, 45, 36, 0.2); }
-        /* Fix icon kalender jadi putih */
-        ::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+        input:focus, select:focus { background: #fff; border-color: var(--primary); outline:none; box-shadow: 0 0 0 3px rgba(238, 45, 36, 0.1); }
 
         /* BUTTONS */
-        .btn { border: none; border-radius: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; padding: 18px; width: 100%; font-size: 13px; letter-spacing: 1px; transition:0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif;}
-        .btn:active { transform: scale(0.95); }
-        .btn-black { background: #333; color: white; border: 1px solid #444; }
-        .btn-save { background: linear-gradient(135deg, #EE2D24, #990000); color: white; box-shadow: 0 5px 20px rgba(238, 45, 36, 0.4); }
+        .btn { border: none; border-radius: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; padding: 14px; width: 100%; font-size: 12px; letter-spacing: 0.5px; transition:0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif;}
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(238, 45, 36, 0.2); }
+        .btn-dark { background: var(--text-main); color: white; }
+        .btn-outline { background: transparent; border: 1px solid #ddd; color: var(--text-sub); }
 
         /* DASHBOARD GRID */
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .dash-item { padding: 20px; border-radius: 20px; color: white; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; background: #222; border: 1px solid #333; }
-        .dash-item.green { border-bottom: 4px solid #00b894; }
-        .dash-item.blue { border-bottom: 4px solid #0984e3; }
-        .dash-item.total { background: #000; grid-column: span 2; align-items: center; text-align: center; border: 1px solid var(--primary); box-shadow: 0 0 15px rgba(238, 45, 36, 0.1); }
+        .dash-item { padding: 15px; border-radius: 15px; color: white; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .dash-item.green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .dash-item.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .dash-item.total { background: #2c3e50; grid-column: span 2; align-items: center; text-align: center; }
         
+        .dash-item span { font-size: 10px; opacity: 0.9; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
         .dash-item b { font-size: 20px; margin-top: 5px; }
-        .dash-item.total b { font-size: 32px; color: var(--gold); text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        .dash-item.total b { font-size: 28px; color: var(--gold); }
 
-        /* LIST TRANSAKSI */
-        .trx-list { display: flex; flex-direction: column; gap: 15px; }
+        /* LIST TRANSAKSI (CLEAN LIST) */
+        .trx-list { display: flex; flex-direction: column; gap: 10px; }
         .trx-card { 
-            background: var(--bg-input); padding: 20px; border-radius: 20px; 
-            border: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; 
-            transition: transform 0.2s;
+            background: #fff; padding: 15px; border-radius: 15px; 
+            border: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 10px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .trx-card:active { transform: scale(0.98); }
         
         .trx-header { display: flex; justify-content: space-between; align-items: center; }
-        .trx-name { font-size: 15px; font-weight: 800; color: var(--text-main); }
-        .trx-meta { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 3px; }
-        .trx-price { font-size: 16px; font-weight: 800; color: var(--primary); }
+        .trx-name { font-size: 14px; font-weight: 700; color: var(--text-main); }
+        .trx-meta { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
+        .trx-price { font-size: 14px; font-weight: 700; color: var(--primary); }
 
-        .trx-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 8px; }
+        .trx-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 5px; }
         .act-btn { 
-            border: none; padding: 10px; border-radius: 12px; font-size: 10px; font-weight: 800; 
+            border: none; padding: 8px; border-radius: 8px; font-size: 10px; font-weight: 600; 
             cursor: pointer; color: white; font-family: 'Poppins', sans-serif;
         }
-        .act-struk { background: #0984e3; }
-        .act-edit { background: #f39c12; color: white; }
-        .act-del { background: #c0392b; color: white; }
+        .act-struk { background: #3498db; }
+        .act-edit { background: #f39c12; }
+        .act-del { background: #e74c3c; }
 
         .temp-item { 
-            display: flex; justify-content: space-between; padding: 15px; background: #252525;
-            border-radius: 15px; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-main); border: 1px solid #333;
+            display: flex; justify-content: space-between; padding: 12px; background: #f9f9f9;
+            border-radius: 10px; margin-bottom: 5px; font-size: 12px; font-weight: 500; color: var(--text-main); border: 1px solid #eee;
         }
-        .temp-qty { color: var(--primary); font-weight: 900; }
+        .temp-qty { color: var(--primary); font-weight: 700; }
 
-        /* STRUK (TETAP PUTIH BIAR SEPERTI KERTAS ASLI) */
+        /* STRUK */
         #receiptOverlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; 
-            display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; 
+            display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(3px);
         }
         .receipt-paper { 
-            background: #fff; width: 320px; position: relative; color: #000; 
-            font-family: 'Poppins', sans-serif; box-shadow: 0 0 50px rgba(255,255,255,0.1); 
-            border-radius: 15px; overflow: hidden;
+            background: #fff; width: 320px; position: relative; color: #333; 
+            font-family: 'Poppins', sans-serif; box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            border-radius: 10px; overflow: hidden;
         }
-        .rec-header {
-            background: var(--primary); color: white; padding: 25px 20px; text-align: center;
-        }
-        .rec-body { padding: 25px; }
-        .rec-total { 
-            background: #ffe6e6; padding: 15px; margin-top: 15px; border-radius: 10px;
-            display: flex; justify-content: space-between; align-items: center; border: 1px solid #ffcccc;
-        }
-        .rec-item-row { 
-            display: flex; justify-content: space-between; margin-bottom: 12px; 
-            font-size: 13px; font-weight: 600; border-bottom: 1px dashed #ccc; padding-bottom: 8px; 
-        }
-        .rec-detail { font-size: 11px; color: #555; margin-top: 2px; font-weight: normal; }
 
-        /* PIN LOCK MODERN */
-        #loginOverlay { position: fixed; inset: 0; background: var(--bg-body); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: #333; margin: 0 8px; transition:0.2s; border: 1px solid #555;}
-        .pin-dot.filled { background: var(--primary); transform: scale(1.3); border:none; box-shadow: 0 0 10px var(--primary);}
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 30px; }
-        .num-btn { width: 70px; height: 70px; border-radius: 50%; border: 1px solid #333; background: #111; font-size: 22px; font-weight: bold; color: white; }
-        .num-btn:active { background: var(--primary); border-color: var(--primary); }
+        /* TABLE */
+        .stok-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .stok-table th { text-align: left; color: #999; font-weight: 600; padding: 10px; border-bottom: 1px solid #eee; font-size: 10px; }
+        .stok-table td { padding: 10px; border-bottom: 1px solid #f5f5f5; font-weight: 600; color: var(--text-main); }
+
+        /* PIN LOCK */
+        #loginOverlay { position: fixed; inset: 0; background: #fff; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .pin-dot { width: 15px; height: 15px; border-radius: 50%; background: #eee; margin: 0 8px; transition:0.2s; border: 1px solid #ddd;}
+        .pin-dot.filled { background: var(--primary); border-color: var(--primary); }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+        .num-btn { width: 60px; height: 60px; border-radius: 50%; border: 1px solid #eee; background: #fff; font-size: 20px; font-weight: 600; color: var(--text-main); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
     <div id="loginOverlay">
         <div style="text-align:center;">
-            <div style="background:#222; padding:15px; border-radius:30px; display:inline-block; margin-bottom:20px; border:1px solid #333;">
-                <img src="logo.png" width="60">
+            <div style="background:#fff; padding:15px; border-radius:30px; display:inline-block; margin-bottom:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                <img src="logo.png" width="50">
             </div>
-            <h2 style="margin:0; font-size:20px; color:white; letter-spacing:1px;">SECURITY CHECK</h2>
-            <p style="font-size:11px; color:#777; margin-top:5px;">Masukkan PIN Akses Anda</p>
+            <h2 style="margin:0; font-size:18px; color:var(--text-main);">SECURITY CHECK</h2>
+            <p style="font-size:11px; color:#999; margin-top:5px;">Masukkan PIN Akses</p>
         </div>
         <div style="display:flex; justify-content:center; margin-top:25px;" id="pinDisplay">
             <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
@@ -215,23 +202,23 @@
             <div class="progress-track">
                 <div class="progress-fill" id="targetBar"></div>
             </div>
-            <div style="text-align:right; font-size:10px; margin-top:8px; color:white; opacity:0.8;" id="targetSisa">Sisa: 0</div>
+            <div id="targetSisa">Sisa: 0</div>
         </div>
     </div>
 
     <div class="tabs-container">
-        <button class="tab-btn active" onclick="openTab('tab1', this)">🏠 KASIR</button>
-        <button class="tab-btn" onclick="openTab('tab2', this)">📊 DATA</button>
-        <button class="tab-btn" onclick="openTab('tab3', this)">⚙️ ALAT</button>
+        <button class="tab-btn active" onclick="openTab('tab1', this)">KASIR</button>
+        <button class="tab-btn" onclick="openTab('tab2', this)">DATA</button>
+        <button class="tab-btn" onclick="openTab('tab3', this)">SETTING</button>
     </div>
 
     <div id="tab1" class="content active">
-        <div class="input-group">
-            <h3>🔴 INPUT TRANSAKSI</h3>
+        <div class="card">
+            <h3>INPUT TRANSAKSI</h3>
             
             <div style="display:flex; gap:10px;">
                 <input type="date" id="tanggalInput" style="flex:1;">
-                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:15px; border:1px solid #444; background:#222; color:white; font-weight:bold; font-size:11px; margin-bottom:15px;">HARI INI</button>
+                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:12px; border:1px solid #eee; background:#fff; color:var(--text-main); font-weight:600; font-size:11px; margin-bottom:12px;">HARI INI</button>
             </div>
 
             <input type="text" id="namaOutlet" placeholder="Nama Outlet" list="outletList">
@@ -239,8 +226,8 @@
             
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <select id="metodeBayar">
-                    <option value="CASH">💰 CASH</option>
-                    <option value="TRANSFER">🏦 TRANSFER</option>
+                    <option value="CASH">CASH</option>
+                    <option value="TRANSFER">TRANSFER</option>
                 </select>
                 <select id="pilihanVoucher" onchange="updateHarga()"></select>
             </div>
@@ -250,10 +237,10 @@
                 <input type="text" id="jumlahPcs" placeholder="Qty / Nominal" oninput="formatInput(this)" inputmode="numeric">
             </div>
             
-            <button class="btn btn-black" onclick="addItem()"><span>➕</span> TAMBAH LIST</button>
+            <button class="btn btn-dark" onclick="addItem()">+ TAMBAH LIST</button>
             
             <div id="tempList" style="margin-top: 20px;"></div>
-            <button class="btn btn-save" id="mainSaveBtn" style="margin-top:20px; display:none;" onclick="saveTrx()">💾 SIMPAN DATA</button>
+            <button class="btn btn-primary" id="mainSaveBtn" style="margin-top:20px; display:none;" onclick="saveTrx()">SIMPAN DATA</button>
         </div>
         
         <div class="dash-grid">
@@ -265,127 +252,124 @@
             </div>
         </div>
 
-        <div class="input-group">
+        <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3 style="margin:0;">📝 DAFTAR PENJUALAN</h3>
-                <input type="date" id="filterTgl" onchange="syncDateAndRender(this.value)" style="width:auto; margin:0; padding:8px; font-size:11px; border:1px solid #444; background:#111; color:white;">
+                <h3 style="margin:0; border:none; padding:0;">RIWAYAT TRANSAKSI</h3>
+                <input type="date" id="filterTgl" onchange="syncDateAndRender(this.value)" style="width:auto; margin:0; padding:8px; font-size:11px;">
             </div>
             
-            <input type="text" id="searchBox" placeholder="🔍 Cari Outlet..." onkeyup="renderAll()" style="border-radius:30px; padding-left:20px;">
+            <input type="text" id="searchBox" placeholder="Cari Outlet..." onkeyup="renderAll()" style="border-radius:30px; padding-left:20px;">
 
             <div id="historyList" class="trx-list" style="margin-top:20px;"></div>
             
-            <button class="btn btn-black" onclick="copyReport()" style="margin-top:20px;">📋 SALIN LAPORAN WA</button>
+            <button class="btn btn-outline" onclick="copyReport()" style="margin-top:20px; border:2px solid #2c3e50; color:#2c3e50;">📋 SALIN LAPORAN</button>
         </div>
     </div>
     
     <div id="tab2" class="content">
-        <div class="input-group">
-            <h3>📦 STOK & LAKU</h3>
+        <div class="card">
+            <h3>STOK & LAKU</h3>
             
-            <div style="background: #222; padding:15px; border-radius:20px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #333;">
-                <span style="font-size:11px; font-weight:bold; color:#aaa;">FILTER TANGGAL:</span>
-                <input type="date" id="stokDateInput" style="margin:0; padding:5px; width:auto; background:transparent; border:none; color:white;" onchange="syncDateAndRender(this.value)">
+            <div style="background: #f9f9f9; padding:15px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eee;">
+                <span style="font-size:11px; font-weight:bold; color:#777;">FILTER TANGGAL:</span>
+                <input type="date" id="stokDateInput" style="margin:0; padding:5px; width:auto; background:transparent; border:none;" onchange="syncDateAndRender(this.value)">
             </div>
 
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: separate; border-spacing: 0 10px; font-size: 13px;">
+                <table class="stok-table">
                     <thead>
                         <tr>
-                            <th style="text-align:left; color:#777; font-size:10px;">PRODUK</th>
-                            <th style="text-align:center; color:#777; font-size:10px;">LAKU</th>
-                            <th style="text-align:right; color:#777; font-size:10px;">SISA</th>
+                            <th>PRODUK</th>
+                            <th style="text-align:center;">LAKU</th>
+                            <th style="text-align:right;">SISA</th>
                         </tr>
                     </thead>
                     <tbody id="stokTableBody"></tbody>
                 </table>
             </div>
-            <button class="btn btn-black" style="margin-top:15px;" onclick="copyStockReport()">📋 SALIN LAPORAN STOK</button>
+            <button class="btn btn-dark" style="margin-top:15px;" onclick="copyStockReport()">📋 SALIN LAPORAN STOK</button>
         </div>
 
-        <div class="input-group">
-            <h3>📅 REKAP HARIAN</h3>
+        <div class="card">
+            <h3>REKAP HARIAN</h3>
             <div id="riwayatList" class="trx-list"></div>
         </div>
     </div>
 
     <div id="tab3" class="content">
-        <div class="input-group">
-            <h3>⚙️ PENGATURAN</h3>
-            <label style="font-size:11px; font-weight:bold; color:#aaa;">TARGET OMSET</label>
+        <div class="card">
+            <h3>PENGATURAN</h3>
+            <label style="font-size:11px; font-weight:bold; color:#777;">TARGET OMSET</label>
             <input type="text" id="setTarget" placeholder="Contoh: 5.000.000" oninput="formatInput(this)" onchange="saveSettings()">
             
-            <label style="font-size:11px; font-weight:bold; color:#aaa; margin-top:15px; display:block;">PIN KEAMANAN</label>
+            <label style="font-size:11px; font-weight:bold; color:#777; margin-top:15px; display:block;">PIN KEAMANAN</label>
             <div style="display:flex; gap:10px;">
                 <input type="number" id="setPin" placeholder="4 Digit PIN" onchange="saveSettings()">
-                <button class="btn-black" onclick="togglePin()" style="width:auto; padding:0 20px;">🔒 SET</button>
+                <button class="btn-dark" onclick="togglePin()" style="width:auto; padding:0 20px;">SET</button>
             </div>
-            <p style="font-size:10px; color:var(--primary); margin-top:5px;">*Kosongkan jika tidak butuh PIN</p>
         </div>
 
-        <div class="input-group">
-            <h3>🛠️ UPDATE STOK</h3>
+        <div class="card">
+            <h3>UPDATE STOK</h3>
             <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px;">
-                <table style="width:100%; border-collapse: separate; border-spacing: 0 8px;">
+                <table class="stok-table">
                     <tbody id="stokEditorBulk"></tbody>
                 </table>
             </div>
-            <button class="btn btn-save" onclick="saveAllStok()">💾 SIMPAN STOK</button>
+            <button class="btn btn-primary" onclick="saveAllStok()">SIMPAN STOK</button>
         </div>
 
-        <div class="input-group">
-            <h3>🎨 TAMBAH PRODUK</h3>
+        <div class="card">
+            <h3>TAMBAH PRODUK</h3>
             <input type="text" id="addName" placeholder="Nama Produk">
             <input type="text" id="addPrice" placeholder="Harga" oninput="formatInput(this)">
-            <button class="btn btn-black" onclick="addKatalog()">SIMPAN</button>
+            <button class="btn btn-dark" onclick="addKatalog()">SIMPAN</button>
             <div id="catalogList" style="margin-top:20px;"></div>
         </div>
         
-        <div class="input-group">
-            <h3>⚠️ DATABASE</h3>
+        <div class="card">
+            <h3>DATABASE</h3>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <button class="btn btn-black" onclick="exportData()">📥 BACKUP</button>
-                <button class="btn btn-black" onclick="document.getElementById('fileIn').click()">📤 RESTORE</button>
+                <button class="btn btn-outline" onclick="exportData()">BACKUP</button>
+                <button class="btn btn-outline" onclick="document.getElementById('fileIn').click()">RESTORE</button>
             </div>
             <input type="file" id="fileIn" hidden onchange="importData(event)">
-            <button class="btn" style="background:rgba(255,0,0,0.1); color:red; margin-top:15px; font-size:11px;" onclick="hardReset()">⚠️ RESET PABRIK</button>
+            <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px;" onclick="hardReset()">RESET DATA</button>
         </div>
     </div>
 
-    <div id="receiptOverlay" style="display:none;">
+    <div id="receiptOverlay">
         <div class="receipt-paper">
-            <div class="rec-header">
-                <h2 style="margin:0; font-size:22px; font-weight:900;">MEDIA SWARA PRIMA</h2>
-                <p style="margin:5px 0 0; font-size:10px; opacity:0.9; letter-spacing:1px;">TELKOMSEL AUTHORIZED PARTNER</p>
+            <div style="background:var(--primary); color:white; padding:20px; text-align:center;">
+                <h2 style="margin:0; font-size:18px; font-weight:700;">MEDIA SWARA PRIMA</h2>
+                <p style="margin:5px 0 0; font-size:10px;">TELKOMSEL AUTHORIZED PARTNER</p>
             </div>
-            <div class="rec-body">
-                <div style="text-align:center; margin-bottom:20px; border-bottom:2px solid #eee; padding-bottom:10px;">
-                    <b id="rName" style="font-size:20px; text-transform:uppercase; color:#333;"></b>
-                    <div id="rDate" style="font-size:12px; color:#666; margin-top:5px;"></div>
+            <div style="padding:20px;">
+                <div style="text-align:center; margin-bottom:20px; border-bottom:1px dashed #eee; padding-bottom:10px;">
+                    <b id="rName" style="font-size:16px; text-transform:uppercase; color:var(--text-main);"></b>
+                    <div id="rDate" style="font-size:11px; color:#999; margin-top:5px;"></div>
                 </div>
                 
                 <div id="rList"></div>
 
-                <div class="rec-total">
-                    <span style="font-size:14px; font-weight:bold; color:#666;">TOTAL</span>
-                    <span id="rTotal" style="font-size:24px; font-weight:900; color:var(--primary);">0</span>
+                <div style="background:#f9f9f9; padding:15px; margin-top:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:12px; font-weight:bold; color:#777;">TOTAL</span>
+                    <span id="rTotal" style="font-size:18px; font-weight:800; color:var(--primary);">0</span>
                 </div>
                 
-                <div style="text-align:center; margin-top:25px;">
-                    <p style="margin:0; font-size:12px; font-weight:bold; color:#333;">TERIMA KASIH</p>
-                    <p style="margin:0; font-size:10px; color:#666;">Harap simpan bukti pembayaran ini</p>
+                <div style="text-align:center; margin-top:20px;">
+                    <p style="margin:0; font-size:10px; color:#999;">Terima Kasih</p>
                 </div>
             </div>
         </div>
         
-        <div style="text-align:center; margin-top:25px; display:grid; gap:12px; justify-content:center; width:300px;">
+        <div style="text-align:center; margin-top:20px; display:grid; gap:10px; justify-content:center; width:300px;">
             <button id="waBtn" class="btn" style="background:#25D366; color:white;">KIRIM WA</button>
-            <button class="btn btn-black" onclick="document.getElementById('receiptOverlay').style.display='none'">TUTUP</button>
+            <button class="btn btn-dark" onclick="document.getElementById('receiptOverlay').style.display='none'">TUTUP</button>
         </div>
     </div>
 
 <script>
-    // --- DATABASE ---
     let defaultCatalog = [
         {nama: "4GB 1H", harga: 6200}, {nama: "5GB 2H", harga: 8200}, {nama: "4GB 3H", harga: 11800},
         {nama: "3GB 5H", harga: 12900}, {nama: "5GB 5H", harga: 15500}, {nama: "8GB 5H", harga: 22500},
@@ -413,14 +397,12 @@
         renderAll(); 
     };
 
-    // --- FUNGSI TANGGAL ---
     function syncDateAndRender(newDate) {
         document.getElementById('filterTgl').value = newDate;
         document.getElementById('stokDateInput').value = newDate;
         renderAll();
     }
 
-    // --- KEAMANAN PIN ---
     function checkLogin() {
         if(db.settings.pin && db.settings.pin.length === 4) {
             document.getElementById('loginOverlay').style.display = 'flex';
@@ -451,9 +433,8 @@
         localStorage.setItem('MSP_SETTINGS', JSON.stringify(db.settings));
         renderAll();
     }
-    function togglePin() { saveSettings(); alert("Pengaturan Keamanan Disimpan!"); }
+    function togglePin() { saveSettings(); alert("Pengaturan Tersimpan!"); }
 
-    // --- CORE SYSTEM ---
     function saveToDisk() {
         localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
         localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
@@ -522,8 +503,7 @@
         document.getElementById('targetLabel').innerText = `TARGET: RP ${formatRibuan(target)}`;
         document.getElementById('targetPercent').innerText = `${pct}%`;
         document.getElementById('targetBar').style.width = `${pct}%`;
-        document.getElementById('targetBar').style.background = pct >= 100 ? '#00b894' : 'var(--gold)';
-        document.getElementById('targetSisa').innerText = pct >= 100 ? "🎉 TARGET TEMBUS!" : `Kurang: Rp ${formatRibuan(sisa)}`;
+        document.getElementById('targetSisa').innerText = pct >= 100 ? "TARGET TERCAPAI!" : `Kurang: Rp ${formatRibuan(sisa)}`;
     }
 
     function renderStokSystem(lakuPerTanggal) {
@@ -531,27 +511,27 @@
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             let sisa = db.stok[v.nama] || 0; 
             let terjual = lakuPerTanggal[v.nama] || 0; 
-            let color = sisa <= 5 ? '#ff7675' : '#00b894';
+            let color = sisa <= 5 ? 'red' : 'green';
             return `<tr>
-                <td style="border-radius:10px 0 0 10px; background:#222; color:#fff;">${v.nama}</td>
-                <td style="text-align:center; background:#222; color:#fff;">${terjual}</td>
-                <td style="text-align:right; font-weight:900; color:${color}; border-radius:0 10px 10px 0; background:#222;">${sisa}</td>
+                <td>${v.nama}</td>
+                <td style="text-align:center;">${terjual}</td>
+                <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
             </tr>`;
         }).join('');
         
         document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             return `<tr>
-                <td style="background:#222; padding:10px; border-radius:10px 0 0 10px; color:#fff;">${v.nama}</td>
-                <td style="background:#222; border-radius:0 10px 10px 0;">
-                    <input type="number" style="margin:0; text-align:center; background:#111; padding:8px; color:white; border:1px solid #333;" value="${db.stok[v.nama]||0}" onchange="db.stok['${v.nama}']=parseInt(this.value)">
+                <td style="padding:10px;">${v.nama}</td>
+                <td>
+                    <input type="number" style="margin:0; text-align:center; padding:8px;" value="${db.stok[v.nama]||0}" onchange="db.stok['${v.nama}']=parseInt(this.value)">
                 </td>
             </tr>`;
         }).join('');
 
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-            <div style="background:#222; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #333;">
-                <b style="font-size:13px; color:white;">${v.nama}</b> 
+            <div style="background:#f9f9f9; padding:10px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                <b style="font-size:12px;">${v.nama}</b> 
                 <span style="color:red; cursor:pointer; font-size:11px; font-weight:bold;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
             </div>
         `).join('');
@@ -643,7 +623,7 @@
 
         tempItems = []; document.getElementById('namaOutlet').value = ""; document.getElementById('tempList').innerHTML = "";
         saveToDisk(); renderAll(); renderOutletSuggestions();
-        document.getElementById('mainSaveBtn').innerText = "💾 SIMPAN TRANSAKSI";
+        document.getElementById('mainSaveBtn').innerText = "SIMPAN DATA";
         document.getElementById('mainSaveBtn').style.display = "none";
     }
 
@@ -657,19 +637,16 @@
         document.getElementById('rList').innerHTML = d.items.map(it => {
             let sub = it.harga * it.qty; total += sub;
             let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : formatRibuan(it.qty) + ' Pcs';
-            
-            let detailPrice = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) 
-                ? "" 
-                : `x @ ${formatRibuan(it.harga)}`;
+            let detailPrice = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? "" : `x @ ${formatRibuan(it.harga)}`;
 
             waText += `${it.nama} : ${qtyDisplay} ${detailPrice} = ${formatRibuan(sub)}\n`;
             
-            return `<div class="rec-item-row">
+            return `<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px; border-bottom:1px dashed #eee; padding-bottom:5px;">
                 <div>
-                    <div style="font-size:14px; font-weight:800; color:#333;">${it.nama}</div>
-                    <div class="rec-detail">${qtyDisplay} ${detailPrice}</div>
+                    <div style="font-weight:700;">${it.nama}</div>
+                    <div style="font-size:10px; color:#777;">${qtyDisplay} ${detailPrice}</div>
                 </div>
-                <div style="font-size:14px; font-weight:800;">${formatRibuan(sub)}</div>
+                <div style="font-weight:700;">${formatRibuan(sub)}</div>
             </div>`;
         }).join('');
         
@@ -706,19 +683,62 @@
         let dates = [...new Set(db.rekap.map(d => d.tgl))].sort().reverse();
         document.getElementById('riwayatList').innerHTML = dates.map(d => {
             let dayTotal = db.rekap.filter(x => x.tgl === d).reduce((a,b) => a + b.items.reduce((x,y)=>x+(y.harga*y.qty),0), 0);
-            return `<div class="trx-card" style="flex-direction:row; justify-content:space-between; align-items:center; border-left:none;">
+            return `<div class="trx-card" style="flex-direction:row; justify-content:space-between; align-items:center;">
                 <div><div class="trx-name">${d}</div><div class="trx-meta">Total Harian</div></div>
                 <div>
                     <div class="trx-price">Rp ${formatRibuan(dayTotal)}</div>
-                    <button class="act-btn" style="background:var(--text-main); margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
+                    <button class="act-btn" style="background:#2c3e50; margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
                 </div>
             </div>`;
         }).join('');
     }
+
+    // --- FITUR LAPORAN PROFESIONAL (UPDATE V7.0) ---
     function copyReport() {
-        let txt = `*LAPORAN ${document.getElementById('filterTgl').value}*\nTotal: Rp ${document.getElementById('statGrand').innerText}`;
-        navigator.clipboard.writeText(txt).then(() => alert("Laporan Disalin!"));
+        let tgl = document.getElementById('filterTgl').value;
+        let dataHarian = db.rekap.filter(item => item.tgl === tgl.split('-').reverse().join('-'));
+        
+        if(dataHarian.length === 0) return alert("Belum ada data transaksi tanggal ini.");
+
+        let totalCash = 0, totalTf = 0, grandTotal = 0;
+        let rincian = "";
+        let trxCount = dataHarian.length;
+
+        // Header Laporan
+        let report = `MEDIA SWARA PRIMA\nLaporan Penjualan Harian\n========================\n`;
+        report += `📅 Tanggal : ${tgl}\n`;
+        report += `🏪 Outlet  : ${trxCount} Transaksi\n`;
+        report += `========================\n\n`;
+
+        // Loop Data
+        dataHarian.forEach((d, i) => {
+            let subtotal = 0;
+            rincian += `${i+1}. ${d.nama} (${d.metode})\n`;
+            d.items.forEach(it => {
+                let sub = it.harga * it.qty;
+                subtotal += sub;
+                let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : it.qty + ' Pcs';
+                rincian += `   - ${it.nama} (${qtyDisplay})\n`;
+            });
+            rincian += `   Total: Rp ${formatRibuan(subtotal)}\n\n`;
+
+            grandTotal += subtotal;
+            if(d.metode === 'CASH') totalCash += subtotal; else totalTf += subtotal;
+        });
+
+        report += `RINCIAN TRANSAKSI:\n${rincian}`;
+        report += `========================\n`;
+        report += `RINGKASAN:\n`;
+        report += `💵 Total Cash     : Rp ${formatRibuan(totalCash)}\n`;
+        report += `🏦 Total Transfer : Rp ${formatRibuan(totalTf)}\n`;
+        report += `------------------------\n`;
+        report += `🔥 GRAND TOTAL    : Rp ${formatRibuan(grandTotal)}\n`;
+        report += `========================\n`;
+        report += `Generated by Sales Pro System`;
+
+        navigator.clipboard.writeText(report).then(() => alert("Laporan Profesional Tersalin!"));
     }
+
     function copyStockReport() {
         let tgl = document.getElementById('filterTgl').value;
         let txt = `*STOK & PENJUALAN TGL ${tgl}*\n\n`;
