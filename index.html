@@ -164,14 +164,23 @@
         .num-btn { width: 70px; height: 70px; border-radius: 50%; border: 1.5px solid #f0f0f0; background: #fff; font-size: 24px; font-weight: 700; color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .num-btn:active { background: var(--primary); color: white; border-color: var(--primary); }
         
-                /* PENGHILANG LINGKARAN MERAH KALENDER */
+                        /* PENGHILANG LINGKARAN & HIGHLIGHT MERAH */
+        input[type="date"], 
         input[type="date"]::-webkit-calendar-picker-indicator {
             background: transparent !important;
             box-shadow: none !important;
             outline: none !important;
             -webkit-tap-highlight-color: transparent !important;
+            -webkit-appearance: none; /* Mematikan gaya bawaan browser */
             cursor: pointer;
         }
+
+        /* Hilangkan garis fokus saat kotak diklik */
+        input:focus {
+            outline: none !important;
+            border-color: var(--primary) !important;
+        }
+
 
     </style>
 </head>
@@ -368,7 +377,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.10
+    VERSI APLIKASI: 1.0.11 
             </div>
         </div>
     </div>
@@ -594,7 +603,7 @@
     
         if(db.lastUpdate) {
         let p = db.lastUpdate.split('-');
-        document.getElementById('tglMasterStok').value = p[2] + "-" + p[1] + "-" + p[2]; 
+        document.getElementById('tglMasterStok').value = p[2] + "-" + p[1] + "-" + p[0]; 
         // Baris di atas memastikan kalender terisi otomatis saat dibuka
     }
 
@@ -923,7 +932,6 @@
 
 </body>
 </html>
-
 
 
 
