@@ -345,12 +345,6 @@
                     <span id="rDateOnly">05/02/2026</span>
                     <span id="rTimeOnly">13:14</span>
                 </div>
-                
-                <div class="rec-row">
-                   <span>Metode: </span>
-                   <span id="rMetode" style="font-weight: 800;">TRANSFER</span>
-                </div>
-
                 <div style="border-bottom: 1px dashed #000; margin: 10px 0;"></div>
                 <div style="font-weight: 800; margin-bottom: 10px; text-align: center;" id="rName">OUTLET NAME</div>
                 
@@ -639,43 +633,37 @@
     }
 
     function showStruk(i) {
-    const d = db.rekap[i]; 
-    let total = 0; 
-    
-    // Header WhatsApp (Tulisan Utuh TRANSFER / CASH)
-    let waText = `*MEDIA SWARA PRIMA*\n*TAP BAGAN BATU*\n------------------------\n`;
-    waText += `Outlet : ${d.nama}\n`;
-    waText += `Metode : ${d.metode}\n`; 
-    waText += `Waktu  : ${d.tgl} ${d.jam}\n------------------------\n`;
-    
-    // Isi data ke struk HTML
-    document.getElementById('rName').innerText = d.nama;
-    document.getElementById('rMetode').innerText = d.metode; // Mengisi baris Metode yang kita buat tadi
-    document.getElementById('rDateOnly').innerText = d.tgl;
-    document.getElementById('rTimeOnly').innerText = d.jam;
-    document.getElementById('rNo').innerText = "#" + (Math.floor(Math.random()*900)+100);
-    
-    document.getElementById('rList').innerHTML = d.items.map(it => {
-        let sub = it.harga * it.qty; total += sub;
-        let qtyText = it.qty + (it.nama.includes("LINKAJA") ? "" : " Pcs");
-        let priceText = "x " + formatRibuan(it.harga);
-        waText += `${it.nama}\n(${qtyText} ${priceText}) = ${formatRibuan(sub)}\n`;
+        const d = db.rekap[i]; 
+        let total = 0; 
+        let waText = `*MEDIA SWARA PRIMA*\n*TAP BAGAN BATU*\n------------------------\nOutlet: ${d.nama}\nWaktu: ${d.tgl} ${d.jam}\n------------------------\n`;
         
-        return `<div style="margin-bottom: 5px;">
-            <div style="font-weight: 800;">${it.nama}</div>
-            <div class="rec-row">
-                <span>${qtyText} ${priceText}</span>
-                <span>${formatRibuan(sub)}</span>
-            </div>
-        </div>`;
-    }).join('');
-    
-    document.getElementById('rTotal').innerText = formatRibuan(total);
-    waText += `------------------------\n*TOTAL: RP ${formatRibuan(total)}*\n------------------------\nTerima kasih ya boskuuu🔥🔥🔥!`;
-    
-    document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`);
-    document.getElementById('receiptOverlay').style.display = 'flex';
-}
+        document.getElementById('rName').innerText = d.nama;
+        document.getElementById('rDateOnly').innerText = d.tgl;
+        document.getElementById('rTimeOnly').innerText = d.jam;
+        document.getElementById('rNo').innerText = "#" + (Math.floor(Math.random()*900)+100);
+        
+        document.getElementById('rList').innerHTML = d.items.map(it => {
+            let sub = it.harga * it.qty; total += sub;
+            let qtyText = it.qty + (it.nama.includes("LINKAJA") ? "" : " Pcs");
+            let priceText = "x " + formatRibuan(it.harga);
+            
+            waText += `${it.nama}\n(${qtyText} x ${formatRibuan(it.harga)}) = ${formatRibuan(sub)}\n`;
+            
+            return `<div style="margin-bottom: 5px;">
+                <div style="font-weight: 800;">${it.nama}</div>
+                <div class="rec-row">
+                    <span>${qtyText} ${priceText}</span>
+                    <span>${formatRibuan(sub)}</span>
+                </div>
+            </div>`;
+        }).join('');
+        
+        document.getElementById('rTotal').innerText = formatRibuan(total);
+        waText += `------------------------\n*TOTAL: RP ${formatRibuan(total)}*\n------------------------\nTerima kasih ya boskuuu🔥🔥🔥!`;
+        
+        document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`);
+        document.getElementById('receiptOverlay').style.display = 'flex';
+    }
 
     function editTrx(i) {
         let d = db.rekap[i]; editIdx = i;
@@ -748,7 +736,7 @@
 
     function copyStockReport() {
         let tgl = document.getElementById('filterTgl').value;
-        let txt = `*STOK & PENJUALAN SALES BAGAN BATU*\n*TANGGAL: ${tgl}*\n\n`;
+        let txt = `*STOK & PENJUALAN TAP BAGAN BATU*\n*TANGGAL: ${tgl}*\n\n`;
         let lakuPerTanggal = {}; 
         db.rekap.filter(i => i.tgl === tgl.split('-').reverse().join('-')).forEach(ot => {
              ot.items.forEach(it => { lakuPerTanggal[it.nama] = (lakuPerTanggal[it.nama] || 0) + it.qty });
@@ -785,4 +773,4 @@
     }
 </script>
 </body>
-</html>
+            </html>
