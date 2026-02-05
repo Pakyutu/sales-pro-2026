@@ -28,12 +28,18 @@
             --tsel-silver: #f8f9fa;
             --tsel-gold: #FFB81C;
             --glass: rgba(255, 255, 255, 0.95);
+            --text-grey: #888;
         }
+        
+        /* SETTINGAN MODE GELAP YANG LEBIH KUAT */
         [data-theme="dark"] {
-            --tsel-silver: #0a0a0a;
-            --glass: rgba(20, 20, 20, 0.95);
-            --tsel-dark: #ffffff;
+            --tsel-silver: #050505; /* Background Hampir Hitam Pekat */
+            --glass: #1e1e1e;       /* Card Abu Gelap Solid */
+            --tsel-dark: #ffffff;   /* Tulisan Jadi Putih */
+            --text-grey: #cccccc;   /* Tulisan samar jadi lebih terang */
+            color-scheme: dark;     /* MAKSA Kalender Bawaan HP Jadi Gelap */
         }
+
         body { font-family: 'Inter', -apple-system, sans-serif; padding: 0; margin: 0; background: var(--tsel-silver); color: var(--tsel-dark); transition: 0.4s; overflow-x: hidden; }
         
         /* HEADER */
@@ -54,7 +60,8 @@
             backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.5); overflow-x: auto;
         }
         .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #777; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 10px; border-radius: 15px; white-space: nowrap; transition:0.3s;}
-        .tab-btn.active { background: var(--tsel-red); color: white; box-shadow: 0 5px 15px rgba(238, 45, 36, 0.3); }
+        [data-theme="dark"] .tab-btn { color: #bbb; } /* Warna Tab di Dark Mode */
+        .tab-btn.active { background: var(--tsel-red); color: white !important; box-shadow: 0 5px 15px rgba(238, 45, 36, 0.3); }
         
         .content { padding: 15px; display: none; animation: slideUp 0.4s ease-out; padding-bottom: 100px; }
         .content.active { display: block; }
@@ -67,30 +74,29 @@
 
         h3 { margin-top: 0; color: var(--tsel-red); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-weight: 900; display:flex; align-items:center; gap:10px;}
         
-        /* INPUT STYLE FIX FOR DARK MODE */
+        /* INPUT STYLE FIX */
         input, select { 
             width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; 
             box-sizing: border-box; font-size: 14px; margin-bottom: 10px; font-weight: 600; 
-            background: #f9f9f9; color: #121212; outline:none; /* Default Light */
+            background: #f9f9f9; color: #121212; outline:none;
         }
-        
-        /* KHUSUS MODE GELAP (FIX YANG KAMU MINTA) */
+        /* Style Input Mode Gelap */
         [data-theme="dark"] input, 
         [data-theme="dark"] select {
-            background: #222222; /* Background Jadi Gelap */
-            color: #ffffff;      /* Tulisan Jadi Putih */
-            border-color: #444;  /* Garis Pinggir Abu Gelap */
+            background: #2d2d2d; 
+            color: #ffffff;
+            border-color: #444;
         }
-        /* Ubah warna ikon kalender jadi putih di mode gelap */
-        [data-theme="dark"] ::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-        }
+        /* Tombol Kalender jadi Putih */
+        [data-theme="dark"] ::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
         input:focus { border-color: var(--tsel-red); }
         
         .btn { border: none; border-radius: 15px; font-weight: 800; cursor: pointer; text-transform: uppercase; padding: 15px; width: 100%; font-size: 12px; letter-spacing: 1px; transition:0.2s; }
         .btn:active { transform: scale(0.98); }
         .btn-black { background: var(--tsel-dark); color: white; }
+        [data-theme="dark"] .btn-black { background: #444; color: white; } /* Tombol lebih terang dikit di dark mode */
+        
         .btn-tsel { background: linear-gradient(135deg, #EE2D24, #b31d16); color: white; box-shadow: 0 5px 15px rgba(238, 45, 36, 0.3); }
         .btn-blue { background: #3498db; color: white; }
 
@@ -103,9 +109,12 @@
         .btn-action { border: none; border-radius: 8px; font-weight: 700; cursor: pointer; padding: 8px; font-size: 9px; color: white; }
         .act-struk { background: #EE2D24; } .act-edit { background: #7f8c8d; } .act-del { background: #c0392b; }
 
+        /* TEXT HELPERS */
+        .text-sub { font-size:10px; color: var(--text-grey); }
+
         /* STRUK */
         #receiptOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; padding: 40px 20px; overflow-y: auto; backdrop-filter: blur(5px); }
-        .receipt-box { background: #fff; max-width: 320px; margin: 0 auto; padding: 20px; font-family: 'Courier New', monospace; position: relative; }
+        .receipt-box { background: #fff; max-width: 320px; margin: 0 auto; padding: 20px; font-family: 'Courier New', monospace; position: relative; color: #000; }
         .receipt-box::after { content: ""; position: absolute; left: 0; bottom: -10px; width: 100%; height: 10px; background: radial-gradient(circle, transparent 70%, #fff 70%) 0 0; background-size: 20px 20px; transform: rotate(180deg); }
         
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
@@ -116,17 +125,20 @@
         /* STOK TABLE STYLE */
         .stok-table { width: 100%; border-collapse: collapse; font-size: 11px; }
         .stok-table td { padding: 10px 5px; border-bottom: 1px solid #eee; font-weight: 600; vertical-align: middle; }
-        .stok-table th { text-align: left; color: #999; font-size: 9px; text-transform: uppercase; padding-bottom: 5px;}
+        [data-theme="dark"] .stok-table td { border-bottom: 1px solid #333; }
+        .stok-table th { text-align: left; color: var(--text-grey); font-size: 9px; text-transform: uppercase; padding-bottom: 5px;}
         .stok-input { width: 100%; padding: 8px; margin: 0; text-align: center; border: 1px solid #ccc; background: #fff; color: #000; }
-        [data-theme="dark"] .stok-input { background: #333; color: white; border: 1px solid #555; } /* Fix Stok Input Dark Mode */
+        [data-theme="dark"] .stok-input { background: #333; color: white; border: 1px solid #555; }
         
-        /* FEATURE #9: LOW STOCK WARNING */
+        /* FEATURE: LOW STOCK WARNING */
         .low-stock { color: red !important; background: rgba(255,0,0,0.1); }
         .badge-warn { background: red; color: white; padding: 2px 6px; border-radius: 5px; font-size: 8px; margin-left: 5px; }
 
         /* RIWAYAT ROW */
         .hist-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; align-items: center; }
+        [data-theme="dark"] .hist-row { border-bottom: 1px solid #333; }
         .btn-view { background: var(--tsel-dark); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 9px; font-weight: bold; }
+        [data-theme="dark"] .btn-view { background: #555; }
     </style>
 </head>
 <body data-theme="light">
@@ -149,7 +161,7 @@
             <h3>🔴 INPUT TRANSAKSI</h3>
             <div style="display:flex; gap:10px;">
                 <input type="date" id="tanggalInput" style="flex:1;">
-                <button onclick="setToday()" style="width:auto; padding:0 15px; margin-bottom:10px; border-radius:10px; border:none; background:#eee; color:#000;">HARI INI</button>
+                <button onclick="setToday()" class="btn-black" style="width:auto; padding:0 15px; margin-bottom:10px; border-radius:10px;">HARI INI</button>
             </div>
 
             <input type="text" id="namaOutlet" placeholder="Nama Outlet (Cth: AYU CELL)">
@@ -205,7 +217,7 @@
 
         <div class="card">
             <h3>📦 MONITORING STOK</h3>
-            <p style="font-size:10px; color:#666; margin-bottom:10px;">Data "LAKU" mengikuti tanggal yang dipilih di Tab Kasir.</p>
+            <p class="text-sub" style="margin-bottom:10px;">Data "LAKU" mengikuti tanggal yang dipilih di Tab Kasir.</p>
             <div style="overflow-x: auto;">
                 <table class="stok-table">
                     <thead><tr><th>PRODUK</th><th>LAKU (TGL INI)</th><th>SISA REAL</th></tr></thead>
@@ -224,7 +236,7 @@
     <div id="tab3" class="content">
         <div class="card">
             <h3>🛠️ UPDATE STOK (BULK)</h3>
-            <p style="font-size:10px; color:#666; margin-bottom:10px;">Edit stok sekaligus, lalu tekan tombol Simpan di bawah.</p>
+            <p class="text-sub" style="margin-bottom:10px;">Edit stok sekaligus, lalu tekan tombol Simpan di bawah.</p>
             <div style="max-height: 400px; overflow-y: auto;">
                 <table class="stok-table">
                     <thead><tr><th>NAMA PRODUK</th><th width="80">STOK SAAT INI</th></tr></thead>
@@ -281,19 +293,32 @@
     </div>
 
 <script>
-    // DATABASE INITIALIZATION
+    // --- DATABASE ---
+    // Di sini saya sudah tambahkan PRODUK LENGKAP agar muncul di HP baru
+    let defaultCatalog = [
+        {nama: "4GB 1H", harga: 6200},
+        {nama: "5GB 2H", harga: 8200},
+        {nama: "4GB 3H", harga: 11800},
+        {nama: "3GB 5H", harga: 12900},
+        {nama: "5GB 5H", harga: 15500},
+        {nama: "8GB 5H", harga: 22500},
+        {nama: "7GB 7H", harga: 20500},
+        {nama: "12GB 30H", harga: 37000},
+        {nama: "SA 3GB", harga: 30000},
+        {nama: "SA BYU 3GB", harga: 30000},
+        {nama: "LINKAJA", harga: 1}, 
+        {nama: "SEVEN", harga: 1}
+    ];
+
     let db = {
-        catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || [
-            {nama: "4GB 1H", harga: 6200}, {nama: "5GB 2H", harga: 8200},
-            {nama: "LINKAJA", harga: 1}, {nama: "SEVEN", harga: 1}
-        ],
+        catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
         rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
         stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {}
     };
 
     let tempItems = [];
     let editIdx = -1;
-    let currentReceiptData = ""; // Untuk menyimpan data struk buat bluetooth
+    let currentReceiptData = ""; 
 
     window.onload = () => { 
         setToday(); 
@@ -307,22 +332,21 @@
     }
 
     function renderAll() {
-        // 1. Render Dropdown
         const sel = document.getElementById('pilihanVoucher');
+        // Render dropdown kalau jumlahnya beda (biar ga render ulang terus)
         if(sel.options.length !== db.catalog.length) {
             sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
             updateHarga();
         }
 
-        // 2. Filter & Render List (SEARCH + DATE)
         let filterTgl = document.getElementById('filterTgl').value.split('-').reverse().join('-');
         let searchKeyword = document.getElementById('searchBox').value.toLowerCase(); 
 
         let gt = 0, tc = 0, tf = 0;
-        let laku = {}; // Menyimpan data laku HANYA pada tanggal terpilih (Sesuai request)
+        let laku = {}; 
         db.catalog.forEach(v => laku[v.nama] = 0);
 
-        // Loop Data untuk Tampilan List
+        // LIST RENDER
         let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => item.data.tgl === filterTgl)
             .filter(item => item.data.nama.toLowerCase().includes(searchKeyword))
@@ -332,7 +356,7 @@
                 return `
                 <div class="card" style="padding:15px; border-radius:20px; margin-bottom:10px;">
                     <div style="display:flex; justify-content:space-between;">
-                        <div><b style="font-size:14px;">${ot.nama}</b><div style="font-size:10px; color:#888;">${ot.metode} • ${ot.jam}</div></div>
+                        <div><b style="font-size:14px;">${ot.nama}</b><div class="text-sub">${ot.metode} • ${ot.jam}</div></div>
                         <div style="font-weight:900; color:var(--tsel-red);">Rp ${formatRibuan(sub)}</div>
                     </div>
                     <div class="action-grid">
@@ -343,15 +367,14 @@
                 </div>`;
             }).reverse().join('');
         
-        document.getElementById('historyList').innerHTML = html || '<p style="text-align:center; font-size:10px; color:#999;">Tidak ada data ditemukan</p>';
+        document.getElementById('historyList').innerHTML = html || '<p class="text-sub" style="text-align:center;">Tidak ada data ditemukan</p>';
 
-        // 3. Kalkulasi Statistik & Stok Laku (Based on Date Filter)
+        // STATS
         let filteredDateData = db.rekap.filter(item => item.tgl === filterTgl);
         filteredDateData.forEach(ot => {
             let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
             gt += sub;
             if(ot.metode === "CASH") tc += sub; else tf += sub;
-            // Hitung laku per item hanya untuk tanggal ini (Fitur Monitoring Date Based)
             ot.items.forEach(it => { laku[it.nama] = (laku[it.nama] || 0) + it.qty });
         });
 
@@ -359,20 +382,17 @@
         document.getElementById('statTf').innerText = formatRibuan(tf);
         document.getElementById('statGrand').innerText = formatRibuan(gt);
 
-        // 4. Render Tabel Stok & Editor
         renderStokSystem(laku);
         renderRiwayatTab();
     }
 
     function renderStokSystem(lakuPerTanggal) {
-        // A. Render Tabel Monitoring (Tab 2)
         document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             
-            let sisa = db.stok[v.nama] || 0; // Stok Realtime
-            let terjual = lakuPerTanggal[v.nama] || 0; // Terjual sesuai tanggal filter
+            let sisa = db.stok[v.nama] || 0; 
+            let terjual = lakuPerTanggal[v.nama] || 0; 
             
-            // Fitur #9: Warna Merah jika stok <= 5
             let dangerClass = (sisa <= 5) ? 'low-stock' : '';
             let warningText = (sisa <= 5) ? '<span class="badge-warn">TIPIS</span>' : '';
 
@@ -383,7 +403,6 @@
             </tr>`;
         }).join('');
         
-        // B. Render Bulk Editor (Tab 3) - Fitur Improvement #1
         document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             return `<tr>
@@ -392,31 +411,24 @@
             </tr>`;
         }).join('');
 
-        // C. Catalog Editor List
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-            <div style="background:#fff; padding:10px; border-radius:10px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="background:var(--glass); padding:10px; border-radius:10px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd;">
                 <b style="font-size:12px;">${v.nama}</b> 
                 <span style="color:red; cursor:pointer; font-size:10px; font-weight:bold;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
             </div>
         `).join('');
     }
 
-    // FUNGSI SIMPAN STOK SEKALIGUS (BULK SAVE)
     function saveAllStok() {
         db.catalog.forEach(v => {
             if(!v.nama.includes("LINKAJA") && !v.nama.includes("SEVEN")) {
                 let el = document.getElementById(`stok_input_${v.nama}`);
-                if(el) {
-                    db.stok[v.nama] = parseInt(el.value) || 0;
-                }
+                if(el) { db.stok[v.nama] = parseInt(el.value) || 0; }
             }
         });
-        saveToDisk();
-        renderAll();
-        alert("SEMUA STOK BERHASIL DIUPDATE!");
+        saveToDisk(); renderAll(); alert("SEMUA STOK BERHASIL DIUPDATE!");
     }
 
-    // CORE FUNCTIONS
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
     function parseNo(s) { return parseInt(s.toString().replace(/\./g, '')) || 0; }
     function formatInput(el) { el.value = formatRibuan(parseNo(el.value)); }
@@ -443,13 +455,9 @@
         
         let namaItem = sel.options[sel.selectedIndex].text;
         
-        // Cek Stok Dulu (Kecuali Saldo)
         if(!namaItem.includes("LINKAJA") && !namaItem.includes("SEVEN")) {
             let sisa = db.stok[namaItem] || 0;
-            if (sisa < qty) {
-                if(!confirm(`⚠️ STOK KURANG!\nSisa: ${sisa}, Minta: ${qty}.\nTetap lanjutkan?`)) return;
-            }
-            // Kurangi Stok Otomatis saat masuk list
+            if (sisa < qty) { if(!confirm(`⚠️ STOK KURANG!\nSisa: ${sisa}, Minta: ${qty}.\nTetap lanjutkan?`)) return; }
             db.stok[namaItem] = sisa - qty;
         }
 
@@ -474,13 +482,11 @@
     }
 
     function cancelTempItem(i) {
-        // Balikin Stok kalau batal input
         let it = tempItems[i];
         if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
             db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty;
         }
-        tempItems.splice(i,1);
-        renderTemp();
+        tempItems.splice(i,1); renderTemp();
     }
 
     function saveTrx() {
@@ -508,14 +514,7 @@
     function showStruk(i) {
         const d = db.rekap[i]; let total = 0; 
         let waText = `*${d.nama}*\n${d.tgl}\n\n`;
-        
-        // Siapkan Text Bluetooth
-        let rawText = `\x1B\x40`; // Init Printer
-        rawText += `\x1B\x61\x01MEDIA SWARA PRIMA\n`; // Center Align
-        rawText += `\x1B\x45\x00TELKOMSEL AUTHORIZED\n\n`; 
-        rawText += `\x1B\x61\x00${d.nama}\n`; // Left Align
-        rawText += `${d.tgl} ${d.jam}\n`;
-        rawText += `--------------------------------\n`;
+        let rawText = `\x1B\x40\x1B\x61\x01MEDIA SWARA PRIMA\n\x1B\x45\x00TELKOMSEL AUTHORIZED\n\n\x1B\x61\x00${d.nama}\n${d.tgl} ${d.jam}\n--------------------------------\n`;
 
         document.getElementById('rName').innerText = d.nama;
         document.getElementById('rDate').innerText = d.tgl + " " + d.jam;
@@ -523,18 +522,12 @@
         document.getElementById('rList').innerHTML = d.items.map(it => {
             let sub = it.harga * it.qty; total += sub;
             let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : it.qty + 'x';
-            
             waText += `${it.nama} : ${qtyDisplay} = ${formatRibuan(sub)}\n`;
-            rawText += `${it.nama}\n${qtyDisplay} ${formatRibuan(it.harga)}      ${formatRibuan(sub)}\n`; // Bluetooth Format
-            
+            rawText += `${it.nama}\n${qtyDisplay} ${formatRibuan(it.harga)}      ${formatRibuan(sub)}\n`;
             return `<tr><td>${it.nama}<br><small>${qtyDisplay} @ ${formatRibuan(it.harga)}</small></td><td align="right">${formatRibuan(sub)}</td></tr>`;
         }).join('');
         
-        rawText += `--------------------------------\n`;
-        rawText += `\x1B\x61\x02TOTAL:      ${formatRibuan(total)}\n\n`; // Right Align
-        rawText += `\x1B\x61\x01TERIMA KASIH\n\n\n\n`; // Footer
-        
-        // Simpan ke variabel global agar bisa dipanggil tombol Bluetooth
+        rawText += `--------------------------------\n\x1B\x61\x02TOTAL:      ${formatRibuan(total)}\n\n\x1B\x61\x01TERIMA KASIH\n\n\n\n`;
         currentReceiptData = rawText; 
 
         document.getElementById('rTotal').innerText = formatRibuan(total);
@@ -543,27 +536,18 @@
         document.getElementById('receiptOverlay').style.display = 'block';
     }
 
-    // --- BLUETOOTH PRINT FUNCTION (Pake RawBT App) ---
     function printBluetooth() {
         if(!currentReceiptData) return alert("Buka struk dulu!");
         let textEncoded = btoa(currentReceiptData);
         window.location.href = "intent:" + textEncoded + "#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;S.base64=true;end;";
     }
 
-    // HELPER FUNCTIONS
     function editTrx(i) {
         let d = db.rekap[i]; editIdx = i;
         document.getElementById('namaOutlet').value = d.nama;
-        // Restore Items (Dan balikin stok sementara biar ga double potong)
-        d.items.forEach(it => {
-             if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty;
-        });
+        d.items.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty; });
         tempItems = [...d.items]; 
-        // Potong ulang stok
-        tempItems.forEach(it => {
-             if(!it.nama.includes("LINKAJA")) db.stok[it.nama] -= it.qty;
-        });
-
+        tempItems.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] -= it.qty; });
         renderTemp();
         document.getElementById('mainSaveBtn').innerText = "UPDATE DATA";
         document.getElementById('mainSaveBtn').style.display = "block";
@@ -572,10 +556,7 @@
     
     function delTrx(i) { 
         if(confirm("Hapus? Stok akan dikembalikan.")) { 
-            // Balikin stok
-            db.rekap[i].items.forEach(it => {
-                if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty;
-            });
+            db.rekap[i].items.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty; });
             db.rekap.splice(i,1); saveToDisk(); renderAll(); 
         } 
     }
@@ -592,7 +573,7 @@
             let dayTotal = db.rekap.filter(x => x.tgl === d).reduce((a,b) => a + b.items.reduce((x,y)=>x+(y.harga*y.qty),0), 0);
             let isoDate = d.split('-').reverse().join('-');
             return `<div class="hist-row">
-                <div><b>${d}</b><br><small>Total Omset</small></div>
+                <div><b>${d}</b><div class="text-sub">Total Omset</div></div>
                 <div style="text-align:right;">
                     <b style="color:var(--tsel-red); font-size:14px;">Rp ${formatRibuan(dayTotal)}</b>
                     <button class="btn-view" onclick="document.getElementById('filterTgl').value='${isoDate}'; renderAll(); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
@@ -608,12 +589,10 @@
     function copyStockReport() {
         let tgl = document.getElementById('filterTgl').value;
         let txt = `*STOK & PENJUALAN TGL ${tgl}*\n\n`;
-        // Gunakan logika yang sama dengan renderAll
         let lakuPerTanggal = {}; 
         db.rekap.filter(i => i.tgl === tgl.split('-').reverse().join('-')).forEach(ot => {
              ot.items.forEach(it => { lakuPerTanggal[it.nama] = (lakuPerTanggal[it.nama] || 0) + it.qty });
         });
-        
         db.catalog.forEach(v => {
             if(!v.nama.includes("LINKAJA")) {
                 let sisa = db.stok[v.nama]||0;
@@ -645,14 +624,6 @@
         r.onload = function(evt) { db = JSON.parse(evt.target.result); saveToDisk(); renderAll(); alert("Data Masuk!"); }
         r.readAsText(e.target.files[0]);
     }
-    
-    // RAWBT BLUETOOTH PRINT FUNCTION
-    function printBluetooth() {
-        if(!currentReceiptData) return alert("Buka struk dulu!");
-        let textEncoded = btoa(currentReceiptData);
-        window.location.href = "intent:" + textEncoded + "#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;S.base64=true;end;";
-    }
-
 </script>
 </body>
 </html>
