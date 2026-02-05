@@ -25,12 +25,12 @@
 
     <style>
         :root {
-            --primary: #EE2D24;       /* Merah Telkomsel */
-            --primary-dark: #b30000;  /* Merah Tua */
-            --bg-body: #f4f6f8;       /* Abu-abu Corporate */
-            --bg-card: #ffffff;       /* Putih Bersih */
-            --text-main: #2c3e50;     /* Biru Gelap Professional */
-            --text-sub: #7f8c8d;      /* Abu Professional */
+            --primary: #EE2D24;
+            --primary-dark: #b30000;
+            --bg-body: #f4f6f8;
+            --bg-card: #ffffff;
+            --text-main: #2c3e50;
+            --text-sub: #7f8c8d;
             --gold: #f1c40f;
             --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
             --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
@@ -45,7 +45,6 @@
             overflow-x: hidden; padding-bottom: 100px; 
         }
         
-        /* HEADER CORPORATE */
         .header-main { 
             background: var(--bg-card);
             padding: 20px 20px 40px; text-align: center; 
@@ -58,14 +57,12 @@
         .header-content h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; color: var(--primary); }
         .header-content p { margin: 2px 0 0; font-size: 11px; color: var(--text-sub); font-weight: 600; letter-spacing: 1px; }
 
-        /* TARGET BAR (CLEAN LOOK) */
         .target-box { margin-top: 20px; background: #fff; padding: 15px; border-radius: 15px; border: 1px solid #eee; box-shadow: var(--shadow-sm); }
         .target-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
         .progress-track { background: #eee; height: 8px; border-radius: 20px; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #ff9966, #ff5e62); width: 0%; border-radius: 20px; transition: 1s ease; }
         #targetSisa { font-size: 10px; color: var(--text-sub); margin-top: 5px; text-align: right; }
 
-        /* TABS (PILL STYLE) */
         .tabs-container { 
             display: flex; justify-content: space-between; background: #fff; margin: -25px 20px 20px; border-radius: 50px; 
             padding: 6px; box-shadow: var(--shadow-lg); position: relative; z-index: 90; gap: 5px;
@@ -77,7 +74,6 @@
         .content.active { display: block; }
         @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
-        /* INPUT & CARDS (WHITE THEME) */
         .card { background: var(--bg-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 20px; border: 1px solid #f0f0f0; }
         
         h3 { margin: 0 0 15px 0; color: var(--text-main); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-left: 4px solid var(--primary); padding-left: 10px; }
@@ -89,14 +85,12 @@
         }
         input:focus, select:focus { background: #fff; border-color: var(--primary); outline:none; box-shadow: 0 0 0 3px rgba(238, 45, 36, 0.1); }
 
-        /* BUTTONS */
         .btn { border: none; border-radius: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; padding: 14px; width: 100%; font-size: 12px; letter-spacing: 0.5px; transition:0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif;}
         .btn:active { transform: scale(0.98); }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(238, 45, 36, 0.2); }
         .btn-dark { background: var(--text-main); color: white; }
         .btn-outline { background: transparent; border: 1px solid #ddd; color: var(--text-sub); }
 
-        /* DASHBOARD GRID */
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .dash-item { padding: 15px; border-radius: 15px; color: white; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
         .dash-item.green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
@@ -107,7 +101,6 @@
         .dash-item b { font-size: 20px; margin-top: 5px; }
         .dash-item.total b { font-size: 28px; color: var(--gold); }
 
-        /* LIST TRANSAKSI (CLEAN LIST) */
         .trx-list { display: flex; flex-direction: column; gap: 10px; }
         .trx-card { 
             background: #fff; padding: 15px; border-radius: 15px; 
@@ -135,7 +128,6 @@
         }
         .temp-qty { color: var(--primary); font-weight: 700; }
 
-        /* STRUK */
         #receiptOverlay { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; 
             display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(3px);
@@ -146,12 +138,10 @@
             border-radius: 10px; overflow: hidden;
         }
 
-        /* TABLE */
         .stok-table { width: 100%; border-collapse: collapse; font-size: 12px; }
         .stok-table th { text-align: left; color: #999; font-weight: 600; padding: 10px; border-bottom: 1px solid #eee; font-size: 10px; }
         .stok-table td { padding: 10px; border-bottom: 1px solid #f5f5f5; font-weight: 600; color: var(--text-main); }
 
-        /* PIN LOCK */
         #loginOverlay { position: fixed; inset: 0; background: #fff; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .pin-dot { width: 15px; height: 15px; border-radius: 50%; background: #eee; margin: 0 8px; transition:0.2s; border: 1px solid #ddd;}
         .pin-dot.filled { background: var(--primary); border-color: var(--primary); }
@@ -193,7 +183,6 @@
             <h1>MEDIA SWARA PRIMA</h1>
             <p>TELKOMSEL AUTHORIZED PARTNER</p>
         </div>
-        
         <div class="target-box">
             <div class="target-top">
                 <span id="targetLabel">TARGET: 0</span>
@@ -215,15 +204,12 @@
     <div id="tab1" class="content active">
         <div class="card">
             <h3>INPUT TRANSAKSI</h3>
-            
             <div style="display:flex; gap:10px;">
                 <input type="date" id="tanggalInput" style="flex:1;">
                 <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:12px; border:1px solid #eee; background:#fff; color:var(--text-main); font-weight:600; font-size:11px; margin-bottom:12px;">HARI INI</button>
             </div>
-
             <input type="text" id="namaOutlet" placeholder="Nama Outlet" list="outletList">
             <datalist id="outletList"></datalist>
-            
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <select id="metodeBayar">
                     <option value="CASH">CASH</option>
@@ -231,18 +217,14 @@
                 </select>
                 <select id="pilihanVoucher" onchange="updateHarga()"></select>
             </div>
-            
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <input type="text" id="hargaDisplay" oninput="formatInput(this)" placeholder="Harga">
                 <input type="text" id="jumlahPcs" placeholder="Qty / Nominal" oninput="formatInput(this)" inputmode="numeric">
             </div>
-            
             <button class="btn btn-dark" onclick="addItem()">+ TAMBAH LIST</button>
-            
             <div id="tempList" style="margin-top: 20px;"></div>
             <button class="btn btn-primary" id="mainSaveBtn" style="margin-top:20px; display:none;" onclick="saveTrx()">SIMPAN DATA</button>
         </div>
-        
         <div class="dash-grid">
             <div class="dash-item green"><span>CASH</span><b id="statCash">0</b></div>
             <div class="dash-item blue"><span>TRANSFER</span><b id="statTf">0</b></div>
@@ -251,17 +233,13 @@
                 <b id="statGrand">0</b>
             </div>
         </div>
-
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <h3 style="margin:0; border:none; padding:0;">RIWAYAT TRANSAKSI</h3>
                 <input type="date" id="filterTgl" onchange="syncDateAndRender(this.value)" style="width:auto; margin:0; padding:8px; font-size:11px;">
             </div>
-            
             <input type="text" id="searchBox" placeholder="Cari Outlet..." onkeyup="renderAll()" style="border-radius:30px; padding-left:20px;">
-
             <div id="historyList" class="trx-list" style="margin-top:20px;"></div>
-            
             <button class="btn btn-outline" onclick="copyReport()" style="margin-top:20px; border:2px solid #2c3e50; color:#2c3e50;">📋 SALIN LAPORAN</button>
         </div>
     </div>
@@ -269,12 +247,10 @@
     <div id="tab2" class="content">
         <div class="card">
             <h3>STOK & LAKU</h3>
-            
             <div style="background: #f9f9f9; padding:15px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eee;">
                 <span style="font-size:11px; font-weight:bold; color:#777;">FILTER TANGGAL:</span>
                 <input type="date" id="stokDateInput" style="margin:0; padding:5px; width:auto; background:transparent; border:none;" onchange="syncDateAndRender(this.value)">
             </div>
-
             <div style="overflow-x: auto;">
                 <table class="stok-table">
                     <thead>
@@ -289,7 +265,6 @@
             </div>
             <button class="btn btn-dark" style="margin-top:15px;" onclick="copyStockReport()">📋 SALIN LAPORAN STOK</button>
         </div>
-
         <div class="card">
             <h3>REKAP HARIAN</h3>
             <div id="riwayatList" class="trx-list"></div>
@@ -301,14 +276,12 @@
             <h3>PENGATURAN</h3>
             <label style="font-size:11px; font-weight:bold; color:#777;">TARGET OMSET</label>
             <input type="text" id="setTarget" placeholder="Contoh: 5.000.000" oninput="formatInput(this)" onchange="saveSettings()">
-            
             <label style="font-size:11px; font-weight:bold; color:#777; margin-top:15px; display:block;">PIN KEAMANAN</label>
             <div style="display:flex; gap:10px;">
                 <input type="number" id="setPin" placeholder="4 Digit PIN" onchange="saveSettings()">
                 <button class="btn-dark" onclick="togglePin()" style="width:auto; padding:0 20px;">SET</button>
             </div>
         </div>
-
         <div class="card">
             <h3>UPDATE STOK</h3>
             <div style="max-height: 400px; overflow-y: auto; margin-bottom:15px;">
@@ -318,7 +291,6 @@
             </div>
             <button class="btn btn-primary" onclick="saveAllStok()">SIMPAN STOK</button>
         </div>
-
         <div class="card">
             <h3>TAMBAH PRODUK</h3>
             <input type="text" id="addName" placeholder="Nama Produk">
@@ -326,7 +298,6 @@
             <button class="btn btn-dark" onclick="addKatalog()">SIMPAN</button>
             <div id="catalogList" style="margin-top:20px;"></div>
         </div>
-        
         <div class="card">
             <h3>DATABASE</h3>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
@@ -349,20 +320,16 @@
                     <b id="rName" style="font-size:16px; text-transform:uppercase; color:var(--text-main);"></b>
                     <div id="rDate" style="font-size:11px; color:#999; margin-top:5px;"></div>
                 </div>
-                
                 <div id="rList"></div>
-
                 <div style="background:#f9f9f9; padding:15px; margin-top:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
                     <span style="font-size:12px; font-weight:bold; color:#777;">TOTAL</span>
                     <span id="rTotal" style="font-size:18px; font-weight:800; color:var(--primary);">0</span>
                 </div>
-                
                 <div style="text-align:center; margin-top:20px;">
                     <p style="margin:0; font-size:10px; color:#999;">Terima Kasih</p>
                 </div>
             </div>
         </div>
-        
         <div style="text-align:center; margin-top:20px; display:grid; gap:10px; justify-content:center; width:300px;">
             <button id="waBtn" class="btn" style="background:#25D366; color:white;">KIRIM WA</button>
             <button class="btn btn-dark" onclick="document.getElementById('receiptOverlay').style.display='none'">TUTUP</button>
@@ -447,13 +414,10 @@
             sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
             updateHarga();
         }
-
         let filterTgl = document.getElementById('filterTgl').value.split('-').reverse().join('-');
         let searchKeyword = document.getElementById('searchBox').value.toLowerCase(); 
-
         let gt = 0, tc = 0, tf = 0;
         let laku = {}; db.catalog.forEach(v => laku[v.nama] = 0);
-
         let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => item.data.tgl === filterTgl)
             .filter(item => item.data.nama.toLowerCase().includes(searchKeyword))
@@ -476,9 +440,7 @@
                     </div>
                 </div>`;
             }).reverse().join('');
-        
         document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Belum ada transaksi</div>';
-
         let filteredDateData = db.rekap.filter(item => item.tgl === filterTgl);
         filteredDateData.forEach(ot => {
             let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
@@ -486,11 +448,9 @@
             if(ot.metode === "CASH") tc += sub; else tf += sub;
             ot.items.forEach(it => { laku[it.nama] = (laku[it.nama] || 0) + it.qty });
         });
-
         document.getElementById('statCash').innerText = formatRibuan(tc);
         document.getElementById('statTf').innerText = formatRibuan(tf);
         document.getElementById('statGrand').innerText = formatRibuan(gt);
-
         updateTargetBar(gt);
         renderStokSystem(laku);
         renderRiwayatTab();
@@ -518,7 +478,6 @@
                 <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
             </tr>`;
         }).join('');
-        
         document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             return `<tr>
@@ -528,7 +487,6 @@
                 </td>
             </tr>`;
         }).join('');
-
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
             <div style="background:#f9f9f9; padding:10px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
                 <b style="font-size:12px;">${v.nama}</b> 
@@ -537,9 +495,7 @@
         `).join('');
     }
 
-    function saveAllStok() {
-        saveToDisk(); renderAll(); alert("STOK BERHASIL DIUPDATE!");
-    }
+    function saveAllStok() { saveToDisk(); renderAll(); alert("STOK BERHASIL DIUPDATE!"); }
 
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
     function parseNo(s) { return parseInt(s.toString().replace(/\./g, '')) || 0; }
@@ -567,19 +523,13 @@
         const sel = document.getElementById('pilihanVoucher');
         const qty = parseNo(document.getElementById('jumlahPcs').value);
         if(!qty) return;
-        
         let namaItem = sel.options[sel.selectedIndex].text;
         if(!namaItem.includes("LINKAJA") && !namaItem.includes("SEVEN")) {
             let sisa = db.stok[namaItem] || 0;
             if (sisa < qty) { if(!confirm(`⚠️ STOK KURANG!\nSisa: ${sisa}, Minta: ${qty}.\nLanjutkan?`)) return; }
             db.stok[namaItem] = sisa - qty;
         }
-
-        tempItems.push({
-            nama: namaItem,
-            harga: parseNo(document.getElementById('hargaDisplay').value),
-            qty: qty
-        });
+        tempItems.push({ nama: namaItem, harga: parseNo(document.getElementById('hargaDisplay').value), qty: qty });
         document.getElementById('jumlahPcs').value = "";
         renderTemp();
         document.getElementById('mainSaveBtn').style.display = "block";
@@ -599,28 +549,22 @@
 
     function cancelTempItem(i) {
         let it = tempItems[i];
-        if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
-            db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty;
-        }
+        if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) { db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty; }
         tempItems.splice(i,1); renderTemp();
     }
 
     function saveTrx() {
         const nama = document.getElementById('namaOutlet').value.toUpperCase();
         if(!nama) return alert("Isi Nama Outlet!");
-        
         const now = new Date();
         const data = {
-            nama: nama,
-            metode: document.getElementById('metodeBayar').value,
+            nama: nama, metode: document.getElementById('metodeBayar').value,
             items: [...tempItems],
             jam: now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'),
             tgl: document.getElementById('tanggalInput').value.split('-').reverse().join('-')
         };
-
         if(editIdx > -1) { db.rekap[editIdx] = data; editIdx = -1; } 
         else { db.rekap.push(data); }
-
         tempItems = []; document.getElementById('namaOutlet').value = ""; document.getElementById('tempList').innerHTML = "";
         saveToDisk(); renderAll(); renderOutletSuggestions();
         document.getElementById('mainSaveBtn').innerText = "SIMPAN DATA";
@@ -630,26 +574,18 @@
     function showStruk(i) {
         const d = db.rekap[i]; let total = 0; 
         let waText = `*${d.nama}*\n${d.tgl}\n\n`;
-        
         document.getElementById('rName').innerText = d.nama;
         document.getElementById('rDate').innerText = d.tgl + " • " + d.jam;
-        
         document.getElementById('rList').innerHTML = d.items.map(it => {
             let sub = it.harga * it.qty; total += sub;
             let qtyDisplay = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : formatRibuan(it.qty) + ' Pcs';
             let detailPrice = (it.nama.includes("LINKAJA")||it.nama.includes("SEVEN")) ? "" : `x @ ${formatRibuan(it.harga)}`;
-
             waText += `${it.nama} : ${qtyDisplay} ${detailPrice} = ${formatRibuan(sub)}\n`;
-            
             return `<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px; border-bottom:1px dashed #eee; padding-bottom:5px;">
-                <div>
-                    <div style="font-weight:700;">${it.nama}</div>
-                    <div style="font-size:10px; color:#777;">${qtyDisplay} ${detailPrice}</div>
-                </div>
+                <div><div style="font-weight:700;">${it.nama}</div><div style="font-size:10px; color:#777;">${qtyDisplay} ${detailPrice}</div></div>
                 <div style="font-weight:700;">${formatRibuan(sub)}</div>
             </div>`;
         }).join('');
-        
         document.getElementById('rTotal').innerText = "Rp " + formatRibuan(total);
         waText += `\n*TOTAL: ${formatRibuan(total)}*`;
         document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`);
@@ -685,66 +621,35 @@
             let dayTotal = db.rekap.filter(x => x.tgl === d).reduce((a,b) => a + b.items.reduce((x,y)=>x+(y.harga*y.qty),0), 0);
             return `<div class="trx-card" style="flex-direction:row; justify-content:space-between; align-items:center;">
                 <div><div class="trx-name">${d}</div><div class="trx-meta">Total Harian</div></div>
-                <div>
-                    <div class="trx-price">Rp ${formatRibuan(dayTotal)}</div>
-                    <button class="act-btn" style="background:#2c3e50; margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button>
-                </div>
+                <div><div class="trx-price">Rp ${formatRibuan(dayTotal)}</div><button class="act-btn" style="background:#2c3e50; margin-top:5px; width:100%;" onclick="syncDateAndRender('${d.split('-').reverse().join('-')}'); openTab('tab1', document.querySelectorAll('.tab-btn')[0])">LIHAT</button></div>
             </div>`;
         }).join('');
     }
 
-    // --- FITUR LAPORAN PROFESIONAL (UPDATE V7.1) ---
+    // --- FITUR LAPORAN FINAL V7.2 ---
     function copyReport() {
         let tgl = document.getElementById('filterTgl').value;
         let dataHarian = db.rekap.filter(item => item.tgl === tgl.split('-').reverse().join('-'));
-        
-        if(dataHarian.length === 0) return alert("Belum ada data transaksi tanggal ini.");
-
+        if(dataHarian.length === 0) return alert("Belum ada data transaksi.");
         let totalCash = 0, totalTf = 0, grandTotal = 0;
         let rincian = "";
-        let trxCount = dataHarian.length;
-
-        // Header Laporan
         let report = `MEDIA SWARA PRIMA\nLaporan Penjualan Harian\n========================\n`;
-        report += `📅 Tanggal : ${tgl}\n`;
-        report += `🏪 Outlet  : ${trxCount} Transaksi\n`;
-        report += `========================\n\n`;
-
-        // Loop Data
+        report += `📅 Tanggal : ${tgl}\n🏪 Outlet  : ${dataHarian.length} Transaksi\n========================\n\n`;
         dataHarian.forEach((d, i) => {
             let subtotal = 0;
             rincian += `${i+1}. ${d.nama} (${d.metode})\n`;
             d.items.forEach(it => {
-                let sub = it.harga * it.qty;
-                subtotal += sub;
-                
-                // LOGIC BARU: Rincian (Qty Pcs x @ Harga)
-                let detailInfo = "";
-                if(it.nama.includes("LINKAJA") || it.nama.includes("SEVEN")) {
-                    detailInfo = formatRibuan(it.qty); 
-                } else {
-                    detailInfo = `${it.qty} Pcs x @ ${formatRibuan(it.harga)}`; 
-                }
-
-                rincian += `   - ${it.nama} (${detailInfo})\n`;
+                let sub = it.harga * it.qty; subtotal += sub;
+                // LOGIC: (50 Pcs x 12.900)
+                let qtyText = (it.nama.includes("LINKAJA") || it.nama.includes("SEVEN")) ? formatRibuan(it.qty) : `${it.qty} Pcs x ${formatRibuan(it.harga)}`;
+                rincian += `   - ${it.nama} (${qtyText})\n`;
             });
             rincian += `   Total: Rp ${formatRibuan(subtotal)}\n\n`;
-
             grandTotal += subtotal;
             if(d.metode === 'CASH') totalCash += subtotal; else totalTf += subtotal;
         });
-
-        report += `RINCIAN TRANSAKSI:\n${rincian}`;
-        report += `========================\n`;
-        report += `RINGKASAN:\n`;
-        report += `💵 Total Cash     : Rp ${formatRibuan(totalCash)}\n`;
-        report += `🏦 Total Transfer : Rp ${formatRibuan(totalTf)}\n`;
-        report += `------------------------\n`;
-        report += `🔥 GRAND TOTAL    : Rp ${formatRibuan(grandTotal)}\n`;
-        report += `========================\n`;
-        report += `Generated by Sales Pro System`;
-
-        navigator.clipboard.writeText(report).then(() => alert("Laporan Profesional Tersalin!"));
+        report += `RINCIAN TRANSAKSI:\n${rincian}========================\nRINGKASAN:\n💵 Total Cash     : Rp ${formatRibuan(totalCash)}\n🏦 Total Transfer : Rp ${formatRibuan(totalTf)}\n------------------------\n🔥 GRAND TOTAL    : Rp ${formatRibuan(grandTotal)}\n========================\nGenerated by Sales Pro System`;
+        navigator.clipboard.writeText(report).then(() => alert("Laporan Tersalin!"));
     }
 
     function copyStockReport() {
