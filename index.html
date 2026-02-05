@@ -163,6 +163,16 @@
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 50px; }
         .num-btn { width: 70px; height: 70px; border-radius: 50%; border: 1.5px solid #f0f0f0; background: #fff; font-size: 24px; font-weight: 700; color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .num-btn:active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+                /* PENGHILANG LINGKARAN MERAH KALENDER */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
