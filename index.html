@@ -377,7 +377,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.16
+    VERSI APLIKASI: 1.0.17
             </div>
         </div>
     </div>
@@ -449,79 +449,73 @@ const DB_VERSION = 1;
         {nama: "SA BYU 3GB", harga: 30000}, {nama: "LINKAJA", harga: 1}, {nama: "SEVEN", harga: 1}
     ];
 
-        let db = {
+            let db = {
         version: DB_VERSION,
         catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
         rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
-        stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {}, // legacy (tidak dipakai hitung)
+        stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {}, 
         stokAwal: JSON.parse(localStorage.getItem('MSP_STOK_AWAL')) || {},
         stokMasuk: JSON.parse(localStorage.getItem('MSP_STOK_MASUK')) || {},
+        // BAGIAN BARU: Tempa simpan arsip stok masa lalu
+        riwayatStok: JSON.parse(localStorage.getItem('MSP_RIWAYAT_STOK')) || [], 
         lastUpdate: localStorage.getItem('MSP_LAST_DATE') || "",
         settings: JSON.parse(localStorage.getItem('MSP_SETTINGS')) || { target: 5000000, pin: "" }
     };
 
     // FUNGSI OTOMATIS PINDAH STOK
-        function autoUpdateStokAwal() {
-    let d = new Date();
-    let day = String(d.getDate()).padStart(2, '0');
-    let month = String(d.getMonth() + 1).padStart(2, '0');
-    let year = d.getFullYear();
+            function autoUpdateStokAwal() {
+        let d = new Date();
+        let day = String(d.getDate()).padStart(2, '0');
+        let month = String(d.getMonth() + 1).padStart(2, '0');
+        let year = d.getFullYear();
+        let hariIni = day + "-" + month + "-" + year;
 
-    let hariIni = day + "-" + month + "-" + year;
+        // JIKA MASIH HARI YANG SAMA → JANGAN APA-APA
+        if (db.lastUpdate === hariIni) return;
 
-    // JIKA MASIH HARI YANG SAMA → JANGAN APA-APA
-    if (db.lastUpdate === hariIni) return;
+        // ====== PROSES GANTI HARI ======
+        
+        // 1. ARSIPKAN STOK HARI TERAKHIR (HISTORY)
+        // Kita simpan stok awal yg dipakai pada tanggal lastUpdate
+        if (db.lastUpdate) {
+            // Cek apakah tanggal ini sudah ada di arsip (biar gak dobel)
+            let cek = db.riwayatStok.find(r => r.tgl === db.lastUpdate);
+            if (!cek) {
+                db.riwayatStok.push({
+                    tgl: db.lastUpdate,
+                    stok: JSON.parse(JSON.stringify(db.stokAwal)) // Copy stok persis
+                });
+            }
+        }
 
-    // ====== HANYA JALAN SAAT GANTI HARI ======
-    let sisaKemarin = {};
+        // 2. HITUNG SISA UNTUK JADI STOK AWAL HARI INI
+        let sisaKemarin = {};
+        db.catalog.forEach(v => {
+            if (v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return;
 
-    db.catalog.forEach(v => {
-        if (v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return;
+            let awal = db.stokAwal[v.nama] || 0;
+            let masuk = db.stokMasuk[v.nama] || 0;
 
-        let awal = db.stokAwal[v.nama] || 0;
-        let masuk = db.stokMasuk[v.nama] || 0;
+            // Hitung laku pada tanggal terakhir kali update
+            let terjual = db.rekap
+                .filter(r => r.tgl === db.lastUpdate)
+                .reduce((a, r) => {
+                    let it = r.items.find(i => i.nama === v.nama);
+                    return a + (it ? it.qty : 0);
+                }, 0);
 
-        let terjual = db.rekap
-            .filter(r => r.tgl === db.lastUpdate)
-            .reduce((a, r) => {
-                let it = r.items.find(i => i.nama === v.nama);
-                return a + (it ? it.qty : 0);
-            }, 0);
+            sisaKemarin[v.nama] = awal + masuk - terjual;
+        });
 
-        sisaKemarin[v.nama] = awal + masuk - terjual;
-    });
+        // 3. SET DATA BARU
+        db.stokAwal = sisaKemarin;
+        db.stokMasuk = {}; // Reset stok masuk
+        db.lastUpdate = hariIni; // Update tanggal sistem
 
-    // SET STOK AWAL = SISA KEMARIN
-    db.stokAwal = sisaKemarin;
+        saveToDisk();
+        console.log("Ganti hari sukses! Stok kemarin diarsipkan.");
+    }
 
-    // RESET STOK MASUK
-    db.stokMasuk = {};
-
-    // UPDATE TANGGAL
-    db.lastUpdate = hariIni;
-
-    saveToDisk();
-    console.log("Ganti hari → stokAwal diset, stokMasuk direset");
-}
-    
-
-    let tempItems = [];
-    let editIdx = -1;
-    let enteredPin = "";
-    let lastDeletedTrx = null;
-
-        window.onload = () => { if (!db.version || db.version < DB_VERSION) {
-    db.version = DB_VERSION;
-    saveToDisk();
-}
-        autoUpdateStokAwal(); // <--- Ini yang bikin sistem langsung cek tanggal pas buka
-        checkLogin();
-        setToday(); 
-        document.getElementById('setTarget').value = formatRibuan(db.settings.target);
-        document.getElementById('setPin').value = db.settings.pin;
-        renderOutletSuggestions();
-        renderAll(); 
-    };
 
     function syncDateAndRender(newDate) {
         document.getElementById('filterTgl').value = newDate;
@@ -566,14 +560,17 @@ const DB_VERSION = 1;
 
     function togglePin() { saveSettings(); alert("Akses PIN Berhasil Diperbarui!"); }
 
-        function saveToDisk() {
+            function saveToDisk() {
         localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
         localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
-        localStorage.setItem('MSP_STOK', JSON.stringify(db.stok)); // legacy
+        localStorage.setItem('MSP_STOK', JSON.stringify(db.stok)); 
         localStorage.setItem('MSP_STOK_AWAL', JSON.stringify(db.stokAwal));
         localStorage.setItem('MSP_STOK_MASUK', JSON.stringify(db.stokMasuk));
+        // SIMPAN RIWAYAT
+        localStorage.setItem('MSP_RIWAYAT_STOK', JSON.stringify(db.riwayatStok));
         localStorage.setItem('MSP_LAST_DATE', db.lastUpdate);
     }
+
 
     function renderAll() {
         const sel = document.getElementById('pilihanVoucher');
@@ -640,79 +637,88 @@ const DB_VERSION = 1;
         document.getElementById('targetSisa').innerText = pct >= 100 ? "🎯 GOAL ACHIEVED!" : `Kurang: Rp ${formatRibuan(sisa)}`;
     }
 
-    function renderStokSystem(lakuPerTanggal) {
-    
+        function renderStokSystem(lakuPerTanggal) {
+        // Fix Kalender di Setting
         if(db.lastUpdate) {
-        let p = db.lastUpdate.split('-');
-        document.getElementById('tglMasterStok').value = p[2] + "-" + p[1] + "-" + p[0]; 
-        // Baris di atas memastikan kalender terisi otomatis saat dibuka
+            let p = db.lastUpdate.split('-');
+            document.getElementById('tglMasterStok').value = p[2] + "-" + p[1] + "-" + p[0]; 
+        }
+
+        // --- LOGIKA HISTORY STOK ---
+        let filterTglRaw = document.getElementById('filterTgl').value; // YYYY-MM-DD
+        let filterTglIndo = filterTglRaw.split('-').reverse().join('-'); // DD-MM-YYYY
+        
+        // Tentukan Stok Awal mana yang dipakai (Hari ini vs History)
+        let stokAwalTampil = {};
+        let statusData = "";
+
+        if (filterTglIndo === db.lastUpdate) {
+            // Kalau hari ini, pakai database utama
+            stokAwalTampil = db.stokAwal;
+            statusData = "(LIVE)";
+        } else {
+            // Kalau tanggal lain, cari di arsip
+            let arsip = db.riwayatStok.find(r => r.tgl === filterTglIndo);
+            if (arsip) {
+                stokAwalTampil = arsip.stok;
+                statusData = "(ARSIP)";
+            } else {
+                stokAwalTampil = {}; // Kosongkan kalau tidak ada data sejarah
+                statusData = "(NO DATA)";
+            }
+        }
+
+        // 1. Update Tabel di Tab DATA
+        document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
+            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+            
+            let awal = stokAwalTampil[v.nama] || 0;
+            let terjual = lakuPerTanggal[v.nama] || 0;
+            let sisa = awal - terjual;
+            let color = sisa <= 5 ? 'red' : 'green';
+            
+            // Kalau data kosong (sebelum install fitur ini), tampilkan strip
+            if(statusData === "(NO DATA)") {
+                return `<tr><td>${v.nama}</td><td colspan="3" style="text-align:center; color:#ccc;">Belum ada riwayat stok</td></tr>`;
+            }
+
+            return `<tr>
+                <td>${v.nama} <span style="font-size:8px; color:#999;">${statusData}</span></td>
+                <td style="text-align:center;">${awal}</td>
+                <td style="text-align:center;">${terjual}</td>
+                <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
+            </tr>`;
+        }).join('');
+        
+        // 2. Update Tabel Input (Hanya Edit jika Hari Ini)
+        let isEditable = (filterTglIndo === db.lastUpdate);
+        
+        document.getElementById('stokEditorBulk').innerHTML = `
+            <thead>
+                <tr>
+                    <th style="font-size:9px;">PRODUK</th>
+                    <th style="font-size:9px; text-align:center;">STOK</th>
+                    <th style="font-size:9px; text-align:center;">+ TAMBAH</th>
+                </tr>
+            </thead>
+        ` + db.catalog.map(v => {
+            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+            
+            let val = db.stokAwal[v.nama] || 0;
+            let disabled = isEditable ? "" : "disabled style='background:#eee;'";
+            
+            return `<tr>
+                <td style="padding:10px; font-size:11px;">${v.nama}</td>
+                <td>
+                    <input type="number" ${disabled} style="margin:0; text-align:center; padding:5px; font-size:12px;" value="${val}" onchange="db.stokAwal['${v.nama}']=parseInt(this.value)||0;saveToDisk();renderAll();">
+                </td>
+                <td>
+                    <input type="number" ${disabled} style="margin:0; text-align:center; padding:5px; font-size:12px;" placeholder="+ STOK" onchange="let t=parseInt(this.value)||0;db.stokAwal['${v.nama}']=(db.stokAwal['${v.nama}']||0)+t;saveToDisk();this.value='';renderAll();">
+                </td>
+            </tr>`;
+        }).join('');
     }
 
-    
-    // 1. Update Tabel di Tab DATA
-    document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
-    if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-
-    let awal = db.stokAwal[v.nama] || 0;
-    let terjual = lakuPerTanggal[v.nama] || 0;
-    let sisa = awal - terjual;
-
-    let color = sisa <= 5 ? 'red' : 'green';
-
-    return `<tr>
-        <td>${v.nama}</td>
-        <td style="text-align:center;">${awal}</td>
-        <td style="text-align:center;">${terjual}</td>
-        <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
-    </tr>`;
-}).join('');
-    
-    // 2. Update Tabel Input di Tab SETTING
-    document.getElementById('stokEditorBulk').innerHTML = `
-        <thead>
-            <tr>
-                <th style="font-size:9px;">PRODUK</th>
-                <th style="font-size:9px; text-align:center;">STOK</th>
-                <th style="font-size:9px; text-align:center;">+ TAMBAH</th>
-            </tr>
-        </thead>
-    ` + db.catalog.map(v => {
-        if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-        return `<tr>
-            <td style="padding:10px; font-size:11px;">${v.nama}</td>
-            <td>
-                <input type="number"
-                       style="margin:0; text-align:center; padding:5px; font-size:12px;"
-                       value="${db.stokAwal[v.nama]||0}"
-                       onchange="
-                           db.stokAwal['${v.nama}'] = parseInt(this.value) || 0;
-                           saveToDisk();
-                           renderAll();
-                       ">
-            </td>
-            <td>
-                <input type="number"
-                       style="margin:0; text-align:center; padding:5px; font-size:12px;"
-                       placeholder="+ STOK"
-                       onchange="
-                           let tambah = parseInt(this.value) || 0;
-                           db.stokAwal['${v.nama}'] = (db.stokAwal['${v.nama}'] || 0) + tambah;
-                           saveToDisk();
-                           this.value='';
-                           renderAll();
-                       ">
-            </td>
-        </tr>`;
-    }).join('');
-
-    // 3. Update Daftar Katalog
-    document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-        <div style="background:#f9f9f9; padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-            <b style="font-size:12px;">${v.nama}</b> 
-            <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
-        </div>
-    `).join('');
-}
 
     function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
@@ -1093,4 +1099,3 @@ const DB_VERSION = 1;
 
 </body>
 </html>
-
