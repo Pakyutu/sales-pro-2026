@@ -302,13 +302,27 @@
     <div class="card">
         <h3>PENJUALAN HELPER</h3>
 
-        <textarea
-            placeholder="Paste laporan WA helper di sini..."
-            style="width:100%;min-height:220px;padding:15px;border-radius:15px;border:1px solid #eee;font-family:monospace;font-size:12px;"></textarea>
+        <textarea id="helperInput"
+        placeholder="Paste laporan WA helper di sini..."
+        style="width:100%;min-height:220px;padding:15px;border-radius:15px;border:1px solid #eee;font-family:monospace;font-size:12px;"></textarea>
 
-  <button class="btn btn-dark" style="margin-top:15px;" onclick="susunHelper()">
-    🔍 SUSUN LAPORAN
-</button>
+        <button class="btn btn-dark" style="margin-top:15px;" onclick="susunHelper()">
+            🔍 SUSUN LAPORAN
+        </button>
+
+        <!-- 🔽 INI YANG KURANG -->
+        <div id="helperResult"
+             style="margin-top:20px;
+                    background:#f8fafc;
+                    padding:15px;
+                    border-radius:15px;
+                    font-size:12px;
+                    line-height:1.6;
+                    white-space:pre-wrap;
+                    border:1px solid #eef2f6;">
+        </div>
+        <!-- 🔼 SAMPAI SINI -->
+
     </div>
 </div>
 <!-- END TAB HELPER -->
@@ -393,7 +407,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.17 
+    VERSI APLIKASI: 1.0.18 
             </div>
         </div>
     </div>
