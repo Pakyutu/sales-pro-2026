@@ -1092,6 +1092,7 @@ const DB_VERSION = 1;
         saveToDisk();
         renderAll();
         alert("Tanggal Update Stok Berhasil Diset ke: " + tglBaru);
+        }
     }
 
     function copyStockReport() {
@@ -1123,7 +1124,7 @@ const DB_VERSION = 1;
         });
         navigator.clipboard.writeText(txt).then(() => alert("Status Stok Disalin!"));
     }
-
+}
     
 </script>
 
