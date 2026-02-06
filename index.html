@@ -479,7 +479,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.21 
+    VERSI APLIKASI: 1.0.22 
             </div>
         </div>
     </div>
@@ -1175,48 +1175,36 @@ function susunHelper() {
         return;
     }
 
-    const lines = raw
-        .split("\n")
-        .map(l => l.trim())
-        .filter(l => l);
+    const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
 
-    let data = {
-        CASH: {},
-        TF: {}
-    };
-
+    let data = { CASH: {}, TF: {} };
     let currentName = "";
     let currentPay = "";
 
     lines.forEach(line => {
 
-        // ===== BARIS NAMA (CASH / TF) =====
+        // ===== NAMA =====
         if (line.includes("✅") || line.includes("❌")) {
             currentName = line
                 .replace("✅", "")
                 .replace("❌", "")
                 .replace(/transfer|tf/gi, "")
                 .trim();
-
             currentPay = line.includes("✅") ? "CASH" : "TF";
             return;
         }
 
-        // ===== BARIS PRODUK =====
         if (!currentName) return;
 
-        const parts = line.split(/\s+/);
-
-        // ambil angka terakhir (20, walau tanpa "pcs")
-        const pcs = parseInt(parts.reverse().find(p => !isNaN(p)));
+        // ===== PCS =====
+        let pcs = parseInt(line.match(/\d+/));
         if (!pcs) return;
 
-        // ambil nama produk (VF 4/3, VF 5/2, SA 3GB, dll)
-        let produk = parts.reverse().join(" ");
-        produk = produk.match(/(VF\s*\d+\/\d+|SA\s*\d+\s*GB|VC\s*\d+\/\d+)/i);
-        if (!produk) return;
+        // ===== PRODUK =====
+        let match = line.match(/(VF\s*\d+\/\d+|SA\s*\d+\s*GB|VC\s*\d+\/\d+)/i);
+        if (!match) return;
 
-        produk = produk[0];
+        let produk = match[0];
 
         if (!data[currentPay][produk]) {
             data[currentPay][produk] = { total: 0, buyers: [] };
@@ -1225,7 +1213,7 @@ function susunHelper() {
         data[currentPay][produk].total += pcs;
         data[currentPay][produk].buyers.push({
             nama: currentName,
-            pcs: pcs
+            pcs
         });
     });
 
@@ -1234,9 +1222,9 @@ function susunHelper() {
     let totalCash = 0;
     let totalTf = 0;
 
-    // ===== CASH =====
+    // ===== DETAIL CASH =====
     output += "🟢 CASH\n";
-    if (Object.keys(data.CASH).length === 0) {
+    if (!Object.keys(data.CASH).length) {
         output += "(KOSONG)\n";
     } else {
         Object.entries(data.CASH).forEach(([produk, info]) => {
@@ -1249,9 +1237,9 @@ function susunHelper() {
         });
     }
 
-    // ===== TRANSFER =====
+    // ===== DETAIL TF =====
     output += "\n🔴 TRANSFER\n";
-    if (Object.keys(data.TF).length === 0) {
+    if (!Object.keys(data.TF).length) {
         output += "(KOSONG)\n";
     } else {
         Object.entries(data.TF).forEach(([produk, info]) => {
@@ -1264,8 +1252,25 @@ function susunHelper() {
         });
     }
 
+    // ===== RINGKASAN PER PRODUK =====
+    output += "\n====================\nRINGKASAN PER PRODUK\n";
+
+    let semuaProduk = new Set([
+        ...Object.keys(data.CASH),
+        ...Object.keys(data.TF)
+    ]);
+
+    semuaProduk.forEach(p => {
+        let cash = data.CASH[p]?.total || 0;
+        let tf = data.TF[p]?.total || 0;
+        output += `\n${p.toUpperCase()}\n`;
+        output += `- CASH     : ${cash} PCS\n`;
+        output += `- TRANSFER : ${tf} PCS\n`;
+        output += `- TOTAL    : ${cash + tf} PCS\n`;
+    });
+
     // ===== FOOTER =====
-    output += "\n====================\n";
+    output += "\n--------------------\n";
     output += `TOTAL PCS CASH : ${totalCash}\n`;
     output += `TOTAL PCS TF   : ${totalTf}\n`;
     output += `TOTAL SEMUA    : ${totalCash + totalTf}\n`;
