@@ -43,295 +43,144 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-:root {
-    --primary: #EE2D24;
-    --primary-dark: #b30000;
-    --bg-body: #f4f6f8;
-    --bg-card: #ffffff;
-    --text-main: #2c3e50;
-    --text-sub: #7f8c8d;
-    --gold: #f1c40f;
-    --shadow-sm: 0 4px 10px rgba(0,0,0,0.06);
-    --shadow-lg: 0 8px 30px rgba(238,45,36,0.15);
-    --radius: 18px;
-}
+        :root {
+            --primary: #EE2D24;       /* Merah Telkomsel */
+            --primary-dark: #b30000;  /* Merah Tua */
+            --bg-body: #f4f6f8;       
+            --bg-card: #ffffff;       
+            --text-main: #2c3e50;     
+            --text-sub: #7f8c8d;      
+            --gold: #f1c40f;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(238, 45, 36, 0.15);
+            --radius: 20px;
+        }
 
-* {
-    box-sizing: border-box;
-}
+        body { 
+            font-family: 'Poppins', sans-serif; padding: 0; margin: 0; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; padding-bottom: 100px; 
+            /* BACKGROUND ROBOTIC PATTERN */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ee2d24' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        /* HEADER MODERN ROBOTIC */
+        .header-main { 
+            background: var(--bg-card);
+            padding: 30px 20px 50px; text-align: center; 
+            border-radius: 0 0 40px 40px; 
+            box-shadow: var(--shadow-lg);
+            position: relative; overflow: hidden;
+            border-top: 6px solid var(--primary);
+        }
 
-body {
-    margin: 0;
-    padding: 0 0 90px;
-    font-family: 'Poppins', sans-serif;
-    background: var(--bg-body);
-    color: var(--text-main);
-    overflow-x: hidden;
-}
+        /* ROBOT ICON IN HEADER */
+        .robot-head {
+            position: absolute; right: -20px; top: 10px; opacity: 0.1; transform: rotate(15deg); width: 120px;
+        }
+        
+        .header-content h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--primary); text-transform: uppercase; }
+        .header-content p { margin: 5px 0 0; font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+        .header-content .loc { font-size: 12px; color: var(--text-main); font-weight: 800; margin-top: 5px; display: block; }
 
-/* ================= HEADER ================= */
-.header-main {
-    background: #fff;
-    padding: 22px 18px 40px;
-    text-align: center;
-    border-radius: 0 0 32px 32px;
-    box-shadow: var(--shadow-lg);
-    border-top: 5px solid var(--primary);
-}
+        /* TARGET BAR (CYBER LOOK) */
+        .target-box { margin-top: 25px; background: #fff; padding: 18px; border-radius: var(--radius); border: 1px solid #eee; box-shadow: var(--shadow-sm); position: relative; z-index: 2; }
+        .target-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
+        .progress-track { background: #f0f0f0; height: 12px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #EE2D24, #ff6b6b); width: 0%; border-radius: 20px; transition: 1.5s cubic-bezier(0.1, 0.7, 1.0, 0.1); position: relative; }
+        .progress-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: sweep 2s infinite; }
+        @keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-.header-content h1 {
-    font-size: 20px;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: -0.3px;
-    color: var(--primary);
-}
+        /* TABS (NEUMORPHIC ROBOTIC) */
+        .tabs-container { 
+            display: flex; justify-content: space-between; background: #fff; margin: -25px 20px 20px; border-radius: 50px; 
+            padding: 8px; box-shadow: var(--shadow-lg); position: relative; z-index: 90; gap: 8px; border: 1px solid #eee;
+        }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; color: var(--text-sub); font-weight: 700; cursor: pointer; font-size: 11px; border-radius: 40px; transition:0.3s; }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(238, 45, 36, 0.4); }
 
-.header-content p {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    margin: 4px 0 0;
-    color: var(--text-sub);
-}
+        .content { display: none; animation: fadeIn 0.4s ease; padding: 0 20px; }
+        .content.active { display: block; }
+        @keyframes fadeIn { from {opacity:0; transform:translateY(15px);} to {opacity:1; transform:translateY(0);} }
 
-.header-content .loc {
-    font-size: 11px;
-    font-weight: 800;
-    margin-top: 4px;
-    display: block;
-}
+        /* CARDS */
+        .card { background: var(--bg-card); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 25px; border: 1px solid #f0f0f0; position: relative; }
+        h3 { margin: 0 0 20px 0; color: var(--text-main); font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        h3::before { content: '🤖'; font-size: 18px; }
+        
+        input, select { 
+            width: 100%; padding: 16px; border: 1.5px solid #eef2f6; background: #f8fafc; 
+            border-radius: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 15px; 
+            font-weight: 600; color: var(--text-main); font-family: 'Poppins', sans-serif; transition: 0.3s;
+        }
+        input:focus, select:focus { background: #fff; border-color: var(--primary); outline:none; box-shadow: 0 0 0 4px rgba(238, 45, 36, 0.1); }
 
-/* ================= TARGET ================= */
-.target-box {
-    margin-top: 18px;
-    padding: 14px;
-    background: #fff;
-    border-radius: var(--radius);
-    border: 1px solid #eee;
-    box-shadow: var(--shadow-sm);
-}
+        /* BUTTONS */
+        .btn { border: none; border-radius: 15px; font-weight: 800; cursor: pointer; text-transform: uppercase; padding: 18px; width: 100%; font-size: 12px; letter-spacing: 1px; transition:0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-primary { background: linear-gradient(135deg, #EE2D24, #b30000); color: white; box-shadow: 0 6px 20px rgba(238, 45, 36, 0.3); }
+        .btn-dark { background: #2c3e50; color: white; box-shadow: 0 6px 15px rgba(44, 62, 80, 0.2); }
+        .btn-outline { background: transparent; border: 2px solid #2c3e50; color: #2c3e50; }
 
-.target-top {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
+        /* DASHBOARD */
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .dash-item { padding: 20px; border-radius: var(--radius); color: white; display: flex; flex-direction: column; box-shadow: var(--shadow-sm); }
+        .dash-item.green { background: linear-gradient(135deg, #00b894, #00cec9); }
+        .dash-item.blue { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
+        .dash-item.total { background: #1a1a1a; grid-column: span 2; align-items: center; text-align: center; border: 2px solid #333; }
+        .dash-item span { font-size: 10px; font-weight: 800; letter-spacing: 1px; opacity: 0.8; }
+        .dash-item b { font-size: 22px; margin-top: 8px; }
+        .dash-item.total b { font-size: 32px; color: var(--gold); text-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
 
-.progress-track {
-    height: 10px;
-    background: #eee;
-    border-radius: 20px;
-    overflow: hidden;
-}
+        /* TRANSAKSI CARDS */
+        .trx-card { background: #fff; padding: 20px; border-radius: var(--radius); border: 1px solid #f0f0f0; margin-bottom: 15px; box-shadow: var(--shadow-sm); }
+        .trx-name { font-size: 15px; font-weight: 800; color: var(--text-main); }
+        .trx-price { font-size: 16px; font-weight: 800; color: var(--primary); }
 
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #EE2D24, #ff6b6b);
-    transition: width .6s ease;
-}
+        /* REAL THERMAL RECEIPT STYLE */
+        #receiptOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .receipt-paper { 
+            background: #fff; width: 300px; padding: 20px; color: #000; 
+            font-family: 'JetBrains Mono', monospace; box-shadow: 0 0 50px rgba(0,0,0,0.5); 
+            border-radius: 2px; position: relative;
+        }
+        .receipt-paper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(90deg, #eee, #eee 5px, #fff 5px, #fff 10px); }
+        .rec-head { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 15px; margin-bottom: 15px; }
+        .rec-body { font-size: 12px; line-height: 1.4; }
+        .rec-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .rec-footer { text-align: center; border-top: 1px dashed #000; margin-top: 15px; padding-top: 15px; font-size: 11px; }
 
-/* ================= TABS ================= */
-.tabs-container {
-    display: flex;
-    gap: 6px;
-    margin: -20px 16px 16px;
-    padding: 6px;
-    background: #fff;
-    border-radius: 40px;
-    box-shadow: var(--shadow-lg);
-}
+        /* STOK TABLE */
+        .stok-table { width: 100%; border-collapse: collapse; }
+        .stok-table th { text-align: left; color: #999; padding: 10px; font-size: 10px; text-transform: uppercase; border-bottom: 2px solid #f0f0f0; }
+        .stok-table td { padding: 15px 10px; border-bottom: 1px solid #f9f9f9; font-weight: 700; font-size: 13px; }
 
-.tab-btn {
-    flex: 1;
-    padding: 10px;
-    font-size: 10px;
-    font-weight: 800;
-    border-radius: 30px;
-    border: none;
-    background: transparent;
-    color: var(--text-sub);
-}
+        /* PIN LOCK */
+        #loginOverlay { position: fixed; inset: 0; background: #fff; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .pin-dot { width: 16px; height: 16px; border-radius: 50%; background: #eee; margin: 0 10px; border: 2px solid #ddd; transition: 0.3s; }
+        .pin-dot.filled { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 15px var(--primary); transform: scale(1.2); }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 50px; }
+        .num-btn { width: 70px; height: 70px; border-radius: 50%; border: 1.5px solid #f0f0f0; background: #fff; font-size: 24px; font-weight: 700; color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .num-btn:active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+                        /* PENGHILANG LINGKARAN & HIGHLIGHT MERAH */
+        input[type="date"], 
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-appearance: none; /* Mematikan gaya bawaan browser */
+            cursor: pointer;
+        }
 
-.tab-btn.active {
-    background: var(--primary);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(238,45,36,0.35);
-}
+        /* Hilangkan garis fokus saat kotak diklik */
+        input:focus {
+            outline: none !important;
+            border-color: var(--primary) !important;
+        }
 
-/* ================= CONTENT ================= */
-.content {
-    display: none;
-    padding: 0 16px;
-}
-
-.content.active {
-    display: block;
-}
-
-/* ================= CARD ================= */
-.card {
-    background: var(--bg-card);
-    padding: 18px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 18px;
-    border: 1px solid #f0f0f0;
-}
-
-h3 {
-    margin: 0 0 16px;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-h3::before {
-    content: "🤖";
-    font-size: 15px;
-}
-
-/* ================= INPUT ================= */
-input, select {
-    width: 100%;
-    padding: 13px;
-    font-size: 12px;
-    border-radius: 13px;
-    border: 1.4px solid #eef2f6;
-    background: #f8fafc;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-input:focus, select:focus {
-    outline: none;
-    background: #fff;
-    border-color: var(--primary);
-}
-
-/* ================= BUTTON ================= */
-.btn {
-    width: 100%;
-    padding: 14px;
-    border-radius: 14px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .8px;
-    border: none;
-    cursor: pointer;
-    text-transform: uppercase;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #EE2D24, #b30000);
-    color: #fff;
-}
-
-.btn-dark {
-    background: #2c3e50;
-    color: #fff;
-}
-
-.btn-outline {
-    background: transparent;
-    border: 2px solid #2c3e50;
-    color: #2c3e50;
-}
-
-/* ================= DASHBOARD ================= */
-.dash-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 18px;
-}
-
-.dash-item {
-    padding: 14px;
-    border-radius: var(--radius);
-    color: #fff;
-}
-
-.dash-item span {
-    font-size: 9px;
-    font-weight: 700;
-    opacity: .85;
-}
-
-.dash-item b {
-    display: block;
-    margin-top: 4px;
-    font-size: 18px;
-}
-
-.dash-item.green { background: linear-gradient(135deg, #00b894, #00cec9); }
-.dash-item.blue  { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
-
-.dash-item.total {
-    grid-column: span 2;
-    background: #111;
-    text-align: center;
-}
-
-.dash-item.total b {
-    font-size: 24px;
-    color: var(--gold);
-}
-
-/* ================= TRANSAKSI ================= */
-.trx-card {
-    padding: 14px;
-    border-radius: var(--radius);
-    background: #fff;
-    border: 1px solid #eee;
-    margin-bottom: 12px;
-}
-
-.trx-name {
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.trx-price {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--primary);
-}
-
-
-/* ===============================
-   LOGIN OVERLAY FIX (WAJIB)
-   =============================== */
-
-#loginOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    background: #ffffff;
-}
-
-/* Kunci UI saat login */
-body.login-active .header-main,
-body.login-active .tabs-container,
-body.login-active .content {
-    display: none !important;
-}
-
-/* Robot biar kalem */
-.robot-head {
-    position: absolute;
-    right: -40px;
-    top: 20px;
-    width: 80px;
-    opacity: 0.06;
-    z-index: 0;
-}
 
     </style>
 </head>
@@ -387,11 +236,11 @@ body.login-active .content {
         </div>
     </div>
 
-<div class="tabs-container">
-    <button class="tab-btn active" onclick="openTab('tab1', this)">🚀 PENJUALAN</button>
-    <button class="tab-btn" onclick="openTab('tab2', this)">📊 DATA</button>
-    <button class="tab-btn" onclick="openTab('tab3', this)">⚙️ SETTING</button>
-</div>
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="openTab('tab1', this)">🚀 PENJUALAN</button>
+        <button class="tab-btn" onclick="openTab('tab2', this)">📊 DATA</button>
+        <button class="tab-btn" onclick="openTab('tab3', this)">⚙️ SETTING</button>
+    </div>
 
     <div id="tab1" class="content active">
         <div class="card">
@@ -447,7 +296,6 @@ body.login-active .content {
         </div>
     </div>
     
-
     <div id="tab2" class="content">
         <div class="card">
             <h3>STOK MONITORING</h3>
@@ -529,7 +377,7 @@ body.login-active .content {
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.22 
+    VERSI APLIKASI: 1.0.16
             </div>
         </div>
     </div>
@@ -682,32 +530,24 @@ const DB_VERSION = 1;
     }
 
     function checkLogin() {
-    if (db.settings.pin && db.settings.pin.toString().length === 4) {
-        document.getElementById('loginOverlay').style.display = 'flex';
-        document.body.classList.add('login-active');
-    }
-}
-
-    function enterPin(n) {
-    if (n === -1) {
-        enteredPin = enteredPin.slice(0, -1);
-    } else if (enteredPin.length < 4) {
-        enteredPin += n;
-    }
-
-    updatePinDots();
-
-    if (enteredPin.length === 4) {
-        if (enteredPin === db.settings.pin.toString()) {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.body.classList.remove('login-active');
-        } else {
-            alert("PIN KEAMANAN SALAH!");
-            enteredPin = "";
-            updatePinDots();
+        if(db.settings.pin && db.settings.pin.toString().length === 4) {
+            document.getElementById('loginOverlay').style.display = 'flex';
         }
     }
-}
+
+    function enterPin(n) {
+        if(n === -1) enteredPin = enteredPin.slice(0, -1);
+        else if(enteredPin.length < 4) enteredPin += n;
+        updatePinDots();
+        if(enteredPin.length === 4) {
+            if(enteredPin === db.settings.pin.toString()) {
+                document.getElementById('loginOverlay').style.display = 'none';
+            } else {
+                alert("PIN KEAMANAN SALAH!");
+                enteredPin = ""; updatePinDots();
+            }
+        }
+    }
 
     function updatePinDots() {
         let dots = document.querySelectorAll('.pin-dot');
@@ -1068,101 +908,125 @@ const DB_VERSION = 1;
     }
 
     function copyReport() {
-    const tglRaw = document.getElementById('filterTgl').value;
-    if (!tglRaw) return alert("Pilih tanggal dulu!");
+    let tglRaw = document.getElementById('filterTgl').value;
+    if(!tglRaw) return alert("Pilih tanggal dulu!");
 
-    const p = tglRaw.split("-");
-    const tglDb = `${p[2]}-${p[1]}-${p[0]}`;
-    const tglIndo = `${p[2]}/${p[1]}/${p[0]}`;
+    // Ubah format tanggal jadi 06/02/2026
+    let p = tglRaw.split('-');
+    let tglIndo = `${p[2]}/${p[1]}/${p[0]}`; // DD/MM/YYYY
+    let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`; // Format di database (DD-MM-YYYY)
 
-    const dataHarian = db.rekap.filter(r => r.tgl === tglDb);
-    if (dataHarian.length === 0) return alert("Data hari ini kosong!");
+    let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
+    if (dataHarian.length === 0) return alert("Data hari ini masih kosong!");
 
-    const data = { CASH: {}, TRANSFER: {} };
-
-    dataHarian.forEach(trx => {
-        trx.items.forEach(it => {
-            if (it.nama.includes("LINKAJA") || it.nama.includes("SEVEN")) return;
-
-            const produk = it.nama.toUpperCase();
-            const metode = trx.metode;
-
-            if (!data[metode][produk]) {
-                data[metode][produk] = [];
-            }
-
-            data[metode][produk].push({
-                nama: trx.nama,
-                pcs: it.qty
-            });
-        });
-    });
-
-    let output = `📋 LAPORAN PENJUALAN HARIAN\n`;
-    output += `TANGGAL : ${tglIndo}\n\n`;
-
+    // --- URUTAN SESUAI FOTO KATALOG ---
+    const priority = [
+        "4GB 1H", 
+        "5GB 2H", 
+        "4GB 3H", 
+        "3GB 5H", 
+        "8GB 5H", 
+        "12GB 30H", 
+        "SA 3GB", 
+        "SA BYU 3GB", 
+        "LINKAJA", 
+        "SEVEN"
+    ];
+    
+    let report = `*LAPORAN PENJUALAN - ${tglIndo}*\n`;
+    let grandTotalSemua = 0;
     let totalCash = 0;
     let totalTf = 0;
-    let totalProduk = {};
 
-    // ===== CASH =====
-    output += "🟢 CASH\n";
-    if (Object.keys(data.CASH).length === 0) {
-        output += "(kosong)\n";
-    } else {
-        Object.keys(data.CASH).sort().forEach(produk => {
-            output += `\n${produk}\n`;
-            let subtotal = 0;
-
-            data.CASH[produk].forEach(b => {
-                output += `- ${b.nama} (${b.pcs} pcs)\n`;
-                subtotal += b.pcs;
-                totalCash += b.pcs;
-                totalProduk[produk] = (totalProduk[produk] || 0) + b.pcs;
+    // --- 1. BAGIAN CASH (TUNAI) ---
+    report += `\n------------------------\n💵 *CASH (TUNAI)*\n`;
+    let cashData = dataHarian.filter(ot => ot.metode === "CASH");
+    
+    if (cashData.length > 0) {
+        priority.forEach(prod => {
+            let buyers = [];
+            cashData.forEach(ot => {
+                ot.items.forEach(it => {
+                    if (it.nama === prod) buyers.push({ nama: ot.nama, qty: it.qty, harga: it.harga });
+                });
             });
 
-            output += `TOTAL PCS ${produk} : ${subtotal} pcs\n`;
+            if (buyers.length > 0) {
+                buyers.sort((a, b) => b.qty - a.qty); // Urutkan dari yg beli terbanyak
+                
+                // Ubah nama SA jadi KARTU di laporan
+                let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
+                report += `\n*${displayName}*\n`;
+                
+                let subQty = 0;
+                buyers.forEach(b => {
+                    report += `- ${b.nama}: ${b.qty} Pcs\n`;
+                    subQty += b.qty;
+                    totalCash += (b.qty * b.harga);
+                });
+                report += `*Total ${displayName}: ${subQty} Pcs*\n`;
+            }
         });
-    }
+    } else { report += `_(Nihil)_\n`; }
+    report += `\n*SUBTOTAL CASH: RP ${formatRibuan(totalCash)}*\n`;
 
-    // ===== TRANSFER =====
-    output += "\n🔴 TRANSFER\n";
-    if (Object.keys(data.TRANSFER).length === 0) {
-        output += "(kosong)\n";
-    } else {
-        Object.keys(data.TRANSFER).sort().forEach(produk => {
-            output += `\n${produk}\n`;
-            let subtotal = 0;
+    // --- 2. BAGIAN TRANSFER (TF) ---
+    report += `\n------------------------\n🏦 *TRANSFER (TF)*\n`;
+    let tfData = dataHarian.filter(ot => ot.metode === "TRANSFER");
 
-            data.TRANSFER[produk].forEach(b => {
-                output += `- ${b.nama} (${b.pcs} pcs)\n`;
-                subtotal += b.pcs;
-                totalTf += b.pcs;
-                totalProduk[produk] = (totalProduk[produk] || 0) + b.pcs;
+    if (tfData.length > 0) {
+        priority.forEach(prod => {
+            let buyers = [];
+            tfData.forEach(ot => {
+                ot.items.forEach(it => {
+                    if (it.nama === prod) {
+                        let namaClean = ot.nama.replace("(TF)", "").replace("(tf)", "").trim();
+                        buyers.push({ nama: namaClean + " (tf)", qty: it.qty, harga: it.harga });
+                    }
+                });
             });
 
-            output += `TOTAL PCS ${produk} : ${subtotal} pcs\n`;
+            if (buyers.length > 0) {
+                buyers.sort((a, b) => b.qty - a.qty);
+                
+                let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
+                report += `\n*${displayName}*\n`;
+
+                let subQty = 0;
+                buyers.forEach(b => {
+                    report += `- ${b.nama}: ${b.qty} Pcs\n`;
+                    subQty += b.qty;
+                    totalTf += (b.qty * b.harga);
+                });
+                report += `*Total ${displayName}: ${subQty} Pcs*\n`;
+            }
         });
-    }
+    } else { report += `_(Nihil)_\n`; }
+    report += `\n*SUBTOTAL TF: RP ${formatRibuan(totalTf)}*\n`;
 
-    // ===== FOOTER =====
-    output += "\n====================\n";
-    output += `TOTAL PCS CASH : ${totalCash} pcs\n`;
-    output += `TOTAL PCS TF   : ${totalTf} pcs\n`;
-    output += "--------------------\n";
+    // --- FOOTER ---
+    grandTotalSemua = totalCash + totalTf;
+    report += `\n------------------------\n🔥 *GRAND TOTAL: RP ${formatRibuan(grandTotalSemua)}*\n------------------------\nGenerated by Digital TAP Bagan Batu`;
 
-    Object.keys(totalProduk).sort().forEach(p => {
-        output += `TOTAL ${p} : ${totalProduk[p]} pcs\n`;
-    });
-
-    output += "--------------------\n";
-    output += `TOTAL SEMUA : ${totalCash + totalTf} pcs\n`;
-    output += "--------------------\n";
-    output += "Generated by Sales TAP Bagan Batu";
-
-    navigator.clipboard.writeText(output)
-        .then(() => alert("Laporan harian siap disalin"));
+    navigator.clipboard.writeText(report).then(() => alert("Laporan Siap! Paste di WA sekarang."));
 }
+
+    function copyStockReport() {
+        let tgl = document.getElementById('filterTgl').value;
+        let txt = `*STOK & PENJUALAN SALES BAGAN BATU*\n*TANGGAL: ${tgl}*\n\n`;
+        let lakuPerTanggal = {}; 
+        db.rekap.filter(i => i.tgl === tgl.split('-').reverse().join('-')).forEach(ot => {
+             ot.items.forEach(it => { lakuPerTanggal[it.nama] = (lakuPerTanggal[it.nama] || 0) + it.qty });
+        });
+        db.catalog.forEach(v => {
+            if(!v.nama.includes("LINKAJA")) {
+                let sisa = db.stok[v.nama]||0;
+                let laku = lakuPerTanggal[v.nama]||0;
+                txt += `${v.nama}\nTerjual: ${laku} | Sisa: ${sisa}\n\n`;
+            }
+        });
+        navigator.clipboard.writeText(txt).then(() => alert("Status Stok Disalin!"));
+    }
 
     function openTab(id, btn) {
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -1223,12 +1087,8 @@ const DB_VERSION = 1;
         alert("Tanggal Update Stok Berhasil Diset ke: " + tglBaru);
     }
 
- 
+    
 </script>
 
 </body>
 </html>
-
-
-
-
