@@ -164,7 +164,16 @@
         .num-btn { width: 70px; height: 70px; border-radius: 50%; border: 1.5px solid #f0f0f0; background: #fff; font-size: 24px; font-weight: 700; color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .num-btn:active { background: var(--primary); color: white; border-color: var(--primary); }
         
-                
+                        /* PENGHILANG LINGKARAN & HIGHLIGHT MERAH */
+        input[type="date"], 
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-appearance: none; /* Mematikan gaya bawaan browser */
+            cursor: pointer;
+        }
 
         /* Hilangkan garis fokus saat kotak diklik */
         input:focus {
@@ -367,7 +376,9 @@
             </div>
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
-            <div id="appVersion" ... >VERSI APLIKASI: 1.0.17</div>
+            <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
+    VERSI APLIKASI: 1.0.16
+            </div>
         </div>
     </div>
 
@@ -629,52 +640,70 @@ const DB_VERSION = 1;
         document.getElementById('targetSisa').innerText = pct >= 100 ? "🎯 GOAL ACHIEVED!" : `Kurang: Rp ${formatRibuan(sisa)}`;
     }
 
-        function renderStokSystem(lakuPerTanggal) {
-        // Fix Kalender di Setting
+    function renderStokSystem(lakuPerTanggal) {
+    
         if(db.lastUpdate) {
-            let p = db.lastUpdate.split('-');
-            // Urutan Tahun-Bulan-Tanggal agar kalender HTML bisa baca
-            document.getElementById('tglMasterStok').value = p[2] + "-" + p[1] + "-" + p[0]; 
-        }
-
-        // 1. Update Tabel di Tab DATA
-        document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
-            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-            let awal = db.stokAwal[v.nama] || 0;
-            let terjual = lakuPerTanggal[v.nama] || 0;
-            let sisa = awal - terjual;
-            let color = sisa <= 5 ? 'red' : 'green';
-            return `<tr>
-                <td>${v.nama}</td>
-                <td style="text-align:center;">${awal}</td>
-                <td style="text-align:center;">${terjual}</td>
-                <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
-            </tr>`;
-        }).join('');
-        
-        // 2. Update Tabel Input di Tab SETTING
-        document.getElementById('stokEditorBulk').innerHTML = `
-            <thead>
-                <tr>
-                    <th style="font-size:9px;">PRODUK</th>
-                    <th style="font-size:9px; text-align:center;">STOK</th>
-                    <th style="font-size:9px; text-align:center;">+ TAMBAH</th>
-                </tr>
-            </thead>
-        ` + db.catalog.map(v => {
-            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-            return `<tr>
-                <td style="padding:10px; font-size:11px;">${v.nama}</td>
-                <td>
-                    <input type="number" style="margin:0; text-align:center; padding:5px; font-size:12px;" value="${db.stokAwal[v.nama]||0}" onchange="db.stokAwal['${v.nama}']=parseInt(this.value)||0;saveToDisk();renderAll();">
-                </td>
-                <td>
-                    <input type="number" style="margin:0; text-align:center; padding:5px; font-size:12px;" placeholder="+ STOK" onchange="let t=parseInt(this.value)||0;db.stokAwal['${v.nama}']=(db.stokAwal['${v.nama}']||0)+t;saveToDisk();this.value='';renderAll();">
-                </td>
-            </tr>`;
-        }).join('');
+        let p = db.lastUpdate.split('-');
+        document.getElementById('tglMasterStok').value = p[2] + "-" + p[1] + "-" + p[0]; 
+        // Baris di atas memastikan kalender terisi otomatis saat dibuka
     }
 
+    
+    // 1. Update Tabel di Tab DATA
+    document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
+    if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+
+    let awal = db.stokAwal[v.nama] || 0;
+    let terjual = lakuPerTanggal[v.nama] || 0;
+    let sisa = awal - terjual;
+
+    let color = sisa <= 5 ? 'red' : 'green';
+
+    return `<tr>
+        <td>${v.nama}</td>
+        <td style="text-align:center;">${awal}</td>
+        <td style="text-align:center;">${terjual}</td>
+        <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
+    </tr>`;
+}).join('');
+    
+    // 2. Update Tabel Input di Tab SETTING
+    document.getElementById('stokEditorBulk').innerHTML = `
+        <thead>
+            <tr>
+                <th style="font-size:9px;">PRODUK</th>
+                <th style="font-size:9px; text-align:center;">STOK</th>
+                <th style="font-size:9px; text-align:center;">+ TAMBAH</th>
+            </tr>
+        </thead>
+    ` + db.catalog.map(v => {
+        if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+        return `<tr>
+            <td style="padding:10px; font-size:11px;">${v.nama}</td>
+            <td>
+                <input type="number"
+                       style="margin:0; text-align:center; padding:5px; font-size:12px;"
+                       value="${db.stokAwal[v.nama]||0}"
+                       onchange="
+                           db.stokAwal['${v.nama}'] = parseInt(this.value) || 0;
+                           saveToDisk();
+                           renderAll();
+                       ">
+            </td>
+            <td>
+                <input type="number"
+                       style="margin:0; text-align:center; padding:5px; font-size:12px;"
+                       placeholder="+ STOK"
+                       onchange="
+                           let tambah = parseInt(this.value) || 0;
+                           db.stokAwal['${v.nama}'] = (db.stokAwal['${v.nama}'] || 0) + tambah;
+                           saveToDisk();
+                           this.value='';
+                           renderAll();
+                       ">
+            </td>
+        </tr>`;
+    }).join('');
 
     // 3. Update Daftar Katalog
     document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
@@ -683,24 +712,19 @@ const DB_VERSION = 1;
             <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
         </div>
     `).join('');
-} 
-
+}
 
     function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
     function parseNo(s) { return parseInt(s.toString().replace(/\./g, '')) || 0; }
     function formatInput(el) { el.value = formatRibuan(parseNo(el.value)); }
     
-        function setToday() { 
-        let d = new Date();
-        let y = d.getFullYear();
-        let m = String(d.getMonth() + 1).padStart(2, '0');
-        let day = String(d.getDate()).padStart(2, '0');
-        let iso = `${y}-${m}-${day}`; 
+    function setToday() { 
+        let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        let iso = d.toISOString().slice(0,10);
         document.getElementById('tanggalInput').value = iso;
         syncDateAndRender(iso);
     }
-
 
     function updateHarga() { 
         const sel = document.getElementById('pilihanVoucher');
@@ -715,7 +739,153 @@ const DB_VERSION = 1;
         document.getElementById('outletList').innerHTML = outlets.map(n => `<option value="${n}">`).join('');
     }
 
+    function addItem() {
+        const sel = document.getElementById('pilihanVoucher');
+        const qty = parseNo(document.getElementById('jumlahPcs').value);
+        if(!qty) return;
+        
+        let namaItem = sel.options[sel.selectedIndex].text;
+        if(!namaItem.includes("LINKAJA") && !namaItem.includes("SEVEN")) {
+            let sisa = db.stok[namaItem] || 0;
+            if (sisa < qty) { if(!confirm(`⚠️ STOK TIPIS!\nSisa: ${sisa}, Diminta: ${qty}.\nTetap Paksa?`)) return; }
+            db.stok[namaItem] = sisa - qty;
+        }
 
+        tempItems.push({
+            nama: namaItem,
+            harga: parseNo(document.getElementById('hargaDisplay').value),
+            qty: qty
+        });
+        document.getElementById('jumlahPcs').value = "";
+        renderTemp();
+        document.getElementById('mainSaveBtn').style.display = "block";
+    }
+
+    function renderTemp() {
+        document.getElementById('tempList').innerHTML = tempItems.map((it, i) => `
+            <div class="temp-item">
+                <span>${it.nama}</span>
+                <span>
+                    <span class="temp-qty">${formatRibuan(it.qty)} Pcs</span>
+                    <span onclick="cancelTempItem(${i})" style="color:red; margin-left:15px; cursor:pointer;">✖</span>
+                </span>
+            </div>`).join('');
+        if(tempItems.length === 0) document.getElementById('mainSaveBtn').style.display = "none";
+    }
+
+    function cancelTempItem(i) {
+        let it = tempItems[i];
+        if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
+            db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty;
+        }
+        tempItems.splice(i,1); renderTemp();
+    }
+
+    function saveTrx() {
+        const nama = document.getElementById('namaOutlet').value.toUpperCase();
+        if(!nama) return alert("Masukkan Nama Outlet!");
+        
+        const now = new Date();
+        const data = {
+            nama: nama,
+            metode: document.getElementById('metodeBayar').value,
+            items: [...tempItems],
+            jam: now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'),
+            tgl: document.getElementById('tanggalInput').value.split('-').reverse().join('-')
+        };
+
+        if(editIdx > -1) { db.rekap[editIdx] = data; editIdx = -1; } 
+        else { db.rekap.push(data); }
+
+        tempItems = []; document.getElementById('namaOutlet').value = ""; document.getElementById('tempList').innerHTML = "";
+        saveToDisk(); renderAll(); renderOutletSuggestions();
+        document.getElementById('mainSaveBtn').innerText = "SIMPAN DATA";
+        document.getElementById('mainSaveBtn').style.display = "none";
+    }
+
+    function showStruk(i) {
+    const d = db.rekap[i]; 
+    let total = 0; 
+    
+    // Header WhatsApp (Tulisan Utuh TRANSFER / CASH)
+    let waText = `*MEDIA SWARA PRIMA*\n*TAP BAGAN BATU*\n------------------------\n`;
+    waText += `Outlet : ${d.nama}\n`;
+    waText += `Metode : ${d.metode}\n`; 
+    waText += `Waktu  : ${d.tgl} / ${d.jam}\n------------------------\n`;
+    
+    // Isi data ke struk HTML
+    document.getElementById('rName').innerText = d.nama;
+    document.getElementById('rMetode').innerText = d.metode; // Mengisi baris Metode yang kita buat tadi
+    document.getElementById('rDateOnly').innerText = d.tgl;
+    document.getElementById('rTimeOnly').innerText = d.jam;
+    document.getElementById('rNo').innerText = generateReceiptNo(d.tgl);
+    
+    document.getElementById('rList').innerHTML = d.items.map(it => {
+        let sub = it.harga * it.qty; total += sub;
+        let qtyText = it.qty + (it.nama.includes("LINKAJA") ? "" : " Pcs");
+        let priceText = "x " + formatRibuan(it.harga);
+        waText += `${it.nama}\n(${qtyText} ${priceText}) = ${formatRibuan(sub)}\n`;
+        
+        return `<div style="margin-bottom: 5px;">
+            <div style="font-weight: 800;">${it.nama}</div>
+            <div class="rec-row">
+                <span>${qtyText} ${priceText}</span>
+                <span>${formatRibuan(sub)}</span>
+            </div>
+        </div>`;
+    }).join('');
+    
+    document.getElementById('rTotal').innerText = formatRibuan(total);
+    waText += `------------------------\n*TOTAL: RP ${formatRibuan(total)}*\n------------------------\nTerima kasih ya boskuuu🔥🔥🔥`;
+    
+    document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`);
+    document.getElementById('receiptOverlay').style.display = 'flex';
+}
+
+    function editTrx(i) {
+        let d = db.rekap[i]; editIdx = i;
+        document.getElementById('namaOutlet').value = d.nama;
+        d.items.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty; });
+        tempItems = [...d.items]; 
+        tempItems.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] -= it.qty; });
+        renderTemp();
+        document.getElementById('mainSaveBtn').innerText = "UPDATE DATA SEKARANG";
+        document.getElementById('mainSaveBtn').style.display = "block";
+        openTab('tab1', document.querySelectorAll('.tab-btn')[0]);
+    }
+    
+    function delTrx(i) { 
+    if (!confirm("Hapus transaksi?\n( Bisa UNDO sekali )")) return;
+
+    // simpan transaksi terakhir
+    lastDeletedTrx = {
+        data: db.rekap[i],
+        index: i
+    };
+
+    // kembalikan stok
+    db.rekap[i].items.forEach(it => {
+        if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
+            db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty;
+        }
+    });
+
+    // hapus transaksi
+    db.rekap.splice(i, 1);
+    saveToDisk();
+    renderAll();
+
+    // undo manual
+    if (confirm("Transaksi terhapus.\nKlik OK untuk UNDO.")) {
+        db.rekap.splice(lastDeletedTrx.index, 0, lastDeletedTrx.data);
+        lastDeletedTrx = null;
+        saveToDisk();
+        renderAll();
+        alert("Transaksi berhasil dikembalikan.");
+    } else {
+        lastDeletedTrx = null;
+    }
+}
     
     function addKatalog() {
         let n = document.getElementById('addName').value.toUpperCase();
@@ -737,158 +907,126 @@ const DB_VERSION = 1;
         }).join('');
     }
 
-        function copyReport() {
-        let tglRaw = document.getElementById('filterTgl').value;
-        if(!tglRaw) return alert("Pilih tanggal dulu!");
+    function copyReport() {
+    let tglRaw = document.getElementById('filterTgl').value;
+    if(!tglRaw) return alert("Pilih tanggal dulu!");
 
-        let p = tglRaw.split('-');
-        let tglIndo = `${p[2]}/${p[1]}/${p[0]}`; 
-        let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`; 
+    // Ubah format tanggal jadi 06/02/2026
+    let p = tglRaw.split('-');
+    let tglIndo = `${p[2]}/${p[1]}/${p[0]}`; // DD/MM/YYYY
+    let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`; // Format di database (DD-MM-YYYY)
 
-        let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
-        if (dataHarian.length === 0) return alert("Data hari ini masih kosong!");
+    let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
+    if (dataHarian.length === 0) return alert("Data hari ini masih kosong!");
 
-        const priority = [
-            "4GB 1H", "5GB 2H", "4GB 3H", "3GB 5H", "8GB 5H", 
-            "12GB 30H", "SA 3GB", "SA BYU 3GB", "LINKAJA", "SEVEN"
-        ];
-        
-        let report = `*LAPORAN PENJUALAN HARIAN*\nTANGGAL : ${tglIndo}\n`;
-        
-        let totalPcsCash = 0;
-        let totalPcsTf = 0;
-        let totalOmset = 0;
-        
-        // Objek untuk menampung total per produk (Gabungan Cash + TF)
-        let summaryProduk = {};
-        priority.forEach(k => summaryProduk[k] = 0);
+    // --- URUTAN SESUAI FOTO KATALOG ---
+    const priority = [
+        "4GB 1H", 
+        "5GB 2H", 
+        "4GB 3H", 
+        "3GB 5H", 
+        "8GB 5H", 
+        "12GB 30H", 
+        "SA 3GB", 
+        "SA BYU 3GB", 
+        "LINKAJA", 
+        "SEVEN"
+    ];
+    
+    let report = `*LAPORAN PENJUALAN - ${tglIndo}*\n`;
+    let grandTotalSemua = 0;
+    let totalCash = 0;
+    let totalTf = 0;
 
-        // --- 1. BAGIAN CASH ---
-        report += `\n------------------------\n💵 *CASH (TUNAI)*\n`;
-        let cashData = dataHarian.filter(ot => ot.metode === "CASH");
-        
-        if (cashData.length > 0) {
-            priority.forEach(prod => {
-                let buyers = [];
-                cashData.forEach(ot => {
-                    ot.items.forEach(it => {
-                        if (it.nama === prod) buyers.push({ nama: ot.nama, qty: it.qty });
-                    });
-                });
-
-                if (buyers.length > 0) {
-                    buyers.sort((a, b) => b.qty - a.qty);
-                    let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
-                    report += `\n*${displayName}*\n`;
-                    
-                    let subQty = 0;
-                    buyers.forEach(b => {
-                        report += `- ${b.nama} (${b.qty} pcs)\n`;
-                        subQty += b.qty;
-                    });
-                    
-                    totalPcsCash += subQty;
-                    summaryProduk[prod] += subQty; // Tambah ke ringkasan bawah
-                    report += `*TOTAL PCS ${displayName} : ${subQty} pcs*\n`;
-                }
-            });
-        } else { report += `_(Kosong)_\n`; }
-
-        // --- 2. BAGIAN TRANSFER ---
-        report += `\n------------------------\n🏦 *TRANSFER (TF)*\n`;
-        let tfData = dataHarian.filter(ot => ot.metode === "TRANSFER");
-
-        if (tfData.length > 0) {
-            priority.forEach(prod => {
-                let buyers = [];
-                tfData.forEach(ot => {
-                    ot.items.forEach(it => {
-                        if (it.nama === prod) {
-                            let namaClean = ot.nama.replace("(TF)", "").replace("(tf)", "").trim();
-                            buyers.push({ nama: namaClean, qty: it.qty });
-                        }
-                    });
-                });
-
-                if (buyers.length > 0) {
-                    buyers.sort((a, b) => b.qty - a.qty);
-                    let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
-                    report += `\n*${displayName}*\n`;
-
-                    let subQty = 0;
-                    buyers.forEach(b => {
-                        report += `- ${b.nama} (${b.qty} pcs)\n`;
-                        subQty += b.qty;
-                    });
-                    
-                    totalPcsTf += subQty;
-                    summaryProduk[prod] += subQty; // Tambah ke ringkasan bawah
-                    report += `*TOTAL PCS ${displayName} : ${subQty} pcs*\n`;
-                }
-            });
-        } else { report += `_(Kosong)_\n`; }
-
-        // --- FOOTER RINGKASAN ---
-        let totalSemuaPcs = totalPcsCash + totalPcsTf;
-        
-        // Hitung Grand Total Uang (Opsional, kalau mau dihapus hapus baris ini)
-        dataHarian.forEach(ot => {
-            ot.items.forEach(it => totalOmset += (it.harga * it.qty));
-        });
-
-        report += `\n====================\n`;
-        report += `TOTAL PCS CASH : ${totalPcsCash} pcs\n`;
-        report += `TOTAL PCS TF   : ${totalPcsTf} pcs\n`;
-        report += `--------------------\n`;
-        
-        // Loop Ringkasan Per Produk
+    // --- 1. BAGIAN CASH (TUNAI) ---
+    report += `\n------------------------\n💵 *CASH (TUNAI)*\n`;
+    let cashData = dataHarian.filter(ot => ot.metode === "CASH");
+    
+    if (cashData.length > 0) {
         priority.forEach(prod => {
-            if(summaryProduk[prod] > 0) {
+            let buyers = [];
+            cashData.forEach(ot => {
+                ot.items.forEach(it => {
+                    if (it.nama === prod) buyers.push({ nama: ot.nama, qty: it.qty, harga: it.harga });
+                });
+            });
+
+            if (buyers.length > 0) {
+                buyers.sort((a, b) => b.qty - a.qty); // Urutkan dari yg beli terbanyak
+                
+                // Ubah nama SA jadi KARTU di laporan
                 let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
-                report += `TOTAL ${displayName} : ${summaryProduk[prod]} pcs\n`;
+                report += `\n*${displayName}*\n`;
+                
+                let subQty = 0;
+                buyers.forEach(b => {
+                    report += `- ${b.nama}: ${b.qty} Pcs\n`;
+                    subQty += b.qty;
+                    totalCash += (b.qty * b.harga);
+                });
+                report += `*Total ${displayName}: ${subQty} Pcs*\n`;
             }
         });
+    } else { report += `_(Nihil)_\n`; }
+    report += `\n*SUBTOTAL CASH: RP ${formatRibuan(totalCash)}*\n`;
 
-        report += `--------------------\n`;
-        report += `TOTAL SEMUA : ${totalSemuaPcs} pcs\n`;
-        report += `--------------------\n`;
-        // report += `OMSET : RP ${formatRibuan(totalOmset)}\n`; // Aktifkan jika butuh uang
-        report += `Generated by Sales TAP Bagan Batu`;
+    // --- 2. BAGIAN TRANSFER (TF) ---
+    report += `\n------------------------\n🏦 *TRANSFER (TF)*\n`;
+    let tfData = dataHarian.filter(ot => ot.metode === "TRANSFER");
 
-        navigator.clipboard.writeText(report).then(() => alert("Laporan Harian Siap!"));
-    }
+    if (tfData.length > 0) {
+        priority.forEach(prod => {
+            let buyers = [];
+            tfData.forEach(ot => {
+                ot.items.forEach(it => {
+                    if (it.nama === prod) {
+                        let namaClean = ot.nama.replace("(TF)", "").replace("(tf)", "").trim();
+                        buyers.push({ nama: namaClean + " (tf)", qty: it.qty, harga: it.harga });
+                    }
+                });
+            });
 
-
-            function copyStockReport() {
-        let tglRaw = document.getElementById('filterTgl').value;
-        if(!tglRaw) return alert("Pilih tanggal dulu!");
-        let p = tglRaw.split('-');
-        let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`;
-        
-        let txt = `*STOK & PENJUALAN - ${p[2]}/${p[1]}/${p[0]}*\n\n`;
-        let laku = {}; 
-        
-        // Hitung barang laku hari ini
-        db.rekap.filter(i => i.tgl === filterTglStr).forEach(ot => {
-             ot.items.forEach(it => { laku[it.nama] = (laku[it.nama] || 0) + it.qty });
-        });
-
-        // Hitung stok sisa berdasarkan (Stok Awal - Laku)
-        db.catalog.forEach(v => {
-            if(!v.nama.includes("LINKAJA") && !v.nama.includes("SEVEN")) {
-                let awal = db.stokAwal[v.nama] || 0;
-                let terjual = laku[v.nama] || 0;
-                let sisa = awal - terjual;
+            if (buyers.length > 0) {
+                buyers.sort((a, b) => b.qty - a.qty);
                 
-                // Hanya tampilkan jika stok awal ada atau ada penjualan
-                if(awal > 0 || terjual > 0) {
-                    txt += `*${v.nama}*\nAwal: ${awal} | Laku: ${terjual} | Sisa: ${sisa}\n\n`;
-                }
+                let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
+                report += `\n*${displayName}*\n`;
+
+                let subQty = 0;
+                buyers.forEach(b => {
+                    report += `- ${b.nama}: ${b.qty} Pcs\n`;
+                    subQty += b.qty;
+                    totalTf += (b.qty * b.harga);
+                });
+                report += `*Total ${displayName}: ${subQty} Pcs*\n`;
+            }
+        });
+    } else { report += `_(Nihil)_\n`; }
+    report += `\n*SUBTOTAL TF: RP ${formatRibuan(totalTf)}*\n`;
+
+    // --- FOOTER ---
+    grandTotalSemua = totalCash + totalTf;
+    report += `\n------------------------\n🔥 *GRAND TOTAL: RP ${formatRibuan(grandTotalSemua)}*\n------------------------\nGenerated by Digital TAP Bagan Batu`;
+
+    navigator.clipboard.writeText(report).then(() => alert("Laporan Siap! Paste di WA sekarang."));
+}
+
+    function copyStockReport() {
+        let tgl = document.getElementById('filterTgl').value;
+        let txt = `*STOK & PENJUALAN SALES BAGAN BATU*\n*TANGGAL: ${tgl}*\n\n`;
+        let lakuPerTanggal = {}; 
+        db.rekap.filter(i => i.tgl === tgl.split('-').reverse().join('-')).forEach(ot => {
+             ot.items.forEach(it => { lakuPerTanggal[it.nama] = (lakuPerTanggal[it.nama] || 0) + it.qty });
+        });
+        db.catalog.forEach(v => {
+            if(!v.nama.includes("LINKAJA")) {
+                let sisa = db.stok[v.nama]||0;
+                let laku = lakuPerTanggal[v.nama]||0;
+                txt += `${v.nama}\nTerjual: ${laku} | Sisa: ${sisa}\n\n`;
             }
         });
         navigator.clipboard.writeText(txt).then(() => alert("Status Stok Disalin!"));
     }
-
 
     function openTab(id, btn) {
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -953,4 +1091,4 @@ const DB_VERSION = 1;
 </script>
 
 </body>
-</html>tml>
+</html>
