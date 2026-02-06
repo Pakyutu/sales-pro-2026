@@ -133,9 +133,33 @@
         .dash-item.green { background: linear-gradient(135deg, #00b894, #00cec9); }
         .dash-item.blue { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
         .dash-item.total { background: #1a1a1a; grid-column: span 2; align-items: center; text-align: center; border: 2px solid #333; }
-        .dash-item span { font-size: 10px; font-weight: 800; letter-spacing: 1px; opacity: 0.8; }
-        .dash-item b { font-size: 22px; margin-top: 8px; }
-        .dash-item.total b { font-size: 32px; color: var(--gold); text-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
+/* === DASHBOARD SIZE FIX (NORMAL & ENAK DILIHAT) === */
+
+.dash-item {
+    padding: 16px;              /* tadinya kegedean */
+}
+
+.dash-item span {
+    font-size: 10px;            /* tetap kecil, oke */
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    opacity: 0.85;
+}
+
+.dash-item b {
+    font-size: 20px;            /* 🔥 dari 22 → 20 */
+    margin-top: 6px;
+}
+
+.dash-item.total {
+    padding: 18px;              /* biar beda dikit */
+}
+
+.dash-item.total b {
+    font-size: 28px;            /* 🔥 dari 32 → 28 */
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(241, 196, 15, 0.25);
+}
 
         /* TRANSAKSI CARDS */
         .trx-card { background: #fff; padding: 20px; border-radius: var(--radius); border: 1px solid #f0f0f0; margin-bottom: 15px; box-shadow: var(--shadow-sm); }
@@ -1142,7 +1166,6 @@ const DB_VERSION = 1;
     }
 
 
-
 let helperLastReport = "";
 
 function susunHelper() {
@@ -1152,9 +1175,12 @@ function susunHelper() {
         return;
     }
 
-    const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
+    const lines = raw
+        .split("\n")
+        .map(l => l.trim())
+        .filter(l => l);
 
-    const data = {
+    let data = {
         CASH: {},
         TF: {}
     };
@@ -1164,10 +1190,11 @@ function susunHelper() {
 
     lines.forEach(line => {
 
-        // ===== BARIS NAMA =====
+        // ===== BARIS NAMA (CASH / TF) =====
         if (line.includes("✅") || line.includes("❌")) {
             currentName = line
-                .replace(/✅|❌/g, "")
+                .replace("✅", "")
+                .replace("❌", "")
                 .replace(/transfer|tf/gi, "")
                 .trim();
 
@@ -1178,89 +1205,72 @@ function susunHelper() {
         // ===== BARIS PRODUK =====
         if (!currentName) return;
 
-        // Ambil PCS = angka terakhir (pcs boleh ada / tidak)
-        const pcsMatch = line.match(/(\d+)\s*(pcs)?$/i);
-        if (!pcsMatch) return;
-        const pcs = parseInt(pcsMatch[1]);
+        const parts = line.split(/\s+/);
 
-        // Ambil produk = 2 kata pertama (VF 4/3, SA 3GB, dll)
-        const parts = line.split(" ").filter(Boolean);
-        if (parts.length < 2) return;
+        // ambil angka terakhir (20, walau tanpa "pcs")
+        const pcs = parseInt(parts.reverse().find(p => !isNaN(p)));
+        if (!pcs) return;
 
-        const produk = (parts[0] + " " + parts[1])
-            .replace(/\s+/g, " ")
-            .toUpperCase();
+        // ambil nama produk (VF 4/3, VF 5/2, SA 3GB, dll)
+        let produk = parts.reverse().join(" ");
+        produk = produk.match(/(VF\s*\d+\/\d+|SA\s*\d+\s*GB|VC\s*\d+\/\d+)/i);
+        if (!produk) return;
+
+        produk = produk[0];
 
         if (!data[currentPay][produk]) {
-            data[currentPay][produk] = [];
+            data[currentPay][produk] = { total: 0, buyers: [] };
         }
 
-        data[currentPay][produk].push({
+        data[currentPay][produk].total += pcs;
+        data[currentPay][produk].buyers.push({
             nama: currentName,
-            pcs
+            pcs: pcs
         });
     });
 
-    // ===== SUSUN OUTPUT =====
+    // ===== OUTPUT =====
     let output = "📋 REKAP HELPER\n\n";
     let totalCash = 0;
     let totalTf = 0;
-    let totalProduk = {};
 
     // ===== CASH =====
     output += "🟢 CASH\n";
     if (Object.keys(data.CASH).length === 0) {
-        output += "(kosong)\n";
+        output += "(KOSONG)\n";
     } else {
-        Object.keys(data.CASH).sort().forEach(produk => {
-            output += `\n${produk}\n`;
-            let subtotal = 0;
-
-            data.CASH[produk].forEach(b => {
-                output += `- ${b.nama} (${b.pcs} pcs)\n`;
-                subtotal += b.pcs;
+        Object.entries(data.CASH).forEach(([produk, info]) => {
+            output += `\n${produk.toUpperCase()}\n`;
+            info.buyers.forEach(b => {
+                output += `- ${b.nama.toUpperCase()} (${b.pcs} PCS)\n`;
                 totalCash += b.pcs;
-                totalProduk[produk] = (totalProduk[produk] || 0) + b.pcs;
             });
-
-            output += `TOTAL PCS ${produk} : ${subtotal} pcs\n`;
+            output += `TOTAL PCS ${produk.toUpperCase()} : ${info.total}\n`;
         });
     }
 
     // ===== TRANSFER =====
     output += "\n🔴 TRANSFER\n";
     if (Object.keys(data.TF).length === 0) {
-        output += "(kosong)\n";
+        output += "(KOSONG)\n";
     } else {
-        Object.keys(data.TF).sort().forEach(produk => {
-            output += `\n${produk}\n`;
-            let subtotal = 0;
-
-            data.TF[produk].forEach(b => {
-                output += `- ${b.nama} (${b.pcs} pcs)\n`;
-                subtotal += b.pcs;
+        Object.entries(data.TF).forEach(([produk, info]) => {
+            output += `\n${produk.toUpperCase()}\n`;
+            info.buyers.forEach(b => {
+                output += `- ${b.nama.toUpperCase()} (${b.pcs} PCS)\n`;
                 totalTf += b.pcs;
-                totalProduk[produk] = (totalProduk[produk] || 0) + b.pcs;
             });
-
-            output += `TOTAL PCS ${produk} : ${subtotal} pcs\n`;
+            output += `TOTAL PCS ${produk.toUpperCase()} : ${info.total}\n`;
         });
     }
 
     // ===== FOOTER =====
     output += "\n====================\n";
-    output += `TOTAL PCS CASH : ${totalCash} pcs\n`;
-    output += `TOTAL PCS TF   : ${totalTf} pcs\n`;
+    output += `TOTAL PCS CASH : ${totalCash}\n`;
+    output += `TOTAL PCS TF   : ${totalTf}\n`;
+    output += `TOTAL SEMUA    : ${totalCash + totalTf}\n`;
     output += "--------------------\n";
-
-    Object.keys(totalProduk).sort().forEach(p => {
-        output += `TOTAL ${p} : ${totalProduk[p]} pcs\n`;
-    });
-
-    output += "--------------------\n";
-    output += `TOTAL SEMUA : ${totalCash + totalTf} pcs\n`;
-    output += "--------------------\n";
-    output += "Generated by Helper TAP Bagan Batu";
+    output += "GENERATED BY HELPER TAP BAGAN BATU";
 
     helperLastReport = output;
     document.getElementById("helperResult").innerText = output;
