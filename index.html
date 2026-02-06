@@ -209,42 +209,6 @@
             border-color: var(--primary) !important;
         }
 
-/* ===============================
-   HELPER LAYOUT FIX (NORMAL VIEW)
-   =============================== */
-
-/* Card global tetap rapi */
-.card {
-    width: 100%;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 18px;
-    box-sizing: border-box;
-}
-
-/* Tab Helper */
-#tabHelper {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-/* Card Helper — lebih kecil & natural */
-#tabHelper .card {
-    width: 100%;
-    max-width: 420px;   /* 👈 ini kunci biar nggak zoom */
-    margin: 0 auto;
-    padding: 16px;      /* 👈 lebih adem */
-    box-sizing: border-box;
-}
-
-/* Semua elemen helper full & rapi */
-#tabHelper textarea,
-#tabHelper #helperResult,
-#tabHelper button {
-    width: 100%;
-    box-sizing: border-box;
-}
 
     </style>
 </head>
@@ -302,7 +266,6 @@
 
 <div class="tabs-container">
     <button class="tab-btn active" onclick="openTab('tab1', this)">🚀 PENJUALAN</button>
-    <button class="tab-btn" onclick="openTab('tabHelper', this)">🤖 HELPER</button>
     <button class="tab-btn" onclick="openTab('tab2', this)">📊 DATA</button>
     <button class="tab-btn" onclick="openTab('tab3', this)">⚙️ SETTING</button>
 </div>
@@ -361,43 +324,7 @@
         </div>
     </div>
     
-    <!-- TAB HELPER -->
-<div id="tabHelper" class="content">
-    <div class="card">
-        <h3>PENJUALAN HELPER</h3>
 
-        <textarea id="helperInput"
-        placeholder="Paste laporan WA helper di sini..."
-        style="width:100%;min-height:220px;padding:15px;border-radius:15px;border:1px solid #eee;font-family:monospace;font-size:12px;"></textarea>
-
-        <button class="btn btn-dark" style="margin-top:15px;" onclick="susunHelper()">
-            🔍 SUSUN LAPORAN
-        </button>
-        
-        <button class="btn btn-outline" style="margin-top:12px;" onclick="copyHelperReport()">
-    📋 SALIN LAPORAN
-</button>
-
-        <!-- 🔽 INI YANG KURANG -->
-<div id="helperResult"
-     style="
-        margin-top:16px;
-        background:#f8fafc;
-        padding:12px;
-        border-radius:14px;
-        font-size:11px;                  /* 👈 lebih kecil */
-        line-height:1.5;
-        white-space:pre-wrap;
-        border:1px solid #eef2f6;
-        font-family:'Poppins', sans-serif; /* 👈 bukan monospace */
-        letter-spacing:0.2px;
-     ">
-</div>
-        <!-- 🔼 SAMPAI SINI -->
-
-    </div>
-</div>
-<!-- END TAB HELPER -->
     <div id="tab2" class="content">
         <div class="card">
             <h3>STOK MONITORING</h3>
@@ -1165,131 +1092,7 @@ const DB_VERSION = 1;
         alert("Tanggal Update Stok Berhasil Diset ke: " + tglBaru);
     }
 
-
-let helperLastReport = "";
-
-function susunHelper() {
-    const raw = document.getElementById("helperInput").value;
-    if (!raw.trim()) {
-        alert("Paste laporan helper dulu");
-        return;
-    }
-
-    const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
-
-    let data = { CASH: {}, TF: {} };
-    let currentName = "";
-    let currentPay = "";
-
-    lines.forEach(line => {
-
-        // ===== NAMA =====
-        if (line.includes("✅") || line.includes("❌")) {
-            currentName = line
-                .replace("✅", "")
-                .replace("❌", "")
-                .replace(/transfer|tf/gi, "")
-                .trim();
-            currentPay = line.includes("✅") ? "CASH" : "TF";
-            return;
-        }
-
-        if (!currentName) return;
-
-        // ===== PCS =====
-        let pcs = parseInt(line.match(/\d+/));
-        if (!pcs) return;
-
-        // ===== PRODUK =====
-        let match = line.match(/(VF\s*\d+\/\d+|SA\s*\d+\s*GB|VC\s*\d+\/\d+)/i);
-        if (!match) return;
-
-        let produk = match[0];
-
-        if (!data[currentPay][produk]) {
-            data[currentPay][produk] = { total: 0, buyers: [] };
-        }
-
-        data[currentPay][produk].total += pcs;
-        data[currentPay][produk].buyers.push({
-            nama: currentName,
-            pcs
-        });
-    });
-
-    // ===== OUTPUT =====
-    let output = "📋 REKAP HELPER\n\n";
-    let totalCash = 0;
-    let totalTf = 0;
-
-    // ===== DETAIL CASH =====
-    output += "🟢 CASH\n";
-    if (!Object.keys(data.CASH).length) {
-        output += "(KOSONG)\n";
-    } else {
-        Object.entries(data.CASH).forEach(([produk, info]) => {
-            output += `\n${produk.toUpperCase()}\n`;
-            info.buyers.forEach(b => {
-                output += `- ${b.nama.toUpperCase()} (${b.pcs} PCS)\n`;
-                totalCash += b.pcs;
-            });
-            output += `TOTAL PCS ${produk.toUpperCase()} : ${info.total}\n`;
-        });
-    }
-
-    // ===== DETAIL TF =====
-    output += "\n🔴 TRANSFER\n";
-    if (!Object.keys(data.TF).length) {
-        output += "(KOSONG)\n";
-    } else {
-        Object.entries(data.TF).forEach(([produk, info]) => {
-            output += `\n${produk.toUpperCase()}\n`;
-            info.buyers.forEach(b => {
-                output += `- ${b.nama.toUpperCase()} (${b.pcs} PCS)\n`;
-                totalTf += b.pcs;
-            });
-            output += `TOTAL PCS ${produk.toUpperCase()} : ${info.total}\n`;
-        });
-    }
-
-    // ===== RINGKASAN PER PRODUK =====
-    output += "\n====================\nRINGKASAN PER PRODUK\n";
-
-    let semuaProduk = new Set([
-        ...Object.keys(data.CASH),
-        ...Object.keys(data.TF)
-    ]);
-
-    semuaProduk.forEach(p => {
-        let cash = data.CASH[p]?.total || 0;
-        let tf = data.TF[p]?.total || 0;
-        output += `\n${p.toUpperCase()}\n`;
-        output += `- CASH     : ${cash} PCS\n`;
-        output += `- TRANSFER : ${tf} PCS\n`;
-        output += `- TOTAL    : ${cash + tf} PCS\n`;
-    });
-
-    // ===== FOOTER =====
-    output += "\n--------------------\n";
-    output += `TOTAL PCS CASH : ${totalCash}\n`;
-    output += `TOTAL PCS TF   : ${totalTf}\n`;
-    output += `TOTAL SEMUA    : ${totalCash + totalTf}\n`;
-    output += "--------------------\n";
-    output += "GENERATED BY HELPER TAP BAGAN BATU";
-
-    helperLastReport = output;
-    document.getElementById("helperResult").innerText = output;
-}
-
-function copyHelperReport() {
-    if (!helperLastReport) {
-        alert("Belum ada laporan");
-        return;
-    }
-    navigator.clipboard.writeText(helperLastReport)
-        .then(() => alert("Laporan helper berhasil disalin"));
-}
-    
+ 
 </script>
 
 </body>
