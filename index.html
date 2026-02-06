@@ -2,9 +2,6 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MEDIA SWARA PRIMA | BAGAN BATU</title>
     
@@ -433,7 +430,6 @@
     </div>
 
 <script>
-const DB_VERSION = 1;
     // --- DATABASE ---
     function generateReceiptNo(tgl) {
     let key = "MSP_REC_" + tgl;
@@ -450,12 +446,10 @@ const DB_VERSION = 1;
     ];
 
         let db = {
-        version: DB_VERSION,
         catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
         rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
         stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {}, // legacy (tidak dipakai hitung)
         stokAwal: JSON.parse(localStorage.getItem('MSP_STOK_AWAL')) || {},
-        stokMasuk: JSON.parse(localStorage.getItem('MSP_STOK_MASUK')) || {},
         lastUpdate: localStorage.getItem('MSP_LAST_DATE') || "",
         settings: JSON.parse(localStorage.getItem('MSP_SETTINGS')) || { target: 5000000, pin: "" }
     };
@@ -479,7 +473,7 @@ const DB_VERSION = 1;
         if (v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return;
 
         let awal = db.stokAwal[v.nama] || 0;
-        let masuk = db.stokMasuk[v.nama] || 0;
+        sisaKemarin[v.nama] = awal - terjual;
 
         let terjual = db.rekap
             .filter(r => r.tgl === db.lastUpdate)
@@ -488,8 +482,6 @@ const DB_VERSION = 1;
                 return a + (it ? it.qty : 0);
             }, 0);
 
-        sisaKemarin[v.nama] = awal + masuk - terjual;
-    });
 
     // SET STOK AWAL = SISA KEMARIN
     db.stokAwal = sisaKemarin;
@@ -510,10 +502,7 @@ const DB_VERSION = 1;
     let enteredPin = "";
     let lastDeletedTrx = null;
 
-        window.onload = () => { if (!db.version || db.version < DB_VERSION) {
-    db.version = DB_VERSION;
-    saveToDisk();
-}
+        window.onload = () => { 
         autoUpdateStokAwal(); // <--- Ini yang bikin sistem langsung cek tanggal pas buka
         checkLogin();
         setToday(); 
@@ -571,7 +560,6 @@ const DB_VERSION = 1;
         localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
         localStorage.setItem('MSP_STOK', JSON.stringify(db.stok)); // legacy
         localStorage.setItem('MSP_STOK_AWAL', JSON.stringify(db.stokAwal));
-        localStorage.setItem('MSP_STOK_MASUK', JSON.stringify(db.stokMasuk));
         localStorage.setItem('MSP_LAST_DATE', db.lastUpdate);
     }
 
