@@ -181,6 +181,27 @@
             border-color: var(--primary) !important;
         }
 
+/* ===============================
+   FIX TAB HELPER BIAR LURUS
+   =============================== */
+
+#tabHelper {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#tabHelper .card {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 640px;
+}
+
+#tabHelper textarea,
+#tabHelper #helperResult {
+    width: 100%;
+    box-sizing: border-box;
+}
 
     </style>
 </head>
@@ -309,6 +330,10 @@
         <button class="btn btn-dark" style="margin-top:15px;" onclick="susunHelper()">
             🔍 SUSUN LAPORAN
         </button>
+        
+        <button class="btn btn-outline" style="margin-top:12px;" onclick="copyHelperReport()">
+    📋 SALIN LAPORAN
+</button>
 
         <!-- 🔽 INI YANG KURANG -->
         <div id="helperResult"
@@ -1117,6 +1142,7 @@ const DB_VERSION = 1;
         alert("Tanggal Update Stok Berhasil Diset ke: " + tglBaru);
     }
 
+let helperLastReport = "";
 
 function susunHelper() {
     const raw = document.getElementById("helperInput").value;
@@ -1126,43 +1152,88 @@ function susunHelper() {
     }
 
     let lines = raw.split("\n").map(l => l.trim()).filter(l => l);
-    let hasilCash = [];
-    let hasilTf = [];
 
-    let namaAktif = "";
-    let metodeAktif = "";
+    let data = {
+        CASH: {},
+        TF: {}
+    };
+
+    let currentName = "";
+    let currentPay = "";
 
     lines.forEach(line => {
-        // baris nama
+
+        // ===== BARIS NAMA =====
         if (line.includes("✅") || line.includes("❌")) {
-            namaAktif = line
+            currentName = line
                 .replace("✅", "")
                 .replace("❌", "")
                 .replace(/transfer|tf/gi, "")
                 .trim();
 
-            metodeAktif = line.includes("✅") ? "CASH" : "TF";
+            currentPay = line.includes("✅") ? "CASH" : "TF";
             return;
         }
 
-        // baris produk
-        if (namaAktif) {
-            let data = `${namaAktif} → ${line}`;
-            if (metodeAktif === "CASH") {
-                hasilCash.push(data);
-            } else {
-                hasilTf.push(data);
+        // ===== BARIS PRODUK =====
+        if (currentName) {
+            let match = line.match(/(.+?)\s+(\d+)\s*(pcs)?/i);
+            if (!match) return;
+
+            let produk = match[1].toUpperCase().trim();
+            let pcs = parseInt(match[2]);
+
+            if (!data[currentPay][produk]) {
+                data[currentPay][produk] = { total: 0, buyers: [] };
             }
+
+            data[currentPay][produk].total += pcs;
+            data[currentPay][produk].buyers.push({
+                nama: currentName,
+                pcs: pcs
+            });
         }
     });
 
     let output = "📋 REKAP HELPER\n\n";
+    let totalCash = 0;
+    let totalTf = 0;
 
+    // ===== CASH =====
     output += "🟢 CASH\n";
-    output += hasilCash.length ? hasilCash.join("\n") : "(kosong)";
-    output += "\n\n🔴 TRANSFER\n";
-    output += hasilTf.length ? hasilTf.join("\n") : "(kosong)";
+    if (Object.keys(data.CASH).length === 0) {
+        output += "(kosong)\n";
+    } else {
+        Object.entries(data.CASH).forEach(([produk, info]) => {
+            output += `\n${produk}\n`;
+            info.buyers.forEach(b => {
+                output += `- ${b.nama} (${b.pcs})\n`;
+                totalCash += b.pcs;
+            });
+            output += `TOTAL PCS ${produk}: ${info.total}\n`;
+        });
+    }
 
+    // ===== TRANSFER =====
+    output += "\n🔴 TRANSFER\n";
+    if (Object.keys(data.TF).length === 0) {
+        output += "(kosong)\n";
+    } else {
+        Object.entries(data.TF).forEach(([produk, info]) => {
+            output += `\n${produk}\n`;
+            info.buyers.forEach(b => {
+                output += `- ${b.nama} (${b.pcs})\n`;
+                totalTf += b.pcs;
+            });
+            output += `TOTAL PCS ${produk}: ${info.total}\n`;
+        });
+    }
+
+    output += "\n====================\n";
+    output += `TOTAL PCS CASH : ${totalCash}\n`;
+    output += `TOTAL PCS TF   : ${totalTf}\n`;
+
+    helperLastReport = output;
     document.getElementById("helperResult").innerText = output;
 }
     
