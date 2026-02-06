@@ -236,11 +236,12 @@
         </div>
     </div>
 
-    <div class="tabs-container">
-        <button class="tab-btn active" onclick="openTab('tab1', this)">🚀 PENJUALAN</button>
-        <button class="tab-btn" onclick="openTab('tab2', this)">📊 DATA</button>
-        <button class="tab-btn" onclick="openTab('tab3', this)">⚙️ SETTING</button>
-    </div>
+<div class="tabs-container">
+    <button class="tab-btn active" onclick="openTab('tab1', this)">🚀 PENJUALAN</button>
+    <button class="tab-btn" onclick="openTab('tabHelper', this)">🤖 HELPER</button>
+    <button class="tab-btn" onclick="openTab('tab2', this)">📊 DATA</button>
+    <button class="tab-btn" onclick="openTab('tab3', this)">⚙️ SETTING</button>
+</div>
 
     <div id="tab1" class="content active">
         <div class="card">
@@ -296,6 +297,21 @@
         </div>
     </div>
     
+    <!-- TAB HELPER -->
+<div id="tabHelper" class="content">
+    <div class="card">
+        <h3>PENJUALAN HELPER</h3>
+
+        <textarea
+            placeholder="Paste laporan WA helper di sini..."
+            style="width:100%;min-height:220px;padding:15px;border-radius:15px;border:1px solid #eee;font-family:monospace;font-size:12px;"></textarea>
+
+  <button class="btn btn-dark" style="margin-top:15px;" onclick="susunHelper()">
+    🔍 SUSUN LAPORAN
+</button>
+    </div>
+</div>
+<!-- END TAB HELPER -->
     <div id="tab2" class="content">
         <div class="card">
             <h3>STOK MONITORING</h3>
@@ -377,7 +393,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.16
+    VERSI APLIKASI: 1.0.17 
             </div>
         </div>
     </div>
@@ -1087,12 +1103,59 @@ const DB_VERSION = 1;
         alert("Tanggal Update Stok Berhasil Diset ke: " + tglBaru);
     }
 
+
+function susunHelper() {
+    const raw = document.getElementById("helperInput").value;
+    if (!raw.trim()) {
+        alert("Paste laporan helper dulu");
+        return;
+    }
+
+    let lines = raw.split("\n").map(l => l.trim()).filter(l => l);
+    let hasilCash = [];
+    let hasilTf = [];
+
+    let namaAktif = "";
+    let metodeAktif = "";
+
+    lines.forEach(line => {
+        // baris nama
+        if (line.includes("✅") || line.includes("❌")) {
+            namaAktif = line
+                .replace("✅", "")
+                .replace("❌", "")
+                .replace(/transfer|tf/gi, "")
+                .trim();
+
+            metodeAktif = line.includes("✅") ? "CASH" : "TF";
+            return;
+        }
+
+        // baris produk
+        if (namaAktif) {
+            let data = `${namaAktif} → ${line}`;
+            if (metodeAktif === "CASH") {
+                hasilCash.push(data);
+            } else {
+                hasilTf.push(data);
+            }
+        }
+    });
+
+    let output = "📋 REKAP HELPER\n\n";
+
+    output += "🟢 CASH\n";
+    output += hasilCash.length ? hasilCash.join("\n") : "(kosong)";
+    output += "\n\n🔴 TRANSFER\n";
+    output += hasilTf.length ? hasilTf.join("\n") : "(kosong)";
+
+    document.getElementById("helperResult").innerText = output;
+}
     
 </script>
 
 </body>
 </html>
-
 
 
 
