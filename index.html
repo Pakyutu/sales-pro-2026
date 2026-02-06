@@ -377,7 +377,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.14 
+    VERSI APLIKASI: 1.0.15
             </div>
         </div>
     </div>
@@ -466,39 +466,42 @@ const DB_VERSION = 1;
     let day = String(d.getDate()).padStart(2, '0');
     let month = String(d.getMonth() + 1).padStart(2, '0');
     let year = d.getFullYear();
-        
+
     let hariIni = day + "-" + month + "-" + year;
 
-    if (db.lastUpdate !== hariIni) {
-        // set stok awal = sisa kemarin
-        db.stokAwal = {};
+    // JIKA MASIH HARI YANG SAMA → JANGAN APA-APA
+    if (db.lastUpdate === hariIni) return;
 
-        db.catalog.forEach(v => {
-            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return;
+    // ====== HANYA JALAN SAAT GANTI HARI ======
+    let sisaKemarin = {};
 
-            let awal = db.stokAwal[v.nama] || 0;
-            let masuk = db.stokMasuk[v.nama] || 0;
+    db.catalog.forEach(v => {
+        if (v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return;
 
-            // hitung sisa kemarin
-            let terjual = db.rekap
-                .filter(r => r.tgl === db.lastUpdate)
-                .reduce((a, r) => {
-                    let x = r.items.find(i => i.nama === v.nama);
-                    return a + (x ? x.qty : 0);
-                }, 0);
+        let awal = db.stokAwal[v.nama] || 0;
+        let masuk = db.stokMasuk[v.nama] || 0;
 
-            let sisaKemarin = awal + masuk - terjual;
-            db.stokAwal[v.nama] = sisaKemarin;
-        });
+        let terjual = db.rekap
+            .filter(r => r.tgl === db.lastUpdate)
+            .reduce((a, r) => {
+                let it = r.items.find(i => i.nama === v.nama);
+                return a + (it ? it.qty : 0);
+            }, 0);
 
-        // reset stok masuk
-        db.stokMasuk = {};
+        sisaKemarin[v.nama] = awal + masuk - terjual;
+    });
 
-        db.lastUpdate = hariIni;
-        saveToDisk();
+    // SET STOK AWAL = SISA KEMARIN
+    db.stokAwal = sisaKemarin;
 
-        console.log("Stok awal & stok masuk di-reset otomatis.");
-    }
+    // RESET STOK MASUK
+    db.stokMasuk = {};
+
+    // UPDATE TANGGAL
+    db.lastUpdate = hariIni;
+
+    saveToDisk();
+    console.log("Ganti hari → stokAwal diset, stokMasuk direset");
 }
     
 
