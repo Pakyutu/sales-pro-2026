@@ -907,126 +907,127 @@ const DB_VERSION = 1;
         }).join('');
     }
 
-    function copyReport() {
-    let tglRaw = document.getElementById('filterTgl').value;
-    if(!tglRaw) return alert("Pilih tanggal dulu!");
+        function copyReport() {
+        let tglRaw = document.getElementById('filterTgl').value;
+        if(!tglRaw) return alert("Pilih tanggal dulu!");
 
-    // Ubah format tanggal jadi 06/02/2026
-    let p = tglRaw.split('-');
-    let tglIndo = `${p[2]}/${p[1]}/${p[0]}`; // DD/MM/YYYY
-    let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`; // Format di database (DD-MM-YYYY)
+        let p = tglRaw.split('-');
+        let tglIndo = `${p[2]}/${p[1]}/${p[0]}`; 
+        let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`; 
 
-    let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
-    if (dataHarian.length === 0) return alert("Data hari ini masih kosong!");
+        let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
+        if (dataHarian.length === 0) return alert("Data hari ini masih kosong!");
 
-    // --- URUTAN SESUAI FOTO KATALOG ---
-    const priority = [
-        "4GB 1H", 
-        "5GB 2H", 
-        "4GB 3H", 
-        "3GB 5H", 
-        "8GB 5H", 
-        "12GB 30H", 
-        "SA 3GB", 
-        "SA BYU 3GB", 
-        "LINKAJA", 
-        "SEVEN"
-    ];
-    
-    let report = `*LAPORAN PENJUALAN - ${tglIndo}*\n`;
-    let grandTotalSemua = 0;
-    let totalCash = 0;
-    let totalTf = 0;
+        const priority = [
+            "4GB 1H", "5GB 2H", "4GB 3H", "3GB 5H", "8GB 5H", 
+            "12GB 30H", "SA 3GB", "SA BYU 3GB", "LINKAJA", "SEVEN"
+        ];
+        
+        let report = `*LAPORAN PENJUALAN HARIAN*\nTANGGAL : ${tglIndo}\n`;
+        
+        let totalPcsCash = 0;
+        let totalPcsTf = 0;
+        let totalOmset = 0;
+        
+        // Objek untuk menampung total per produk (Gabungan Cash + TF)
+        let summaryProduk = {};
+        priority.forEach(k => summaryProduk[k] = 0);
 
-    // --- 1. BAGIAN CASH (TUNAI) ---
-    report += `\n------------------------\n💵 *CASH (TUNAI)*\n`;
-    let cashData = dataHarian.filter(ot => ot.metode === "CASH");
-    
-    if (cashData.length > 0) {
-        priority.forEach(prod => {
-            let buyers = [];
-            cashData.forEach(ot => {
-                ot.items.forEach(it => {
-                    if (it.nama === prod) buyers.push({ nama: ot.nama, qty: it.qty, harga: it.harga });
+        // --- 1. BAGIAN CASH ---
+        report += `\n------------------------\n💵 *CASH (TUNAI)*\n`;
+        let cashData = dataHarian.filter(ot => ot.metode === "CASH");
+        
+        if (cashData.length > 0) {
+            priority.forEach(prod => {
+                let buyers = [];
+                cashData.forEach(ot => {
+                    ot.items.forEach(it => {
+                        if (it.nama === prod) buyers.push({ nama: ot.nama, qty: it.qty });
+                    });
                 });
+
+                if (buyers.length > 0) {
+                    buyers.sort((a, b) => b.qty - a.qty);
+                    let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
+                    report += `\n*${displayName}*\n`;
+                    
+                    let subQty = 0;
+                    buyers.forEach(b => {
+                        report += `- ${b.nama} (${b.qty} pcs)\n`;
+                        subQty += b.qty;
+                    });
+                    
+                    totalPcsCash += subQty;
+                    summaryProduk[prod] += subQty; // Tambah ke ringkasan bawah
+                    report += `*TOTAL PCS ${displayName} : ${subQty} pcs*\n`;
+                }
             });
+        } else { report += `_(Kosong)_\n`; }
 
-            if (buyers.length > 0) {
-                buyers.sort((a, b) => b.qty - a.qty); // Urutkan dari yg beli terbanyak
-                
-                // Ubah nama SA jadi KARTU di laporan
-                let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
-                report += `\n*${displayName}*\n`;
-                
-                let subQty = 0;
-                buyers.forEach(b => {
-                    report += `- ${b.nama}: ${b.qty} Pcs\n`;
-                    subQty += b.qty;
-                    totalCash += (b.qty * b.harga);
+        // --- 2. BAGIAN TRANSFER ---
+        report += `\n------------------------\n🏦 *TRANSFER (TF)*\n`;
+        let tfData = dataHarian.filter(ot => ot.metode === "TRANSFER");
+
+        if (tfData.length > 0) {
+            priority.forEach(prod => {
+                let buyers = [];
+                tfData.forEach(ot => {
+                    ot.items.forEach(it => {
+                        if (it.nama === prod) {
+                            let namaClean = ot.nama.replace("(TF)", "").replace("(tf)", "").trim();
+                            buyers.push({ nama: namaClean, qty: it.qty });
+                        }
+                    });
                 });
-                report += `*Total ${displayName}: ${subQty} Pcs*\n`;
-            }
-        });
-    } else { report += `_(Nihil)_\n`; }
-    report += `\n*SUBTOTAL CASH: RP ${formatRibuan(totalCash)}*\n`;
 
-    // --- 2. BAGIAN TRANSFER (TF) ---
-    report += `\n------------------------\n🏦 *TRANSFER (TF)*\n`;
-    let tfData = dataHarian.filter(ot => ot.metode === "TRANSFER");
+                if (buyers.length > 0) {
+                    buyers.sort((a, b) => b.qty - a.qty);
+                    let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
+                    report += `\n*${displayName}*\n`;
 
-    if (tfData.length > 0) {
-        priority.forEach(prod => {
-            let buyers = [];
-            tfData.forEach(ot => {
-                ot.items.forEach(it => {
-                    if (it.nama === prod) {
-                        let namaClean = ot.nama.replace("(TF)", "").replace("(tf)", "").trim();
-                        buyers.push({ nama: namaClean + " (tf)", qty: it.qty, harga: it.harga });
-                    }
-                });
+                    let subQty = 0;
+                    buyers.forEach(b => {
+                        report += `- ${b.nama} (${b.qty} pcs)\n`;
+                        subQty += b.qty;
+                    });
+                    
+                    totalPcsTf += subQty;
+                    summaryProduk[prod] += subQty; // Tambah ke ringkasan bawah
+                    report += `*TOTAL PCS ${displayName} : ${subQty} pcs*\n`;
+                }
             });
+        } else { report += `_(Kosong)_\n`; }
 
-            if (buyers.length > 0) {
-                buyers.sort((a, b) => b.qty - a.qty);
-                
+        // --- FOOTER RINGKASAN ---
+        let totalSemuaPcs = totalPcsCash + totalPcsTf;
+        
+        // Hitung Grand Total Uang (Opsional, kalau mau dihapus hapus baris ini)
+        dataHarian.forEach(ot => {
+            ot.items.forEach(it => totalOmset += (it.harga * it.qty));
+        });
+
+        report += `\n====================\n`;
+        report += `TOTAL PCS CASH : ${totalPcsCash} pcs\n`;
+        report += `TOTAL PCS TF   : ${totalPcsTf} pcs\n`;
+        report += `--------------------\n`;
+        
+        // Loop Ringkasan Per Produk
+        priority.forEach(prod => {
+            if(summaryProduk[prod] > 0) {
                 let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
-                report += `\n*${displayName}*\n`;
-
-                let subQty = 0;
-                buyers.forEach(b => {
-                    report += `- ${b.nama}: ${b.qty} Pcs\n`;
-                    subQty += b.qty;
-                    totalTf += (b.qty * b.harga);
-                });
-                report += `*Total ${displayName}: ${subQty} Pcs*\n`;
+                report += `TOTAL ${displayName} : ${summaryProduk[prod]} pcs\n`;
             }
         });
-    } else { report += `_(Nihil)_\n`; }
-    report += `\n*SUBTOTAL TF: RP ${formatRibuan(totalTf)}*\n`;
 
-    // --- FOOTER ---
-    grandTotalSemua = totalCash + totalTf;
-    report += `\n------------------------\n🔥 *GRAND TOTAL: RP ${formatRibuan(grandTotalSemua)}*\n------------------------\nGenerated by Digital TAP Bagan Batu`;
+        report += `--------------------\n`;
+        report += `TOTAL SEMUA : ${totalSemuaPcs} pcs\n`;
+        report += `--------------------\n`;
+        // report += `OMSET : RP ${formatRibuan(totalOmset)}\n`; // Aktifkan jika butuh uang
+        report += `Generated by Sales TAP Bagan Batu`;
 
-    navigator.clipboard.writeText(report).then(() => alert("Laporan Siap! Paste di WA sekarang."));
-}
-
-    function copyStockReport() {
-        let tgl = document.getElementById('filterTgl').value;
-        let txt = `*STOK & PENJUALAN SALES BAGAN BATU*\n*TANGGAL: ${tgl}*\n\n`;
-        let lakuPerTanggal = {}; 
-        db.rekap.filter(i => i.tgl === tgl.split('-').reverse().join('-')).forEach(ot => {
-             ot.items.forEach(it => { lakuPerTanggal[it.nama] = (lakuPerTanggal[it.nama] || 0) + it.qty });
-        });
-        db.catalog.forEach(v => {
-            if(!v.nama.includes("LINKAJA")) {
-                let sisa = db.stok[v.nama]||0;
-                let laku = lakuPerTanggal[v.nama]||0;
-                txt += `${v.nama}\nTerjual: ${laku} | Sisa: ${sisa}\n\n`;
-            }
-        });
-        navigator.clipboard.writeText(txt).then(() => alert("Status Stok Disalin!"));
+        navigator.clipboard.writeText(report).then(() => alert("Laporan Harian (Pcs) Siap!"));
     }
+
 
     function openTab(id, btn) {
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
