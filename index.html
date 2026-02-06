@@ -1199,12 +1199,14 @@ function susunHelper() {
             let parts = line.split(" ").filter(x => x);
             if (parts.length < 2) return;
 
-            // ambil PCS = angka terakhir
-            let pcs = parseInt(parts[parts.length - 2]) || parseInt(parts[parts.length - 1]);
-            if (!pcs) return;
+let pcsMatch = line.match(/(\d+)\s*(pcs)?$/i);
+if (!pcsMatch) return;
+let pcs = parseInt(pcsMatch[1]);
 
             // ambil PRODUK = 2 kata pertama (VF 4/3, SA 3GB, dll)
-            let produk = (parts[0] + " " + parts[1]).toUpperCase();
+let produk = (parts[0] + " " + parts[1])
+    .replace(/\s+/g, " ")
+    .toUpperCase();
 
             if (!data[currentPay][produk]) {
                 data[currentPay][produk] = {
@@ -1281,7 +1283,6 @@ function copyHelperReport() {
 
 </body>
 </html>
-
 
 
 
