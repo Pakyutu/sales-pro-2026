@@ -377,7 +377,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.12
+    VERSI APLIKASI: 1.0.13 
             </div>
         </div>
     </div>
@@ -433,7 +433,15 @@
     </div>
 
 <script>
+const DB_VERSION = 1;
     // --- DATABASE ---
+    function generateReceiptNo(tgl) {
+    let key = "MSP_REC_" + tgl;
+    let last = parseInt(localStorage.getItem(key) || "0") + 1;
+    localStorage.setItem(key, last);
+    return "BB-" + tgl.replace(/-/g,"") + "-" + String(last).padStart(3,"0");
+}
+
     let defaultCatalog = [
         {nama: "4GB 1H", harga: 6200}, {nama: "5GB 2H", harga: 8200}, {nama: "4GB 3H", harga: 11800},
         {nama: "3GB 5H", harga: 12900}, {nama: "8GB 5H", harga: 22500}, 
@@ -442,6 +450,7 @@
     ];
 
         let db = {
+        version: DB_VERSION,
         catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
         rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
         stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {},
@@ -472,8 +481,12 @@
     let tempItems = [];
     let editIdx = -1;
     let enteredPin = "";
+    let lastDeletedTrx = null;
 
-        window.onload = () => { 
+        window.onload = () => { if (!db.version || db.version < DB_VERSION) {
+    db.version = DB_VERSION;
+    saveToDisk();
+}
         autoUpdateStokAwal(); // <--- Ini yang bikin sistem langsung cek tanggal pas buka
         checkLogin();
         setToday(); 
@@ -758,7 +771,7 @@
     document.getElementById('rMetode').innerText = d.metode; // Mengisi baris Metode yang kita buat tadi
     document.getElementById('rDateOnly').innerText = d.tgl;
     document.getElementById('rTimeOnly').innerText = d.jam;
-    document.getElementById('rNo').innerText = "#" + (Math.floor(Math.random()*900)+100);
+    document.getElementById('rNo').innerText = generateReceiptNo(d.tgl);
     
     document.getElementById('rList').innerHTML = d.items.map(it => {
         let sub = it.harga * it.qty; total += sub;
@@ -795,11 +808,37 @@
     }
     
     function delTrx(i) { 
-        if(confirm("Hapus Permanen? Stok akan dikembalikan ke gudang.")) { 
-            db.rekap[i].items.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty; });
-            db.rekap.splice(i,1); saveToDisk(); renderAll(); 
-        } 
+    if (!confirm("Hapus transaksi?\n( Bisa UNDO sekali )")) return;
+
+    // simpan transaksi terakhir
+    lastDeletedTrx = {
+        data: db.rekap[i],
+        index: i
+    };
+
+    // kembalikan stok
+    db.rekap[i].items.forEach(it => {
+        if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
+            db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty;
+        }
+    });
+
+    // hapus transaksi
+    db.rekap.splice(i, 1);
+    saveToDisk();
+    renderAll();
+
+    // undo manual
+    if (confirm("Transaksi terhapus.\nKlik OK untuk UNDO.")) {
+        db.rekap.splice(lastDeletedTrx.index, 0, lastDeletedTrx.data);
+        lastDeletedTrx = null;
+        saveToDisk();
+        renderAll();
+        alert("Transaksi berhasil dikembalikan.");
+    } else {
+        lastDeletedTrx = null;
     }
+}
     
     function addKatalog() {
         let n = document.getElementById('addName').value.toUpperCase();
@@ -1006,6 +1045,5 @@
 
 </body>
 </html>
-
 
 
