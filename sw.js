@@ -1,4 +1,4 @@
-const CACHE_NAME = 'msp-cache-v1.0.12'; // <--- UBAH NOMOR INI SETIAP UPDATE (misal v1.0.3)
+const CACHE_NAME = 'msp-cache-v1.0.13'; // <--- UBAH NOMOR INI SETIAP UPDATE (misal v1.0.3)
 
 const assets = [
   './',
@@ -39,6 +39,7 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
 
 
 
