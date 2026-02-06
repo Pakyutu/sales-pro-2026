@@ -1092,39 +1092,8 @@ const DB_VERSION = 1;
         saveToDisk();
         renderAll();
         alert("Tanggal Update Stok Berhasil Diset ke: " + tglBaru);
-        }
     }
 
-    function copyStockReport() {
-        let tglRaw = document.getElementById('filterTgl').value;
-        if(!tglRaw) return alert("Pilih tanggal dulu!");
-        let p = tglRaw.split('-');
-        let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`;
-        
-        let txt = `*STOK & PENJUALAN - ${p[2]}/${p[1]}/${p[0]}*\n\n`;
-        let laku = {}; 
-        
-        // Hitung barang laku hari ini
-        db.rekap.filter(i => i.tgl === filterTglStr).forEach(ot => {
-             ot.items.forEach(it => { laku[it.nama] = (laku[it.nama] || 0) + it.qty });
-        });
-
-        // Hitung stok sisa berdasarkan (Stok Awal - Laku)
-        db.catalog.forEach(v => {
-            if(!v.nama.includes("LINKAJA") && !v.nama.includes("SEVEN")) {
-                let awal = db.stokAwal[v.nama] || 0;
-                let terjual = laku[v.nama] || 0;
-                let sisa = awal - terjual;
-                
-                // Hanya tampilkan jika stok awal ada atau ada penjualan
-                if(awal > 0 || terjual > 0) {
-                    txt += `*${v.nama}*\nAwal: ${awal} | Laku: ${terjual} | Sisa: ${sisa}\n\n`;
-                }
-            }
-        });
-        navigator.clipboard.writeText(txt).then(() => alert("Status Stok Disalin!"));
-    }
-}
     
 </script>
 
