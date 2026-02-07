@@ -258,7 +258,7 @@
                               <select id="metodeBayar">
                     <option value="CASH">CASH</option>
                     <option value="TRANSFER">TRANSFER</option>
-                    <option value="PENDING">⚠️ BON / PENDING</option>
+                    <option value="PENDING">⚠️ PENDING</option>
                 </select>
                 <select id="pilihanVoucher" onchange="updateHarga()"></select>
             </div>
@@ -378,7 +378,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.17
+    VERSI APLIKASI: 1.0.18
             </div>
         </div>
     </div>
@@ -978,7 +978,7 @@ const DB_VERSION = 1;
         }).join('');
     }
 
-        function copyReport() {
+            function copyReport() {
         let tglRaw = document.getElementById('filterTgl').value;
         if(!tglRaw) return alert("Pilih tanggal dulu!");
 
@@ -998,9 +998,9 @@ const DB_VERSION = 1;
         
         let totalPcsCash = 0;
         let totalPcsTf = 0;
-        let totalOmset = 0;
+        let totalPcsBon = 0; // Tambahan hitung Bon
         
-        // Objek untuk menampung total per produk (Gabungan Cash + TF)
+        // Objek untuk menampung total per produk (Gabungan Semua)
         let summaryProduk = {};
         priority.forEach(k => summaryProduk[k] = 0);
 
@@ -1029,8 +1029,8 @@ const DB_VERSION = 1;
                     });
                     
                     totalPcsCash += subQty;
-                    summaryProduk[prod] += subQty; // Tambah ke ringkasan bawah
-                    report += `*TOTAL PCS ${displayName} : ${subQty} pcs*\n`;
+                    summaryProduk[prod] += subQty; 
+                    report += `*TOTAL : ${subQty} pcs*\n`;
                 }
             });
         } else { report += `_(Kosong)_\n`; }
@@ -1063,23 +1063,54 @@ const DB_VERSION = 1;
                     });
                     
                     totalPcsTf += subQty;
-                    summaryProduk[prod] += subQty; // Tambah ke ringkasan bawah
-                    report += `*TOTAL PCS ${displayName} : ${subQty} pcs*\n`;
+                    summaryProduk[prod] += subQty; 
+                    report += `*TOTAL : ${subQty} pcs*\n`;
                 }
             });
         } else { report += `_(Kosong)_\n`; }
 
+        // --- 3. BAGIAN BON / PENDING (BARU) ---
+        report += `\n------------------------\n⚠️ *BELUM LUNAS (BON)*\n`;
+        let bonData = dataHarian.filter(ot => ot.metode === "PENDING");
+
+        if (bonData.length > 0) {
+            priority.forEach(prod => {
+                let buyers = [];
+                bonData.forEach(ot => {
+                    ot.items.forEach(it => {
+                        if (it.nama === prod) {
+                            buyers.push({ nama: ot.nama, qty: it.qty });
+                        }
+                    });
+                });
+
+                if (buyers.length > 0) {
+                    buyers.sort((a, b) => b.qty - a.qty);
+                    let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
+                    report += `\n*${displayName}*\n`;
+
+                    let subQty = 0;
+                    buyers.forEach(b => {
+                        report += `- ${b.nama} (${b.qty} pcs)\n`;
+                        subQty += b.qty;
+                    });
+                    
+                    totalPcsBon += subQty;
+                    summaryProduk[prod] += subQty; 
+                    report += `*TOTAL : ${subQty} pcs*\n`;
+                }
+            });
+        } else { report += `_(Aman, tidak ada bon)_\n`; }
+
         // --- FOOTER RINGKASAN ---
-        let totalSemuaPcs = totalPcsCash + totalPcsTf;
-        
-        // Hitung Grand Total Uang (Opsional, kalau mau dihapus hapus baris ini)
-        dataHarian.forEach(ot => {
-            ot.items.forEach(it => totalOmset += (it.harga * it.qty));
-        });
+        let totalSemuaPcs = totalPcsCash + totalPcsTf + totalPcsBon;
 
         report += `\n====================\n`;
-        report += `TOTAL PCS CASH : ${totalPcsCash} pcs\n`;
-        report += `TOTAL PCS TF   : ${totalPcsTf} pcs\n`;
+        report += `TOTAL CASH : ${totalPcsCash} pcs\n`;
+        report += `TOTAL TF   : ${totalPcsTf} pcs\n`;
+        if(totalPcsBon > 0) {
+            report += `TOTAL BON  : ${totalPcsBon} pcs (Belum Lunas)\n`;
+        }
         report += `--------------------\n`;
         
         // Loop Ringkasan Per Produk
@@ -1091,15 +1122,13 @@ const DB_VERSION = 1;
         });
 
         report += `--------------------\n`;
-        report += `TOTAL SEMUA : ${totalSemuaPcs} pcs\n`;
+        report += `TOTAL KELUAR : ${totalSemuaPcs} pcs\n`;
         report += `--------------------\n`;
-        // report += `OMSET : RP ${formatRibuan(totalOmset)}\n`; // Aktifkan jika butuh uang
-        report += `Generated by Sales TAP Bagan Batu`;
+        report += `Generated by TAP Bagan Batu`;
 
-        navigator.clipboard.writeText(report).then(() => alert("Laporan Harian Siap!"));
+        navigator.clipboard.writeText(report).then(() => alert("Laporan Harian (Termasuk Bon) Siap!"));
     }
-
-
+    
     function openTab(id, btn) {
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
