@@ -255,9 +255,10 @@
             <datalist id="outletList"></datalist>
             
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                <select id="metodeBayar">
+                              <select id="metodeBayar">
                     <option value="CASH">CASH</option>
                     <option value="TRANSFER">TRANSFER</option>
+                    <option value="PENDING">⚠️ BON / PENDING</option>
                 </select>
                 <select id="pilihanVoucher" onchange="updateHarga()"></select>
             </div>
@@ -377,7 +378,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.16
+    VERSI APLIKASI: 1.0.17
             </div>
         </div>
     </div>
@@ -598,43 +599,72 @@ const DB_VERSION = 1;
         let gt = 0, tc = 0, tf = 0;
         let laku = {}; db.catalog.forEach(v => laku[v.nama] = 0);
 
-        let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
+                let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => item.data.tgl === filterTgl)
             .filter(item => item.data.nama.toLowerCase().includes(searchKeyword))
             .map(item => {
                 let ot = item.data;
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
+                
+                // Cek status pending
+                let isPending = (ot.metode === "PENDING");
+                let styleCard = isPending ? "border-left: 5px solid #f1c40f; background:#fffbe6;" : "";
+                let statusText = isPending ? `<span style="color:#d35400; font-weight:800;">⚠️ BELUM LUNAS (BON)</span>` : `${ot.metode} • ${ot.jam}`;
+                
+                // Tombol Lunas (hanya muncul jika Pending)
+                let btnLunas = isPending ? `<button class="act-btn" style="background:#f1c40f; color:#000; font-weight:800;" onclick="lunasiTrx(${item.idx})">💰 LUNASI SEKARANG</button>` : "";
+
                 return `
-                <div class="trx-card">
+                <div class="trx-card" style="${styleCard}">
                     <div style="display:flex; justify-content:space-between; align-items:start;">
                         <div>
                             <div class="trx-name">${ot.nama}</div>
-                            <div style="font-size:10px; font-weight:700; color:#999;">${ot.metode} • ${ot.jam}</div>
+                            <div style="font-size:10px; font-weight:700; color:#999;">${statusText}</div>
                         </div>
                         <div class="trx-price">Rp ${formatRibuan(sub)}</div>
                     </div>
                     <div class="trx-actions">
+                        ${btnLunas}
                         <button class="act-btn act-struk" onclick="showStruk(${item.idx})">STRUK</button>
                         <button class="act-btn act-edit" onclick="editTrx(${item.idx})">EDIT</button>
                         <button class="act-btn act-del" onclick="delTrx(${item.idx})">HAPUS</button>
                     </div>
                 </div>`;
             }).reverse().join('');
+            
         
         document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Data Kosong...</div>';
 
-        let filteredDateData = db.rekap.filter(item => item.tgl === filterTgl);
+                let filteredDateData = db.rekap.filter(item => item.tgl === filterTgl);
+        let tp = 0; // Variabel simpan total pending
+
         filteredDateData.forEach(ot => {
             let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
-            gt += sub;
-            if(ot.metode === "CASH") tc += sub; else tf += sub;
+            
+            // Stok tetap berkurang walaupun pending
             ot.items.forEach(it => { laku[it.nama] = (laku[it.nama] || 0) + it.qty });
+
+            // Cek metode bayar
+            if(ot.metode === "CASH") {
+                tc += sub; 
+                gt += sub;
+            } else if(ot.metode === "TRANSFER") {
+                tf += sub; 
+                gt += sub;
+            } else {
+                tp += sub; // Kalau Pending, masuk sini (tidak tambah ke Grand Total)
+            }
         });
 
         document.getElementById('statCash').innerText = formatRibuan(tc);
         document.getElementById('statTf').innerText = formatRibuan(tf);
         document.getElementById('statGrand').innerText = formatRibuan(gt);
-
+        
+        // Munculkan tulisan kuning kalau ada yang pending
+        if(tp > 0) {
+            document.getElementById('statGrand').innerHTML += `<div style="font-size:10px; color:#f1c40f; margin-top:5px;">⚠️ Pending: Rp ${formatRibuan(tp)}</div>`;
+        }
+        
         updateTargetBar(gt);
         renderStokSystem(laku);
         renderRiwayatTab();
@@ -911,6 +941,22 @@ const DB_VERSION = 1;
         lastDeletedTrx = null;
     }
 }
+    
+    function lunasiTrx(i) {
+        let pilihan = prompt("PEMBAYARAN MASUK KE MANA?\n\nKetik 1 : CASH (Tunai)\nKetik 2 : TRANSFER");
+
+        if (pilihan === "1") {
+            db.rekap[i].metode = "CASH";
+        } else if (pilihan === "2") {
+            db.rekap[i].metode = "TRANSFER";
+        } else {
+            return; // Batal kalau tidak pilih 1 atau 2 (klik Cancel)
+        }
+
+        saveToDisk();
+        renderAll();
+        alert("ALHAMDULILLAH LUNAS! 🤲");
+    }
     
     function addKatalog() {
         let n = document.getElementById('addName').value.toUpperCase();
