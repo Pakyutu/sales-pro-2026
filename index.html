@@ -7,6 +7,7 @@
 <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MEDIA SWARA PRIMA | BAGAN BATU</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <link rel="manifest" href="manifest.json">
 <script>
@@ -378,7 +379,7 @@
             <input type="file" id="fileIn" hidden onchange="importData(event)">
             <button class="btn" style="background:transparent; color:red; margin-top:15px; font-size:11px; font-weight:800;" onclick="hardReset()">⚠️ RESET DATABASE</button>
             <div id="appVersion" style="text-align: center; font-size: 10px; color: var(--text-sub); margin-top: 25px; font-weight: 800; letter-spacing: 1px; opacity: 0.6;">
-    VERSI APLIKASI: 1.0.19
+    VERSI APLIKASI: 1.0.20
             </div>
         </div>
     </div>
@@ -428,6 +429,7 @@
         </div>
         
         <div style="text-align:center; margin-top:30px; display:grid; gap:12px; justify-content:center; width:300px;">
+<button class="btn" style="background:#0984e3; color:white; font-weight:800; margin-bottom: 10px;" onclick="downloadStruk()">💾 SIMPAN GAMBAR</button>
             <button id="waBtn" class="btn" style="background:#25D366; color:white; font-weight:800;">📤 KIRIM WHATSAPP</button>
             <button class="btn btn-dark" onclick="document.getElementById('receiptOverlay').style.display='none'">TUTUP</button>
         </div>
@@ -1186,6 +1188,37 @@ const DB_VERSION = 1;
         saveToDisk();
         renderAll();
         alert("Tanggal Update Stok Berhasil Diset ke: " + tglBaru);
+    }
+    
+    function downloadStruk() {
+        // 1. Sembunyikan tombol biar gak ikut ke-foto
+        const btnSimpan = event.target;
+        const btnWA = document.getElementById('waBtn');
+        const btnTutup = btnSimpan.nextElementSibling.nextElementSibling; // Tombol Tutup
+        
+        btnSimpan.innerText = "⏳ MEMPROSES...";
+        
+        // 2. Foto areanya
+        const areaStruk = document.querySelector('.receipt-paper');
+        
+        html2canvas(areaStruk, {
+            scale: 3, // Kualitas Tinggi
+            backgroundColor: "#ffffff",
+            useCORS: true
+        }).then(canvas => {
+            // 3. Download
+            const link = document.createElement('a');
+            link.download = 'STRUK_TAP_' + new Date().getTime() + '.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            
+            // 4. Balikin tombol seperti semula
+            btnSimpan.innerText = "💾 SIMPAN GAMBAR";
+            alert("✅ Gambar Struk Tersimpan di Galeri!");
+        }).catch(err => {
+            alert("Gagal menyimpan: " + err);
+            btnSimpan.innerText = "💾 SIMPAN GAMBAR";
+        });
     }
 
     
