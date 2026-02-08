@@ -294,6 +294,18 @@ input[type="date"] {
     opacity: 0.7;
 }
 
+/* Memaksa input tanggal dan teks di dalamnya agar terlihat jelas */
+        input[type="date"] {
+            background: transparent !important;
+            color: var(--text-main) !important;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Khusus untuk teks 'HARI INI' dan label tanggal */
+        .header-content p, label, .target-top span, .target-box span {
+            color: var(--text-main) !important;
+        }
+
     </style>
 </head>
 <body>
@@ -537,19 +549,6 @@ input[type="date"] {
             <button id="waBtn" class="btn" style="background:#25D366; color:white; font-weight:800;">📤 KIRIM WHATSAPP</button>
             <button class="btn btn-dark" onclick="document.getElementById('receiptOverlay').style.display='none'">TUTUP</button>
         </div>
-        
-/* Memaksa input tanggal dan teks di dalamnya agar terlihat jelas */
-input[type="date"] {
-    background: transparent !important; /* Biar ikut background div induknya */
-    color: var(--text-main) !important;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Khusus untuk teks 'HARI INI' dan label tanggal */
-.header-content p, label, .target-top span, .target-box span {
-    color: var(--text-main) !important;
-}
-        
     </div>
 
 <script>
