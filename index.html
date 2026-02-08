@@ -44,27 +44,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
+      :root {
     --primary: #EE2D24;
     --radius: 20px;
     
-    /* MODE TERANG */
+    /* MODE SIANG */
     --bg-overlay: rgba(244, 246, 248, 0.94);
     --card-bg: rgba(255, 255, 255, 0.85);
-    --text-main: #2c3e50;    /* Tulisan Utama (Gelap) */
-    --text-sub: #576574;     /* Tulisan Sub/Stok (Abu Gelap) */
+    --bg-inner: #f8fafc;        /* Kotak dalam warna terang */
+    --text-main: #2c3e50;
+    --text-sub: #7f8c8d;
     --border-color: rgba(0, 0, 0, 0.1);
-    --input-bg: #ffffff;
 }
 
 body.dark-mode {
-    /* MODE GELAP */
+    /* MODE MALAM */
     --bg-overlay: rgba(10, 12, 15, 0.97);
     --card-bg: rgba(30, 35, 45, 0.9);
-    --text-main: #ffffff;    /* Tulisan Utama jadi Putih Bersih */
-    --text-sub: #bdc3c7;     /* Tulisan Stok jadi Abu Terang */
-    --border-color: rgba(255, 255, 255, 0.1);
-    --input-bg: #1e272e;
+    --bg-inner: rgba(255, 255, 255, 0.05); /* Kotak dalam jadi gelap transparan */
+    --text-main: #ffffff;      /* Tulisan jadi putih bersih */
+    --text-sub: #bdc3c7;
+    --border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* MODE MALAM (AKAN AKTIF OTOMATIS) */
@@ -275,6 +275,24 @@ body.dark-mode {
             outline: none !important;
             border-color: var(--primary) !important;
         }
+
+/* Menghapus warna putih yang membandel di kotak-kotak input dan kontainer */
+input, select, .target-box, .dash-item.total, .temp-item, .stok-table td input {
+    background: var(--bg-inner) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Biar tanggal/kalender di HP otomatis ganti warna ikonnya */
+input[type="date"] {
+    color-scheme: dark;
+}
+
+/* Pastikan tulisan di dalam kotak input (placeholder) tidak hilang */
+::placeholder {
+    color: var(--text-sub) !important;
+    opacity: 0.7;
+}
 
     </style>
 </head>
@@ -862,12 +880,13 @@ const DB_VERSION = 1;
         }).join('');
 
         // 3. Update Daftar Katalog (Tetap ada)
-        document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-            <div style="background:#f9f9f9; padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                <b style="font-size:12px;">${v.nama}</b> 
-                <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
-            </div>
-        `).join('');
+        // Ganti baris pembuat catalogList menjadi ini:
+document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
+    <div style="background:var(--bg-inner); border:1px solid var(--border-color); padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+        <b style="font-size:12px; color:var(--text-main);">${v.nama}</b> 
+        <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
+    </div>
+`).join('');
     }
 
     function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
