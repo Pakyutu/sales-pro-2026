@@ -4,7 +4,7 @@ const assets = [
   './',
   './index.html',
   './manifest.json',
-  './logo.png'
+  './background.png'
 ];
 
 // 1. Tahap Install (Langsung ganti sif tanpa nunggu tab ditutup)
@@ -39,6 +39,7 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
 
 
 
