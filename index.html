@@ -45,36 +45,50 @@
 
     <style>
         :root {
-            --primary: #EE2D24;       /* Merah Telkomsel */
-            --primary-dark: #b30000;  /* Merah Tua */
-            --bg-body: #f4f6f8;       
-            --bg-card: #ffffff;       
-            --text-main: #2c3e50;     
-            --text-sub: #7f8c8d;      
-            --gold: #f1c40f;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.08);
-            --shadow-lg: 0 10px 40px rgba(238, 45, 36, 0.15);
-            --radius: 20px;
-        }
+    /* WARNA TETAP (Gak Berubah) */
+    --primary: #EE2D24;      
+    
+    /* MODE SIANG (DEFAULT) */
+    --bg-overlay: rgba(244, 246, 248, 0.94); /* Lapisan Putih Tipis */
+    --card-bg: rgba(255, 255, 255, 0.85);    /* Kaca Putih */
+    --text-main: #2c3e50;                    /* Tulisan Gelap */
+    --text-sub: #7f8c8d;                     /* Tulisan Abu */
+    --input-bg: #f8fafc;                     /* Kotak Input Terang */
+    --border-color: rgba(255, 255, 255, 0.6);/* Garis Pinggir Halus */
+    
+    --shadow-sm: 0 4px 12px rgba(0,0,0,0.08);
+    --radius: 20px;
+}
+
+/* MODE MALAM (AKAN AKTIF OTOMATIS) */
+body.dark-mode {
+    --bg-overlay: rgba(15, 20, 25, 0.95);    /* Lapisan Hitam Tipis */
+    --card-bg: rgba(30, 35, 40, 0.85);       /* Kaca Hitam */
+    --text-main: #ecf0f1;                    /* Tulisan Putih Terang */
+    --text-sub: #bdc3c7;                     /* Tulisan Abu Terang */
+    --input-bg: #2c3e50;                     /* Kotak Input Gelap */
+    --border-color: rgba(255, 255, 255, 0.1);/* Garis Pinggir Samar */
+}
 
         body { 
     font-family: 'Poppins', sans-serif; 
     padding: 0; margin: 0; 
-    color: var(--text-main); 
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden; 
-    padding-bottom: 100px; 
-
-    /* --- INI RAHASIANYA --- */
-    /* Kita tumpuk Warna Putih (94%) di atas gambar background.png */
-    /* Supaya gambarnya jadi samar-samar dan tulisan tetap terbaca jelas */
-    background: linear-gradient(rgba(244, 246, 248, 0.94), rgba(244, 246, 248, 0.94)), url('background.png');
     
-    /* Gambar diam di tempat saat discroll (Efek Mewah) */
+    /* Gunakan Variabel Warna Tulisan */
+    color: var(--text-main); 
+    
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden; padding-bottom: 100px; 
+
+    /* Gunakan Variabel Overlay (Bisa Putih/Hitam) + Gambar Background */
+    background: linear-gradient(var(--bg-overlay), var(--bg-overlay)), url('background.png');
+    
     background-attachment: fixed;
     background-position: center;
-    background-repeat: no-repeat;
     background-size: cover;
+    
+    /* Efek transisi halus saat ganti mode */
+    transition: background 0.3s, color 0.3s; 
 }
         
         /* HEADER MODERN ROBOTIC */
@@ -119,31 +133,38 @@
         /* CARDS */
       /* CARDS (VERSI KACA / GLASSMORPHISM) */
 .card { 
-    /* Warna putih tapi agak transparan (85%) */
-    background: rgba(255, 255, 255, 0.85); 
+    /* Gunakan Variabel Kaca (Bisa Kaca Putih/Hitam) */
+    background: var(--card-bg);
     
-    /* Efek Blur (Buram) biar background di belakangnya terlihat samar */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     
-    /* Garis pinggir tipis biar rapi */
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    /* Gunakan Variabel Garis */
+    border: 1px solid var(--border-color);
     
     padding: 25px; 
     border-radius: var(--radius); 
     box-shadow: var(--shadow-sm); 
     margin-bottom: 25px; 
     position: relative; 
+    transition: background 0.3s, border 0.3s;
 }
 
         h3 { margin: 0 0 20px 0; color: var(--text-main); font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
         h3::before { content: '🤖'; font-size: 18px; }
         
         input, select { 
-            width: 100%; padding: 16px; border: 1.5px solid #eef2f6; background: #f8fafc; 
-            border-radius: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 15px; 
-            font-weight: 600; color: var(--text-main); font-family: 'Poppins', sans-serif; transition: 0.3s;
-        }
+    width: 100%; padding: 16px; 
+    
+    /* Gunakan Variabel Input & Tulisan */
+    background: var(--input-bg);
+    color: var(--text-main);
+    
+    border: 1.5px solid var(--border-color);
+    border-radius: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 15px; 
+    font-weight: 600; font-family: 'Poppins', sans-serif; transition: 0.3s;
+}
+
         input:focus, select:focus { background: #fff; border-color: var(--primary); outline:none; box-shadow: 0 0 0 4px rgba(238, 45, 36, 0.1); }
 
         /* BUTTONS */
@@ -260,6 +281,9 @@
     </div>
 
     <div class="header-main">
+<button onclick="toggleTheme()" style="position:fixed; top:20px; right:20px; z-index:100; background:var(--card-bg); border:1px solid var(--border-color); padding:10px; border-radius:50%; cursor:pointer; font-size:18px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+    🌓
+</button>
         <div class="header-content">
     <h1 style="font-family: 'JetBrains Mono', monospace; letter-spacing: -1px;">SALES PRO 2026</h1>
     <p>MEDIA SWARA PRIMA</p>
@@ -478,6 +502,19 @@
     </div>
 
 <script>
+// --- LOGIKA MODE GELAP ---
+function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    // Simpan pilihan biar gak lupa kalau direfresh
+    let tema = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+    localStorage.setItem('MSP_THEME', tema);
+}
+
+// Cek simpanan terakhir saat aplikasi dibuka
+if (localStorage.getItem('MSP_THEME') === 'dark') {
+    document.body.classList.add('dark-mode');
+}
+
 const DB_VERSION = 1;
     // --- DATABASE ---
     function generateReceiptNo(tgl) {
