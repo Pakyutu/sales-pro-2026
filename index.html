@@ -38,8 +38,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#EE2D24">
-   <link rel="icon" type="image/png" href="background.png.png">
-<link rel="apple-touch-icon" href="background.png.png">
+   <link rel="icon" type="image/png" href="background.png">
+<link rel="apple-touch-icon" href="background.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
@@ -203,20 +203,23 @@
             border-color: var(--primary) !important;
         }
 
-/* Watermark Background */
-body::before {
+/* Watermark Menggunakan background.png */
+body::after {
     content: "";
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px; /* Ukuran logo di tengah */
-    height: 300px;
-    background: url('logo_baru.png') no-repeat center center;
-    background-size: contain;
-    opacity: 0.05; /* Level tipisnya (0.05 = sangat tipis, 0.1 = agak jelas) */
-    z-index: -1; /* Biar ada di belakang tulisan */
-    pointer-events: none; /* Biar gak bisa diklik */
+    top: 0; left: 0; right: 0; bottom: 0;
+    
+    /* Arahkan ke file yang benar */
+    background: url('background.png') no-repeat center center;
+    
+    /* Ukuran diatur biar enak dilihat (tidak terlalu besar) */
+    background-size: 80%; 
+    
+    /* Tipiskan (0.05 = sangat tipis, 0.1 = agak jelas) */
+    opacity: 0.05; 
+    
+    z-index: 9999;
+    pointer-events: none; 
 }
 
     </style>
