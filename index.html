@@ -45,19 +45,26 @@
 
     <style>
         :root {
-    /* WARNA TETAP (Gak Berubah) */
-    --primary: #EE2D24;      
-    
-    /* MODE SIANG (DEFAULT) */
-    --bg-overlay: rgba(244, 246, 248, 0.94); /* Lapisan Putih Tipis */
-    --card-bg: rgba(255, 255, 255, 0.85);    /* Kaca Putih */
-    --text-main: #2c3e50;                    /* Tulisan Gelap */
-    --text-sub: #7f8c8d;                     /* Tulisan Abu */
-    --input-bg: #f8fafc;                     /* Kotak Input Terang */
-    --border-color: rgba(255, 255, 255, 0.6);/* Garis Pinggir Halus */
-    
-    --shadow-sm: 0 4px 12px rgba(0,0,0,0.08);
+    --primary: #EE2D24;
     --radius: 20px;
+    
+    /* MODE TERANG */
+    --bg-overlay: rgba(244, 246, 248, 0.94);
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --text-main: #2c3e50;    /* Tulisan Utama (Gelap) */
+    --text-sub: #576574;     /* Tulisan Sub/Stok (Abu Gelap) */
+    --border-color: rgba(0, 0, 0, 0.1);
+    --input-bg: #ffffff;
+}
+
+body.dark-mode {
+    /* MODE GELAP */
+    --bg-overlay: rgba(10, 12, 15, 0.97);
+    --card-bg: rgba(30, 35, 45, 0.9);
+    --text-main: #ffffff;    /* Tulisan Utama jadi Putih Bersih */
+    --text-sub: #bdc3c7;     /* Tulisan Stok jadi Abu Terang */
+    --border-color: rgba(255, 255, 255, 0.1);
+    --input-bg: #1e272e;
 }
 
 /* MODE MALAM (AKAN AKTIF OTOMATIS) */
@@ -203,8 +210,25 @@ body.dark-mode {
 
         /* STOK TABLE */
         .stok-table { width: 100%; border-collapse: collapse; }
-        .stok-table th { text-align: left; color: #999; padding: 10px; font-size: 10px; text-transform: uppercase; border-bottom: 2px solid #f0f0f0; }
-        .stok-table td { padding: 15px 10px; border-bottom: 1px solid #f9f9f9; font-weight: 700; font-size: 13px; }
+        /* PERBAIKAN TABEL STOK (BIAR TERANG) */
+.stok-table th { 
+    text-align: left; 
+    /* Pakai warna abu terang dari kamus */
+    color: var(--text-sub) !important; 
+    padding: 10px; 
+    font-size: 10px; 
+    text-transform: uppercase; 
+    border-bottom: 2px solid var(--border-color); 
+}
+
+.stok-table td { 
+    padding: 15px 10px; 
+    border-bottom: 1px solid var(--border-color); 
+    font-weight: 700; 
+    font-size: 13px; 
+    /* Pakai warna utama dari kamus (Putih di Mode Gelap) */
+    color: var(--text-main) !important; 
+}
 
         /* PIN LOCK */
         #loginOverlay { 
@@ -255,10 +279,6 @@ body.dark-mode {
     </style>
 </head>
 <body>
-
-    <svg class="robot-head" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M9,9A1,1 0 0,0 8,10A1,1 0 0,0 9,11A1,1 0 0,0 10,10A1,1 0 0,0 9,9M15,9A1,1 0 0,0 14,10A1,1 0 0,0 15,11A1,1 0 0,0 16,10A1,1 0 0,0 15,9M12,14C10,14 8.2,15.1 7.3,16.7L8.7,17.7C9.3,16.7 10.6,16 12,16C13.4,16 14.7,16.7 15.3,17.7L16.7,16.7C15.8,15.1 14,14 12,14Z" />
-    </svg>
 
     <div id="loginOverlay">
         <div style="display:flex; justify-content:center; margin-top:40px;" id="pinDisplay">
