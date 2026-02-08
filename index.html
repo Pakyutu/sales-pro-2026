@@ -353,7 +353,7 @@ input[type="date"] {
             
             <div style="display:flex; gap:12px;">
                 <input type="date" id="tanggalInput" style="flex:1;">
-                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:15px; border:1px solid #eee; background:#fff; color:var(--text-main); font-weight:800; font-size:11px; margin-bottom:15px;">HARI INI</button>
+                <button onclick="setToday()" style="width:auto; padding:0 20px; border-radius:15px; border:1px solid var(--border-color); background:var(--bg-inner); color:var(--text-main); font-weight:800; font-size:11px; margin-bottom:15px;">HARI INI</button>
             </div>
 
             <input type="text" id="namaOutlet" placeholder="NAMA OUTLET" list="outletList">
@@ -405,7 +405,7 @@ input[type="date"] {
     <div id="tab2" class="content">
         <div class="card">
             <h3>STOK MONITORING</h3>
-            <div style="background: #f8fafc; padding:15px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
+            <div style="background: var(--bg-inner); padding:15px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
                 <span style="font-size:11px; font-weight:800; color:var(--text-sub);">DATA TANGGAL:</span>
                 <input type="date" id="stokDateInput" style="margin:0; padding:5px; width:auto; background:transparent; border:none; font-weight:800;" onchange="syncDateAndRender(this.value)">
             </div>
@@ -447,7 +447,7 @@ input[type="date"] {
 
         <div class="card">
     <h3>MASTER STOK</h3>
-<div style="background: #f8fafc; padding:15px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
+<div style="background: var(--bg-inner); padding:15px; border-radius:15px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; border:1px solid #eef2f6;">
     <span style="font-size:11px; font-weight:800; color:var(--text-sub);">TGL UPDATE STOK:</span>
     <input type="date" id="tglMasterStok" style="margin:0; padding:5px; width:auto; background:transparent; border:none; font-weight:800; color:var(--primary);" onchange="updateTglManual(this.value)">
 </div>
@@ -538,6 +538,19 @@ input[type="date"] {
             <button class="btn btn-dark" onclick="document.getElementById('receiptOverlay').style.display='none'">TUTUP</button>
         </div>
     </div>
+
+/* Memaksa input tanggal dan teks di dalamnya agar terlihat jelas */
+input[type="date"] {
+    background: transparent !important; /* Biar ikut background div induknya */
+    color: var(--text-main) !important;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Khusus untuk teks 'HARI INI' dan label tanggal */
+.header-content p, label, .target-top span, .target-box span {
+    color: var(--text-main) !important;
+}
+
 
 <script>
 // --- LOGIKA MODE GELAP ---
