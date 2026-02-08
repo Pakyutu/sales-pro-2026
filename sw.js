@@ -1,84 +1,46 @@
-const CACHE_NAME = 'msp-cache-v1.0.24'; // <--- UBAH NOMOR INI SETIAP UPDATE (misal v1.0.3)
-
-const assets = [
+const CACHE_NAME = 'sales-pro-v2';
+const urlsToCache = [
   './',
   './index.html',
-  './manifest.json',
-  './background.png'
+  './manifest.json'
+  // Saya hapus daftar logo spesifik biar gak error kalau salah nama
 ];
 
-// 1. Tahap Install (Langsung ganti sif tanpa nunggu tab ditutup)
-self.addEventListener('install', (event) => {
-  self.skipWaiting(); 
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(assets);
-    })
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
+      })
   );
+  self.skipWaiting(); // Paksa update service worker baru
 });
 
-// 2. Tahap Aktivasi (Hapus Cache lama yang sudah basi)
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME)
-            .map((key) => caches.delete(key))
-      );
-    }).then(() => {
-      return self.clients.claim(); // Langsung ambil kendali aplikasi
-    })
-  );
-});
-
-// 3. Tahap Fetch (Ambil data dari internet dulu, kalau gagal baru ambil cache)
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+            return response;
+        }
+        return fetch(event.request);
+      })
   );
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  self.clients.claim(); // Langsung ambil alih kontrol
+});
