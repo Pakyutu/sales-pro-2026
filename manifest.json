@@ -1,24 +1,20 @@
 {
-  "name": "MEDIA SWARA PRIMA",
-  "short_name": "SALES PRO 2026",
-  "description": "Aplikasi Manajemen Sales & Stok",
+  "name": "SALES PRO 2026",
+  "short_name": "SALES PRO",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#000000",
   "theme_color": "#EE2D24",
-  "orientation": "portrait",
   "icons": [
     {
-      "src": "logo.png",
+      "src": "background.png", 
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
-      "src": "logo.png",
+      "src": "background.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
