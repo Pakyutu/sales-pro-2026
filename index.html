@@ -214,7 +214,7 @@ body::before {
     height: 300px;
     background: url('logo_baru.png') no-repeat center center;
     background-size: contain;
-    opacity: 0.1; /* Level tipisnya (0.05 = sangat tipis, 0.1 = agak jelas) */
+    opacity: 0.05; /* Level tipisnya (0.05 = sangat tipis, 0.1 = agak jelas) */
     z-index: -1; /* Biar ada di belakang tulisan */
     pointer-events: none; /* Biar gak bisa diklik */
 }
@@ -826,17 +826,41 @@ const DB_VERSION = 1;
         document.getElementById('outletList').innerHTML = outlets.map(n => `<option value="${n}">`).join('');
     }
 
-    function addItem() {
+        function addItem() {
         const sel = document.getElementById('pilihanVoucher');
         const qty = parseNo(document.getElementById('jumlahPcs').value);
         if(!qty) return;
         
         let namaItem = sel.options[sel.selectedIndex].text;
+        
+        // --- PERBAIKAN LOGIKA STOK (DINAMIS) ---
         if(!namaItem.includes("LINKAJA") && !namaItem.includes("SEVEN")) {
-            let sisa = db.stok[namaItem] || 0;
-            if (sisa < qty) { if(!confirm(`⚠️ STOK TIPIS!\nSisa: ${sisa}, Diminta: ${qty}.\nTetap Paksa?`)) return; }
-            db.stok[namaItem] = sisa - qty;
+            // 1. Ambil data Stok Awal dari Master Stok (yang kamu isi 500 tadi)
+            let stokAwal = db.stokAwal[namaItem] || 0;
+            
+            // 2. Hitung barang yang sudah laku hari ini
+            let tglInput = document.getElementById('tanggalInput').value.split('-').reverse().join('-');
+            let sudahLaku = db.rekap
+                .filter(r => r.tgl === tglInput)
+                .reduce((total, tr) => {
+                    let it = tr.items.find(i => i.nama === namaItem);
+                    return total + (it ? it.qty : 0);
+                }, 0);
+            
+            // 3. Hitung barang yang lagi antre di keranjang (Temp List)
+            let diKeranjang = tempItems
+                .filter(i => i.nama === namaItem)
+                .reduce((a, b) => a + b.qty, 0);
+
+            // 4. Hitung Sisa Sebenarnya (Real-time)
+            let sisa = stokAwal - sudahLaku - diKeranjang;
+
+            // 5. Cek Stok
+            if (sisa < qty) { 
+                if(!confirm(`⚠️ STOK TIPIS!\nSisa Real: ${sisa}, Diminta: ${qty}.\nTetap Paksa?`)) return; 
+            }
         }
+        // ----------------------------------------
 
         tempItems.push({
             nama: namaItem,
@@ -1256,4 +1280,3 @@ const DB_VERSION = 1;
 
 </body>
 </html>
-
