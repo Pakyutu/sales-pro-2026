@@ -191,7 +191,15 @@ body.dark-mode {
         .dash-item.total b { font-size: 32px; color: var(--gold); text-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
 
         /* TRANSAKSI CARDS */
-        .trx-card { background: #fff; padding: 20px; border-radius: var(--radius); border: 1px solid #f0f0f0; margin-bottom: 15px; box-shadow: var(--shadow-sm); }
+        .trx-card { 
+    background: var(--card-bg); /* Biar ikut jadi gelap */
+    color: var(--text-main);    /* Biar tulisan otomatis putih */
+    padding: 20px; 
+    border-radius: var(--radius); 
+    border: 1px solid var(--border-color); 
+    margin-bottom: 15px; 
+    box-shadow: var(--shadow-sm); 
+}
         .trx-name { font-size: 15px; font-weight: 800; color: var(--text-main); }
         .trx-price { font-size: 16px; font-weight: 800; color: var(--primary); }
 
