@@ -752,8 +752,6 @@ const DB_VERSION = 1;
                 let ot = item.data;
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
                 
- // --- TAMBAHKAN BARIS INI (1) ---
-    // Fungsinya: Menyiapkan tulisan tanggal kalau lagi nyari nama
     let labelTgl = searchKeyword !== "" ? `<span style="color:var(--primary); font-size:9px;">[${ot.tgl}]</span> ` : "";
 
     let isPending = (ot.metode === "PENDING");
@@ -769,7 +767,6 @@ const DB_VERSION = 1;
             </div>
             <div class="trx-price">Rp ${formatRibuan(sub)}</div>
         </div>
-//
                 
                 // Cek status pending
                 let isPending = (ot.metode === "PENDING");
