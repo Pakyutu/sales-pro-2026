@@ -727,30 +727,34 @@ const DB_VERSION = 1;
     }
 
                     function renderAll() {
+        // [PERBAIKAN 1] Update Dropdown Voucher SELALU (Biar urutan sesuai Katalog)
         const sel = document.getElementById('pilihanVoucher');
-        if(sel.options.length !== db.catalog.length) {
-            sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
-            updateHarga();
-        }
+        // Hapus pengecekan length lama, langsung render ulang biar urutannya update
+        sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
+        updateHarga();
 
         let filterTgl = document.getElementById('filterTgl').value.split('-').reverse().join('-');
         let searchKeyword = document.getElementById('searchBox').value.toLowerCase(); 
 
         let gt = 0, tc = 0, tf = 0, tp = 0;
+        
+        // [PERBAIKAN 2] Siapkan Wadah Stok Laku
         let laku = {}; 
         db.catalog.forEach(v => laku[v.nama] = 0);
 
-        // --- 1. HITUNG STOK LAKU & OMSET ---
+        // [PERBAIKAN 3] Hitung Stok Laku Berdasarkan Tanggal Filter
         db.rekap.forEach(ot => {
-            // Hitung Laku hanya untuk tanggal yang dipilih
             if (ot.tgl === filterTgl) {
                 ot.items.forEach(it => {
+                    // Pakai nama item sebagai kunci pencarian
+                    // Kita cari di laku, kalau ada kuncinya, tambahkan qty
+                    // Trik: Cek partial match untuk jaga-jaga, tapi exact match lebih aman
                     if (laku.hasOwnProperty(it.nama)) {
                         laku[it.nama] += it.qty;
                     }
                 });
                 
-                // Hitung Omset (Hanya yang bukan Pending)
+                // Hitung Omset
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
                 if(ot.metode === "CASH") { tc += sub; gt += sub; } 
                 else if(ot.metode === "TRANSFER") { tf += sub; gt += sub; } 
@@ -758,24 +762,19 @@ const DB_VERSION = 1;
             }
         });
 
-        // --- 2. RENDER KARTU TRANSAKSI (LOG) ---
+        // Render Log Transaksi
         let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => {
-                // Logika Cari Global
                 return searchKeyword === "" ? item.data.tgl === filterTgl : item.data.nama.toLowerCase().includes(searchKeyword);
             })
             .map(item => {
                 let ot = item.data;
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
-                
                 let labelTgl = searchKeyword !== "" ? `<span style="color:var(--primary); font-size:9px;">[${ot.tgl}]</span> ` : "";
-
-                // Cek Status Pending/Bon
+                
                 let isPending = (ot.metode === "PENDING");
                 let styleCard = isPending ? "border-left: 5px solid #f1c40f; background:var(--bg-inner);" : "";
                 let statusText = isPending ? `<span style="color:#d35400; font-weight:800;">⚠️ BON</span>` : `${ot.metode} • ${ot.jam}`;
-                
-                // Tombol Pelunasan
                 let btnLunas = isPending ? `<button class="act-btn" style="background:#f1c40f; color:#000; font-weight:800; width:100%; margin-bottom:5px;" onclick="lunasiTrx(${item.idx})">💰 LUNASI SEKARANG</button>` : "";
 
                 return `
@@ -798,7 +797,6 @@ const DB_VERSION = 1;
             
         document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Data Kosong...</div>';
         
-        // --- 3. UPDATE STATISTIK DASHBOARD ---
         document.getElementById('statCash').innerText = formatRibuan(tc);
         document.getElementById('statTf').innerText = formatRibuan(tf);
         document.getElementById('statGrand').innerText = formatRibuan(gt);
@@ -808,7 +806,9 @@ const DB_VERSION = 1;
         }
         
         updateTargetBar(gt);
-        renderStokSystem(laku); // PENTING: Mengirim data laku ke tabel stok
+        
+        // [PERBAIKAN 4] Kirim data 'laku' yang sudah dihitung ke fungsi renderStokSystem
+        renderStokSystem(laku); 
         renderRiwayatTab();
     }
 
@@ -843,22 +843,28 @@ const DB_VERSION = 1;
             else { stokAwalTampil = {}; statusData = "(NO DATA)"; }
         }
 
-                document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
+        // [PERBAIKAN 5] Pastikan lakuPerTanggal ada isinya, kalau undefined pakai object kosong
+        let dataLaku = lakuPerTanggal || {}; 
+
+        // Update Tabel Stok
+        document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
             
             let awal = stokAwalTampil[v.nama] || 0;
-            let terjual = lakuPerTanggal[v.nama] || 0;
+            // Ambil data terjual dari hasil hitungan renderAll tadi
+            let terjual = dataLaku[v.nama] || 0; 
             let sisa = awal - terjual;
             let color = sisa <= 5 ? 'red' : 'green';
             
             return `<tr>
                 <td>${v.nama}</td>
                 <td style="text-align:center;">${awal}</td>
-                <td style="text-align:center; color: #2ecc71; font-weight: bold;">${terjual}</td>
+                <td style="text-align:center; color:#2ecc71; font-weight:800; font-size:14px;">${terjual}</td>
                 <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
             </tr>`;
         }).join('');
         
+        // Update Editor Stok
         let isEditable = (filterTglIndo === db.lastUpdate);
         let disabled = isEditable ? "" : "disabled style='background:#eee;'";
 
@@ -868,26 +874,24 @@ const DB_VERSION = 1;
             return `<tr><td style="padding:10px; font-size:11px;">${v.nama}</td><td><input type="number" ${disabled} value="${val}" onchange="db.stokAwal['${v.nama}']=parseInt(this.value)||0;saveToDisk();renderAll();"></td><td><input type="number" ${disabled} placeholder="+ STOK" onchange="let t=parseInt(this.value)||0;db.stokAwal['${v.nama}']=(db.stokAwal['${v.nama}']||0)+t;saveToDisk();this.value='';renderAll();"></td></tr>`;
         }).join('');
 
+        // Update Daftar Katalog (Tetap pakai tombol panah)
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-            <div style="background:var(--bg-inner); border:1px solid var(--border-color); padding:8px 12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                
-                <div style="display:flex; flex-direction:column; gap:2px; margin-right:10px;">
-                    ${i > 0 ? `<button onclick="moveUp(${i})" style="border:none; background:var(--primary); color:white; border-radius:4px; width:24px; height:24px; font-size:10px; cursor:pointer;">▲</button>` : '<div style="height:24px;"></div>'}
-                    ${i < db.catalog.length - 1 ? `<button onclick="moveDown(${i})" style="border:none; background:#2c3e50; color:white; border-radius:4px; width:24px; height:24px; font-size:10px; cursor:pointer;">▼</button>` : '<div style="height:24px;"></div>'}
+            <div style="background:var(--bg-inner); border:1px solid var(--border-color); padding:8px; border-radius:12px; margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+                <div style="display:flex; flex-direction:column; gap:2px;">
+                    ${i > 0 ? `<button onclick="moveUp(${i})" style="border:none; background:var(--primary); color:white; border-radius:4px; width:30px; height:20px; font-size:10px; cursor:pointer;">▲</button>` : '<div style="height:20px;"></div>'}
+                    ${i < db.catalog.length - 1 ? `<button onclick="moveDown(${i})" style="border:none; background:var(--text-main); color:white; border-radius:4px; width:30px; height:20px; font-size:10px; cursor:pointer;">▼</button>` : '<div style="height:20px;"></div>'}
                 </div>
-
-                <div style="flex:1; display:flex; flex-direction:column;">
-                    <b style="font-size:12px; color:var(--text-main);">${v.nama}</b>
-                    <span style="font-size:10px; color:var(--primary); font-weight:700;">Rp ${formatRibuan(v.harga)}</span>
+                <div style="flex:1;">
+                    <div style="font-size:12px; font-weight:800; color:var(--text-main);">${v.nama}</div>
+                    <div style="font-size:10px; color:var(--primary); font-weight:700;">Rp ${formatRibuan(v.harga)}</div>
                 </div>
-
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <span style="color:#0984e3; cursor:pointer; font-size:18px;" onclick="editKatalog(${i})">✏️</span>
-                    <span style="color:red; cursor:pointer; font-size:18px;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">🗑️</span>
+                <div style="display:flex; gap:5px;">
+                    <button style="background:#0984e3; color:white; border:none; border-radius:5px; padding:5px 8px; font-size:10px; font-weight:800;" onclick="editKatalog(${i})">EDIT</button>
+                    <button style="background:red; color:white; border:none; border-radius:5px; padding:5px 8px; font-size:10px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</button>
                 </div>
             </div>
         `).join('');
-        }
+    }
 
 
     function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
