@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sales-pro-v20'; // Naikkan angkanya (v2 -> v3 -> v4 dst)
+const CACHE_NAME = 'sales-pro-v21'; // Naikkan angkanya (v2 -> v3 -> v4 dst)
 const urlsToCache = [
   './',
   './index.html',
@@ -44,6 +44,7 @@ self.addEventListener('activate', event => {
   );
   self.clients.claim(); // Langsung ambil alih kontrol
 });
+
 
 
 
