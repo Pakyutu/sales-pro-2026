@@ -490,9 +490,10 @@ input[type="date"] {
         
         <div class="card">
             <h3>SISTEM DATA</h3>
-            <button class="btn btn-dark" onclick="checkForUpdate()" style="background: linear-gradient(135deg, #2c3e50, #000); margin-bottom: 10px;">
-    🔄 CEK UPDATE APLIKASI
+         <button class="btn" style="background: linear-gradient(135deg, #d35400, #e67e22); color: white; margin-bottom: 10px; font-weight:800;" onclick="forceUpdate()">
+    ⚡ PAKSA UPDATE (SOLUSI ERROR)
 </button>
+
 <div id="updateStatus" style="font-size: 10px; text-align: center; color: var(--text-sub); font-weight: 800; margin-bottom: 15px;">
  
 </div>
@@ -1370,7 +1371,21 @@ function editKatalog(i) {
         });
     }
 
-    
+function forceUpdate() {
+        if(confirm("Ini akan menghapus memori aplikasi agar fitur baru muncul.\nLanjutkan?")) {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+            localStorage.removeItem('MSP_THEME'); // Reset tema sekalian
+            alert("Aplikasi akan dimuat ulang. Tunggu sebentar...");
+            window.location.reload(true);
+        }
+    }
+
 </script>
 
 </body>
