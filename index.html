@@ -869,18 +869,25 @@ const DB_VERSION = 1;
         }).join('');
 
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
-            <div style="background:var(--bg-inner); border:1px solid var(--border-color); padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; flex-direction:column;">
+            <div style="background:var(--bg-inner); border:1px solid var(--border-color); padding:8px 12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                
+                <div style="display:flex; flex-direction:column; gap:2px; margin-right:10px;">
+                    ${i > 0 ? `<button onclick="moveUp(${i})" style="border:none; background:var(--primary); color:white; border-radius:4px; width:24px; height:24px; font-size:10px; cursor:pointer;">▲</button>` : '<div style="height:24px;"></div>'}
+                    ${i < db.catalog.length - 1 ? `<button onclick="moveDown(${i})" style="border:none; background:#2c3e50; color:white; border-radius:4px; width:24px; height:24px; font-size:10px; cursor:pointer;">▼</button>` : '<div style="height:24px;"></div>'}
+                </div>
+
+                <div style="flex:1; display:flex; flex-direction:column;">
                     <b style="font-size:12px; color:var(--text-main);">${v.nama}</b>
                     <span style="font-size:10px; color:var(--primary); font-weight:700;">Rp ${formatRibuan(v.harga)}</span>
                 </div>
-                <div style="display:flex; gap:10px;">
-                    <span style="color:#0984e3; cursor:pointer; font-size:11px; font-weight:800;" onclick="editKatalog(${i})">EDIT</span>
-                    <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
+
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <span style="color:#0984e3; cursor:pointer; font-size:18px;" onclick="editKatalog(${i})">✏️</span>
+                    <span style="color:red; cursor:pointer; font-size:18px;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">🗑️</span>
                 </div>
             </div>
         `).join('');
-    } // Penutup fungsi ini wajib ada!
+        }
 
 
     function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
@@ -1113,6 +1120,28 @@ function editKatalog(i) {
         saveToDisk();
         renderAll();
         alert("Katalog Berhasil Diperbarui!");
+    }
+}
+
+function moveUp(i) {
+    if (i > 0) {
+        // Tukar posisi dengan yang di atasnya
+        let temp = db.catalog[i];
+        db.catalog[i] = db.catalog[i-1];
+        db.catalog[i-1] = temp;
+        saveToDisk();
+        renderAll();
+    }
+}
+
+function moveDown(i) {
+    if (i < db.catalog.length - 1) {
+        // Tukar posisi dengan yang di bawahnya
+        let temp = db.catalog[i];
+        db.catalog[i] = db.catalog[i+1];
+        db.catalog[i+1] = temp;
+        saveToDisk();
+        renderAll();
     }
 }
 
