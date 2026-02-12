@@ -725,7 +725,7 @@ const DB_VERSION = 1;
         localStorage.setItem('MSP_LAST_DATE', db.lastUpdate);
     }
 
-        function renderAll() {
+            function renderAll() {
         const sel = document.getElementById('pilihanVoucher');
         if(sel.options.length !== db.catalog.length) {
             sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
@@ -735,26 +735,40 @@ const DB_VERSION = 1;
         let filterTgl = document.getElementById('filterTgl').value.split('-').reverse().join('-');
         let searchKeyword = document.getElementById('searchBox').value.toLowerCase(); 
 
-        let gt = 0, tc = 0, tf = 0;
-        let laku = {}; db.catalog.forEach(v => laku[v.nama] = 0);
+        let gt = 0, tc = 0, tf = 0, tp = 0;
+        let laku = {}; 
+        db.catalog.forEach(v => laku[v.nama] = 0);
 
+        // HITUNG STOK LAKU (Berdasarkan Tanggal yang Dipilih)
+        db.rekap.forEach(ot => {
+            if (ot.tgl === filterTgl) {
+                ot.items.forEach(it => {
+                    // Pakai += agar kalau ada 2 baris barang yang sama, dia menjumlahkan
+                    if (laku.hasOwnProperty(it.nama)) {
+                        laku[it.nama] += it.qty;
+                    }
+                });
+                
+                // Hitung Omset
+                let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
+                if(ot.metode === "CASH") { tc += sub; gt += sub; } 
+                else if(ot.metode === "TRANSFER") { tf += sub; gt += sub; } 
+                else { tp += sub; }
+            }
+        });
+
+        // TAMPILKAN LOG AKTIVITAS (Bisa Cari Global)
         let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => {
-                // Jika cari kosong, filter tgl. Jika isi, cari global.
                 return searchKeyword === "" ? item.data.tgl === filterTgl : item.data.nama.toLowerCase().includes(searchKeyword);
             })
             .map(item => {
                 let ot = item.data;
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
-                
-                // Label tanggal muncul kalau lagi mode cari
                 let labelTgl = searchKeyword !== "" ? `<span style="color:var(--primary); font-size:9px;">[${ot.tgl}]</span> ` : "";
-
                 let isPending = (ot.metode === "PENDING");
                 let styleCard = isPending ? "border-left: 5px solid #f1c40f; background:var(--bg-inner);" : "";
                 let statusText = isPending ? `<span style="color:#d35400; font-weight:800;">⚠️ BON</span>` : `${ot.metode} • ${ot.jam}`;
-                
-                // Tombol Lunas (hanya muncul jika Pending)
                 let btnLunas = isPending ? `<button class="act-btn" style="background:#f1c40f; color:#000; font-weight:800;" onclick="lunasiTrx(${item.idx})">💰 LUNASI</button>` : "";
 
                 return `
@@ -776,29 +790,15 @@ const DB_VERSION = 1;
             }).reverse().join('');
             
         document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Data Kosong...</div>';
-
-        let filteredDateData = db.rekap.filter(item => item.tgl === filterTgl);
-        let tp = 0; 
-
-        filteredDateData.forEach(ot => {
-            let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
-            ot.items.forEach(it => { laku[it.nama] = (laku[it.nama] || 0) + it.qty });
-
-            if(ot.metode === "CASH") { tc += sub; gt += sub; } 
-            else if(ot.metode === "TRANSFER") { tf += sub; gt += sub; } 
-            else { tp += sub; }
-        });
-
+        
+        // Update Statistik
         document.getElementById('statCash').innerText = formatRibuan(tc);
         document.getElementById('statTf').innerText = formatRibuan(tf);
         document.getElementById('statGrand').innerText = formatRibuan(gt);
-        
-        if(tp > 0) {
-            document.getElementById('statGrand').innerHTML += `<div style="font-size:10px; color:#f1c40f; margin-top:5px;">⚠️ Pending: Rp ${formatRibuan(tp)}</div>`;
-        }
+        if(tp > 0) { document.getElementById('statGrand').innerHTML += `<div style="font-size:10px; color:#f1c40f; margin-top:5px;">⚠️ Pending: Rp ${formatRibuan(tp)}</div>`; }
         
         updateTargetBar(gt);
-        renderStokSystem(laku);
+        renderStokSystem(laku); // Kirim data laku ke tabel stok
         renderRiwayatTab();
     }
 
@@ -834,13 +834,20 @@ const DB_VERSION = 1;
             else { stokAwalTampil = {}; statusData = "(NO DATA)"; }
         }
 
-        document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
+                document.getElementById('stokTableBody').innerHTML = db.catalog.map(v => {
             if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+            
             let awal = stokAwalTampil[v.nama] || 0;
             let terjual = lakuPerTanggal[v.nama] || 0;
             let sisa = awal - terjual;
             let color = sisa <= 5 ? 'red' : 'green';
-            return `<tr><td>${v.nama}</td><td style="text-align:center;">${awal}</td><td style="text-align:center;">${terjual}</td><td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td></tr>`;
+            
+            return `<tr>
+                <td>${v.nama}</td>
+                <td style="text-align:center;">${awal}</td>
+                <td style="text-align:center; color: #2ecc71; font-weight: bold;">${terjual}</td>
+                <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
+            </tr>`;
         }).join('');
         
         let isEditable = (filterTglIndo === db.lastUpdate);
