@@ -725,7 +725,7 @@ const DB_VERSION = 1;
         localStorage.setItem('MSP_LAST_DATE', db.lastUpdate);
     }
 
-            function renderAll() {
+                function renderAll() {
         const sel = document.getElementById('pilihanVoucher');
         if(sel.options.length !== db.catalog.length) {
             sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
@@ -739,17 +739,17 @@ const DB_VERSION = 1;
         let laku = {}; 
         db.catalog.forEach(v => laku[v.nama] = 0);
 
-        // HITUNG STOK LAKU (Berdasarkan Tanggal yang Dipilih)
+        // --- 1. HITUNG STOK LAKU & OMSET ---
         db.rekap.forEach(ot => {
+            // Hitung Laku hanya untuk tanggal yang dipilih
             if (ot.tgl === filterTgl) {
                 ot.items.forEach(it => {
-                    // Pakai += agar kalau ada 2 baris barang yang sama, dia menjumlahkan
                     if (laku.hasOwnProperty(it.nama)) {
                         laku[it.nama] += it.qty;
                     }
                 });
                 
-                // Hitung Omset
+                // Hitung Omset (Hanya yang bukan Pending)
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
                 if(ot.metode === "CASH") { tc += sub; gt += sub; } 
                 else if(ot.metode === "TRANSFER") { tf += sub; gt += sub; } 
@@ -757,19 +757,26 @@ const DB_VERSION = 1;
             }
         });
 
-        // TAMPILKAN LOG AKTIVITAS (Bisa Cari Global)
+        // --- 2. RENDER KARTU TRANSAKSI (LOG) ---
         let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => {
+                // Logika Cari Global: Kalau kosong ikut tanggal, kalau ada isi cari nama di semua tanggal
                 return searchKeyword === "" ? item.data.tgl === filterTgl : item.data.nama.toLowerCase().includes(searchKeyword);
             })
             .map(item => {
                 let ot = item.data;
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
+                
+                // Label Tanggal (Muncul kalau lagi cari global)
                 let labelTgl = searchKeyword !== "" ? `<span style="color:var(--primary); font-size:9px;">[${ot.tgl}]</span> ` : "";
+
+                // Cek Status Pending/Bon
                 let isPending = (ot.metode === "PENDING");
                 let styleCard = isPending ? "border-left: 5px solid #f1c40f; background:var(--bg-inner);" : "";
                 let statusText = isPending ? `<span style="color:#d35400; font-weight:800;">⚠️ BON</span>` : `${ot.metode} • ${ot.jam}`;
-                let btnLunas = isPending ? `<button class="act-btn" style="background:#f1c40f; color:#000; font-weight:800;" onclick="lunasiTrx(${item.idx})">💰 LUNASI</button>` : "";
+                
+                // Tombol Pelunasan
+                let btnLunas = isPending ? `<button class="act-btn" style="background:#f1c40f; color:#000; font-weight:800; width:100%; margin-bottom:5px;" onclick="lunasiTrx(${item.idx})">💰 LUNASI SEKARANG</button>` : "";
 
                 return `
                 <div class="trx-card" style="${styleCard}">
@@ -791,14 +798,18 @@ const DB_VERSION = 1;
             
         document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Data Kosong...</div>';
         
-        // Update Statistik
+        // --- 3. UPDATE STATISTIK DASHBOARD ---
         document.getElementById('statCash').innerText = formatRibuan(tc);
         document.getElementById('statTf').innerText = formatRibuan(tf);
         document.getElementById('statGrand').innerText = formatRibuan(gt);
-        if(tp > 0) { document.getElementById('statGrand').innerHTML += `<div style="font-size:10px; color:#f1c40f; margin-top:5px;">⚠️ Pending: Rp ${formatRibuan(tp)}</div>`; }
+        
+        // Munculkan info Pending jika ada
+        if(tp > 0) {
+            document.getElementById('statGrand').innerHTML += `<div style="font-size:10px; color:#f1c40f; margin-top:5px;">⚠️ Pending: Rp ${formatRibuan(tp)}</div>`;
+        }
         
         updateTargetBar(gt);
-        renderStokSystem(laku); // Kirim data laku ke tabel stok
+        renderStokSystem(laku); // PENTING: Mengirim data laku ke tabel stok
         renderRiwayatTab();
     }
 
