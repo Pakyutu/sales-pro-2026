@@ -725,7 +725,7 @@ const DB_VERSION = 1;
         localStorage.setItem('MSP_LAST_DATE', db.lastUpdate);
     }
 
-                function renderAll() {
+                    function renderAll() {
         const sel = document.getElementById('pilihanVoucher');
         if(sel.options.length !== db.catalog.length) {
             sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
@@ -760,14 +760,13 @@ const DB_VERSION = 1;
         // --- 2. RENDER KARTU TRANSAKSI (LOG) ---
         let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
             .filter(item => {
-                // Logika Cari Global: Kalau kosong ikut tanggal, kalau ada isi cari nama di semua tanggal
+                // Logika Cari Global
                 return searchKeyword === "" ? item.data.tgl === filterTgl : item.data.nama.toLowerCase().includes(searchKeyword);
             })
             .map(item => {
                 let ot = item.data;
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
                 
-                // Label Tanggal (Muncul kalau lagi cari global)
                 let labelTgl = searchKeyword !== "" ? `<span style="color:var(--primary); font-size:9px;">[${ot.tgl}]</span> ` : "";
 
                 // Cek Status Pending/Bon
@@ -803,7 +802,6 @@ const DB_VERSION = 1;
         document.getElementById('statTf').innerText = formatRibuan(tf);
         document.getElementById('statGrand').innerText = formatRibuan(gt);
         
-        // Munculkan info Pending jika ada
         if(tp > 0) {
             document.getElementById('statGrand').innerHTML += `<div style="font-size:10px; color:#f1c40f; margin-top:5px;">⚠️ Pending: Rp ${formatRibuan(tp)}</div>`;
         }
@@ -812,7 +810,6 @@ const DB_VERSION = 1;
         renderStokSystem(laku); // PENTING: Mengirim data laku ke tabel stok
         renderRiwayatTab();
     }
-
 
     function updateTargetBar(current) {
         let target = db.settings.target || 1;
