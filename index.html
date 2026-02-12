@@ -739,11 +739,37 @@ const DB_VERSION = 1;
         let laku = {}; db.catalog.forEach(v => laku[v.nama] = 0);
 
                 let html = db.rekap.map((ot, i) => { return {data: ot, idx: i} })
-            .filter(item => item.data.tgl === filterTgl)
-            .filter(item => item.data.nama.toLowerCase().includes(searchKeyword))
+           .filter(item => {
+    // Jika kolom cari kosong, tampilkan per tanggal
+    if (searchKeyword === "") {
+        return item.data.tgl === filterTgl;
+    } else {
+        // Jika ada tulisan di kolom cari, cari di semua tanggal
+        return item.data.nama.toLowerCase().includes(searchKeyword);
+    }
+})
             .map(item => {
                 let ot = item.data;
                 let sub = ot.items.reduce((a, b) => a + (b.harga * b.qty), 0);
+                
+ // --- TAMBAHKAN BARIS INI (1) ---
+    // Fungsinya: Menyiapkan tulisan tanggal kalau lagi nyari nama
+    let labelTgl = searchKeyword !== "" ? `<span style="color:var(--primary); font-size:9px;">[${ot.tgl}]</span> ` : "";
+
+    let isPending = (ot.metode === "PENDING");
+    let statusText = isPending ? `<span style="color:#d35400; font-weight:800;">⚠️ BON</span>` : `${ot.metode} • ${ot.jam}`;
+
+    return `
+    <div class="trx-card">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+            <div>
+                <div class="trx-name" style="color:var(--text-main); font-weight:800;">${labelTgl}${ot.nama}</div>
+                
+                <div style="font-size:10px; font-weight:700; color:var(--text-sub);">${statusText}</div>
+            </div>
+            <div class="trx-price">Rp ${formatRibuan(sub)}</div>
+        </div>
+//
                 
                 // Cek status pending
                 let isPending = (ot.metode === "PENDING");
@@ -903,11 +929,16 @@ const DB_VERSION = 1;
         // Ganti baris pembuat catalogList menjadi ini:
 document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
     <div style="background:var(--bg-inner); border:1px solid var(--border-color); padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-        <b style="font-size:12px; color:var(--text-main);">${v.nama}</b> 
-        <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
+        <div style="display:flex; flex-direction:column;">
+            <b style="font-size:12px; color:var(--text-main);">${v.nama}</b>
+            <span style="font-size:10px; color:var(--primary); font-weight:700;">Rp ${formatRibuan(v.harga)}</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <span style="color:#0984e3; cursor:pointer; font-size:11px; font-weight:800;" onclick="editKatalog(${i})">EDIT</span>
+            <span style="color:red; cursor:pointer; font-size:11px; font-weight:800;" onclick="db.catalog.splice(${i},1);saveToDisk();renderAll()">HAPUS</span>
+        </div>
     </div>
 `).join('');
-    }
 
     function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
@@ -1127,6 +1158,20 @@ document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
         let p = parseNo(document.getElementById('addPrice').value);
         if(n && p) { db.catalog.push({nama:n, harga:p}); saveToDisk(); renderAll(); }
     }
+    
+function editKatalog(i) {
+    let item = db.catalog[i];
+    let namaBaru = prompt("Edit Nama Produk:", item.nama);
+    let hargaBaru = prompt("Edit Harga Produk:", item.harga);
+    
+    if (namaBaru !== null && hargaBaru !== null) {
+        db.catalog[i].nama = namaBaru.toUpperCase();
+        db.catalog[i].harga = parseNo(hargaBaru);
+        saveToDisk();
+        renderAll();
+        alert("Katalog Berhasil Diperbarui!");
+    }
+}
 
     function renderRiwayatTab() {
         let dates = [...new Set(db.rekap.map(d => d.tgl))].sort().reverse();
