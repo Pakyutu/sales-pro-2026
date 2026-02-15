@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -8,7 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SALES PRO 2026 | MSP SYSTEM</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <link rel="manifest" href="manifest.json">
 <script>
     if ('serviceWorker' in navigator) {
@@ -1000,6 +1002,7 @@ const DB_VERSION = 1;
 
         if(editIdx > -1) { db.rekap[editIdx] = data; editIdx = -1; } 
         else { db.rekap.push(data); }
+        cloudDB.ref("transaksi").push(data);
 
         tempItems = []; document.getElementById('namaOutlet').value = ""; document.getElementById('tempList').innerHTML = "";
         saveToDisk(); renderAll(); renderOutletSuggestions();
@@ -1418,6 +1421,23 @@ function forceUpdate() {
             window.location.reload(true);
         }
     }
+
+/* ================= FIREBASE CONNECT ================= */
+
+const firebaseConfig = {
+apiKey: "AIzaSyBzGcliM6Um0hqyDw8ynFB4bXk9P9yzd3k",
+authDomain: "sales-pro-fa637.firebaseapp.com",
+databaseURL: "https://sales-pro-fa637-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "sales-pro-fa637",
+storageBucket: "sales-pro-fa637.firebasestorage.app",
+messagingSenderId: "801563728462",
+appId: "1:801563728462:web:3cf1a19a96790e1774411f"
+};
+
+firebase.initializeApp(firebaseConfig);
+const cloudDB = firebase.database();
+
+/* ===================================================== */
 
 </script>
 
