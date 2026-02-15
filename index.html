@@ -569,6 +569,60 @@ body.dark-mode .dash-item.total b{
         0 0 25px rgba(255,209,102,0.4);
 }
 
+/* ============================= */
+/* STOCK TABLE CLEAN FUTURE UI   */
+/* ============================= */
+
+/* kolom LAKU — jangan neon lagi */
+.stok-table td:nth-child(3){
+    color:#00bcd4 !important;
+    text-shadow:none !important;
+    font-weight:800;
+}
+
+/* mode gelap */
+body.dark-mode .stok-table td:nth-child(3){
+    color:#4dd0e1 !important;
+}
+
+/* kolom SISA — bulat indikator lebih clean */
+.stok-table td:nth-child(4){
+    font-weight:900;
+    letter-spacing:0.5px;
+}
+
+/* hijau aman */
+.stok-table td:nth-child(4):has(🟢){
+    color:#2ecc71 !important;
+}
+
+/* kuning tipis */
+.stok-table td:nth-child(4):has(🟡){
+    color:#f1c40f !important;
+}
+
+/* merah tipis */
+.stok-table td:nth-child(4):has(🔴){
+    color:#ff5252 !important;
+}
+
+/* hilangkan glow lebay lama */
+.stok-table td{
+    text-shadow:none !important;
+    filter:none !important;
+}
+
+/* hover modern */
+.stok-table tbody tr:hover{
+    background:linear-gradient(90deg,rgba(0,188,212,0.10),transparent) !important;
+    transform:translateX(4px);
+}
+
+/* header lebih tajam */
+.stok-table thead tr{
+    box-shadow:0 6px 14px rgba(0,0,0,0.15) !important;
+}
+
     </style>
 </head>
 <body>
