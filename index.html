@@ -221,7 +221,6 @@ body.dark-mode {
         /* PERBAIKAN TABEL STOK (BIAR TERANG) */
 .stok-table th { 
     text-align: left; 
-    /* Pakai warna abu terang dari kamus */
     color: var(--text-sub) !important; 
     padding: 10px; 
     font-size: 10px; 
@@ -229,20 +228,21 @@ body.dark-mode {
     border-bottom: 2px solid var(--border-color); 
 }
 
-.stok-table td { 
+.stok-table td {
     padding: 15px 10px; 
     border-bottom: 1px solid var(--border-color); 
     font-weight: 700; 
     font-size: 13px; 
-    /* Pakai warna utama dari kamus (Putih di Mode Gelap) */
     color: var(--text-main) !important; 
 }
 
-.laku-cell {
-    color: #2ecc71 !important;
-    font-weight: 800;
-    font-size: 14px;
+/* PRIORITAS PALING TINGGI - KOLOM LAKU */
+body .stok-table tbody tr td[data-laku]{
+    color:#00e676 !important;
+    font-weight:900 !important;
+    text-shadow:0 0 6px rgba(0,230,118,.4);
 }
+
 
         /* PIN LOCK */
         #loginOverlay { 
@@ -319,6 +319,12 @@ input[type="date"] {
         .header-content p, label, .target-top span, .target-box span {
             color: var(--text-main) !important;
         }
+        
+/* PAKSA HIJAU UNTUK KOLOM LAKU */
+#stokTableBody td[data-laku]{
+    color:#00e676 !important;
+    font-weight:900 !important;
+}
 
     </style>
 </head>
@@ -860,12 +866,12 @@ const DB_VERSION = 1;
             // Ambil data terjual dari hasil hitungan renderAll tadi
             let terjual = dataLaku[v.nama] || 0; 
             let sisa = awal - terjual;
-            let color = sisa <= 5 ? 'red' : 'green';
+let color = sisa <= 5 ? '#ff5252' : 'var(--text-main)';
             
             return `<tr>
                 <td>${v.nama}</td>
                 <td style="text-align:center;">${awal}</td>
-               <td class="laku-cell" style="text-align:center;">${terjual}</td>
+              <td style="text-align:center; font-weight:900; color:#00e676;">${terjual}</td>
                 <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
             </tr>`;
         }).join('');
