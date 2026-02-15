@@ -672,42 +672,14 @@ const DB_VERSION = 1;
     let enteredPin = "";
     let lastDeletedTrx = null;
 
-        window.onload = () => { if (!db.version || db.version < DB_VERSION) {
-    db.version = DB_VERSION;
-    saveToDisk();
-}
-        autoUpdateStokAwal(); // <--- Ini yang bikin sistem langsung cek tanggal pas buka
-        checkLogin();
-        setToday();
-document.getElementById('setTarget').value = formatRibuan(db.settings.target);
-document.getElementById('setPin').value = db.settings.pin;
-renderOutletSuggestions();
-
-    function syncDateAndRender(newDate) {
-        document.getElementById('filterTgl').value = newDate;
-        document.getElementById('stokDateInput').value = newDate;
-        renderAll();
-    }
-
-    function checkLogin() {
-        if(db.settings.pin && db.settings.pin.toString().length === 4) {
-            document.getElementById('loginOverlay').style.display = 'flex';
-        }
-    }
-
-    function enterPin(n) {
-        if(n === -1) enteredPin = enteredPin.slice(0, -1);
-        else if(enteredPin.length < 4) enteredPin += n;
-        updatePinDots();
-        if(enteredPin.length === 4) {
-            if(enteredPin === db.settings.pin.toString()) {
-                document.getElementById('loginOverlay').style.display = 'none';
-            } else {
-                alert("PIN KEAMANAN SALAH!");
-                enteredPin = ""; updatePinDots();
-            }
-        }
-    }
+        window.onload = () => { 
+    autoUpdateStokAwal();
+    checkLogin();
+    setToday();
+    document.getElementById('setTarget').value = formatRibuan(db.settings.target);
+    document.getElementById('setPin').value = db.settings.pin;
+    renderOutletSuggestions();
+};
 
     function updatePinDots() {
         let dots = document.querySelectorAll('.pin-dot');
@@ -846,7 +818,8 @@ let filterTgl = rawDate.split('-').reverse().join('-');
         }
 
         let filterTglRaw = document.getElementById('filterTgl').value;
-        let filterTglIndo = filterTglRaw.split('-').reverse().join('-');
+if(!filterTglRaw) return;
+let filterTglIndo = filterTglRaw.split('-').reverse().join('-');
         
         let stokAwalTampil = {};
         let statusData = "";
@@ -931,11 +904,15 @@ ${sisaIcon} ${sisa}
     function formatInput(el) { el.value = formatRibuan(parseNo(el.value)); }
     
     function setToday() { 
-        let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-        let iso = d.toISOString().slice(0,10);
-        document.getElementById('tanggalInput').value = iso;
-        syncDateAndRender(iso);
-    }
+    let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    let iso = d.toISOString().slice(0,10);
+
+    document.getElementById('tanggalInput').value = iso;
+    document.getElementById('filterTgl').value = iso;
+    document.getElementById('stokDateInput').value = iso;
+
+    renderAll();
+}
 
     function updateHarga() { 
         const sel = document.getElementById('pilihanVoucher');
@@ -1461,6 +1438,34 @@ let FIREBASE_READY = false;
 // cloudDB.ref("transaksi").on("value", snap => {});
 
 /* ===================================================== */
+
+function syncDateAndRender(newDate) {
+    document.getElementById('filterTgl').value = newDate;
+    document.getElementById('stokDateInput').value = newDate;
+    renderAll();
+}
+
+function checkLogin() {
+    if(db.settings.pin && db.settings.pin.toString().length === 4) {
+        document.getElementById('loginOverlay').style.display = 'flex';
+    }
+}
+
+function enterPin(n) {
+    if(n === -1) enteredPin = enteredPin.slice(0, -1);
+    else if(enteredPin.length < 4) enteredPin += n;
+    updatePinDots();
+    if(enteredPin.length === 4) {
+        if(enteredPin === db.settings.pin.toString()) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    renderAll();
+        }
+        else {
+            alert("PIN KEAMANAN SALAH!");
+            enteredPin = ""; updatePinDots();
+        }
+    }
+}
 
 </script>
 
