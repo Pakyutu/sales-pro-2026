@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sales-pro-v37'; // NAIKKAN VERSI SETIAP UPDATE (v37, v38, dst)
+const CACHE_NAME = 'sales-pro-v40'; // NAIKKAN VERSI SETIAP UPDATE (v37, v38, dst)
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -59,3 +59,4 @@ self.addEventListener('activate', event => {
   );
   self.clients.claim(); // Ambil kendali semua tab aplikasi
 });
+
