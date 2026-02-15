@@ -1002,7 +1002,9 @@ const DB_VERSION = 1;
 
         if(editIdx > -1) { db.rekap[editIdx] = data; editIdx = -1; } 
         else { db.rekap.push(data); }
-        cloudDB.ref("transaksi").push(data);
+      if (window.firebase && firebase.database) {
+    firebase.database().ref("transaksi").push(data);
+}
 
         tempItems = []; document.getElementById('namaOutlet').value = ""; document.getElementById('tempList').innerHTML = "";
         saveToDisk(); renderAll(); renderOutletSuggestions();
