@@ -880,23 +880,6 @@ const DB_VERSION = 1;
             </div>
         `).join('');
     }
-    
-        document.getElementById('historyList').innerHTML = html || '<div style="text-align:center; padding:30px; opacity:0.5; font-size:12px;">Data Kosong...</div>';
-        
-        document.getElementById('statCash').innerText = formatRibuan(tc);
-        document.getElementById('statTf').innerText = formatRibuan(tf);
-        document.getElementById('statGrand').innerText = formatRibuan(gt);
-        
-        if(tp > 0) {
-            document.getElementById('statGrand').innerHTML += `<div style="font-size:10px; color:#f1c40f; margin-top:5px;">⚠️ Pending: Rp ${formatRibuan(tp)}</div>`;
-        }
-        
-        updateTargetBar(gt);
-        
-        // [PERBAIKAN 4] Kirim data 'laku' yang sudah dihitung ke fungsi renderStokSystem
-        renderStokSystem(laku); 
-        renderRiwayatTab();
-    }
 
     function updateTargetBar(current) {
         let target = db.settings.target || 1;
