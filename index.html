@@ -623,6 +623,54 @@ body.dark-mode .stok-table td:nth-child(3){
     box-shadow:0 6px 14px rgba(0,0,0,0.15) !important;
 }
 
+/* ===== FIX RESPONSIVE STOK MONITORING ===== */
+
+.stok-table{
+    width:100%;
+    table-layout:fixed; /* penting */
+}
+
+/* lebar kolom */
+.stok-table th:nth-child(1),
+.stok-table td:nth-child(1){
+    width:40%;
+    word-break:break-word;
+}
+
+.stok-table th:nth-child(2),
+.stok-table td:nth-child(2){
+    width:20%;
+}
+
+.stok-table th:nth-child(3),
+.stok-table td:nth-child(3){
+    width:20%;
+}
+
+.stok-table th:nth-child(4),
+.stok-table td:nth-child(4){
+    width:20%;
+}
+
+/* angka rata kanan biar rapi */
+.stok-table td:nth-child(2),
+.stok-table td:nth-child(3),
+.stok-table td:nth-child(4){
+    text-align:right !important;
+}
+
+/* font kecil otomatis di hp kecil */
+@media (max-width:420px){
+    .stok-table th{
+        font-size:9px;
+        padding:8px 4px;
+    }
+    .stok-table td{
+        font-size:11px;
+        padding:10px 4px!important;
+    }
+}
+
     </style>
 </head>
 <body>
