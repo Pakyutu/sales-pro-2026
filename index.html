@@ -9,8 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SALES PRO 2026 | MSP SYSTEM</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <link rel="manifest" href="manifest.json">
 <script>
     if ('serviceWorker' in navigator) {
@@ -238,6 +236,12 @@ body.dark-mode {
     font-size: 13px; 
     /* Pakai warna utama dari kamus (Putih di Mode Gelap) */
     color: var(--text-main) !important; 
+}
+
+.laku-cell {
+    color: #2ecc71 !important;
+    font-weight: 800;
+    font-size: 14px;
 }
 
         /* PIN LOCK */
@@ -861,7 +865,7 @@ const DB_VERSION = 1;
             return `<tr>
                 <td>${v.nama}</td>
                 <td style="text-align:center;">${awal}</td>
-                <td style="text-align:center; color:#2ecc71; font-weight:800; font-size:14px;">${terjual}</td>
+               <td class="laku-cell" style="text-align:center;">${terjual}</td>
                 <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
             </tr>`;
         }).join('');
@@ -988,33 +992,36 @@ const DB_VERSION = 1;
     }
 
     function saveTrx() {
-        const nama = document.getElementById('namaOutlet').value.toUpperCase();
-        if(!nama) return alert("Masukkan Nama Outlet!");
-        
-        const now = new Date();
-        const data = {
-            nama: nama,
-            metode: document.getElementById('metodeBayar').value,
-            items: [...tempItems],
-            jam: now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'),
-            tgl: document.getElementById('tanggalInput').value.split('-').reverse().join('-')
-        };
+    const nama = document.getElementById('namaOutlet').value.toUpperCase();
+    if(!nama) return alert("Masukkan Nama Outlet!");
+    
+    const now = new Date();
+    const data = {
+        nama: nama,
+        metode: document.getElementById('metodeBayar').value,
+        items: [...tempItems],
+        jam: now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'),
+        tgl: document.getElementById('tanggalInput').value.split('-').reverse().join('-')
+    };
 
-        if(editIdx > -1) { db.rekap[editIdx] = data; editIdx = -1; } 
-        else { db.rekap.push(data); }
-   if (FIREBASE_READY) {
-    cloudDB.ref("transaksi").push(data)
-    .then(()=>console.log("UPLOAD OK"))
-    .catch(e=>console.log("UPLOAD ERROR",e));
-} else {
-    console.log("Firebase belum siap");
-}
-
-        tempItems = []; document.getElementById('namaOutlet').value = ""; document.getElementById('tempList').innerHTML = "";
-        saveToDisk(); renderAll(); renderOutletSuggestions();
-        document.getElementById('mainSaveBtn').innerText = "SIMPAN DATA";
-        document.getElementById('mainSaveBtn').style.display = "none";
+    // SIMPAN LOKAL SAJA (OFFLINE MODE)
+    if(editIdx > -1) { 
+        db.rekap[editIdx] = data; 
+        editIdx = -1; 
+    } else { 
+        db.rekap.push(data); 
     }
+
+    saveToDisk();
+    renderAll();
+    renderOutletSuggestions();
+
+    tempItems = [];
+    document.getElementById('namaOutlet').value = "";
+    document.getElementById('tempList').innerHTML = "";
+    document.getElementById('mainSaveBtn').innerText = "SIMPAN DATA";
+    document.getElementById('mainSaveBtn').style.display = "none";
+}
 
     function showStruk(i) {
     const d = db.rekap[i]; 
@@ -1430,32 +1437,11 @@ function forceUpdate() {
 
 /* ================= FIREBASE CONNECT ================= */
 
-let FIREBASE_READY = true;
-
-const firebaseConfig = {
-apiKey: "AIzaSyBzGcliM6Um0hqyDw8ynFB4bXk9P9yzd3k",
-authDomain: "sales-pro-fa637.firebaseapp.com",
-databaseURL: "https://sales-pro-fa637-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId: "sales-pro-fa637",
-storageBucket: "sales-pro-fa637.firebasestorage.app",
-messagingSenderId: "801563728462",
-appId: "1:801563728462:web:3cf1a19a96790e1774411f"
-};
-
-firebase.initializeApp(firebaseConfig);
-const cloudDB = firebase.database();
+let FIREBASE_READY = false;
 
 // ===== REALTIME SYNC =====
-cloudDB.ref("transaksi").on("value", snap => {
-    const data = snap.val();
-    if(!data) return;
-
-    db.rekap = Object.values(data);
-    saveToDisk();
-    renderAll();
-
-    console.log("SYNC FROM SERVER:", db.rekap.length);
-});
+// FIREBASE DIMATIKAN
+// cloudDB.ref("transaksi").on("value", snap => {});
 
 /* ===================================================== */
 
