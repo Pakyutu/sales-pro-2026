@@ -496,6 +496,49 @@ body.dark-mode .btn-outline {
     color: #4dabff !important;
 }
 
+/* ===== CYBER UI LAYER (AMAN DARK MODE) ===== */
+
+/* panel glow */
+.card{
+    border:1px solid rgba(0,255,255,.15);
+    box-shadow:
+        0 0 20px rgba(0,255,255,.08),
+        inset 0 0 15px rgba(0,255,255,.05);
+    backdrop-filter: blur(10px);
+}
+
+/* header stok */
+.stok-table thead tr{
+    background:linear-gradient(90deg,#ff2d55,#ff7a00);
+    box-shadow:0 0 18px rgba(255,60,0,.35);
+}
+
+/* angka LAKU neon */
+.stok-table td:nth-child(3){
+    color:#00f7ff !important;
+    text-shadow:0 0 8px #00f7ff;
+}
+
+/* angka SISA glow */
+.stok-table td:last-child{
+    text-shadow:0 0 6px currentColor;
+}
+
+/* tombol */
+.btn-dark{
+    background:linear-gradient(90deg,#00f7ff,#7bff00);
+    color:#001018;
+    font-weight:900;
+    box-shadow:0 0 14px rgba(0,255,255,.5);
+}
+
+/* judul robot modern */
+h3::before{
+    content:"◉";
+    color:#00f7ff;
+    text-shadow:0 0 8px #00f7ff;
+}
+
     </style>
 </head>
 <body>
@@ -1386,9 +1429,20 @@ function moveDown(i) {
             </div>`;
         }).join('');
     }
+    
+function getActiveDate(){
+    let d = document.getElementById('filterTgl').value;
+    if(!d){
+        let now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        d = now.toISOString().slice(0,10);
+        document.getElementById('filterTgl').value = d;
+    }
+    return d;
+}
 
             function copyReport() {
-        let tglRaw = document.getElementById('filterTgl').value;
+        let tglRaw = getActiveDate();
         if(!tglRaw) return alert("Pilih tanggal dulu!");
 
         let p = tglRaw.split('-');
