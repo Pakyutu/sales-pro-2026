@@ -1,62 +1,53 @@
-const CACHE_NAME = 'sales-pro-v41'; // JANGAN LUPA NAIKKAN INI JADI v41
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
-];
+// sw.js - VERSI "AUTO UPDATE" (Gak Perlu Ganti Angka Lagi)
+const CACHE_NAME = 'sales-pro-permanent'; 
+const URLS_TO_CACHE = ['./', './index.html', './manifest.json'];
 
-// 1. INSTALL: Langsung aktif tanpa nunggu
+// 1. INSTALL: Langsung siap kerja
 self.addEventListener('install', event => {
-  self.skipWaiting(); 
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      console.log('SW: Caching assets...');
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
+    self.skipWaiting(); // Jangan antre, langsung aktif
+    event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll(URLS_TO_CACHE);
+        })
+    );
 });
 
-// 2. AKTIVASI: Hapus cache versi lama (PENTING BIAR BERSIH)
+// 2. ACTIVATE: Hapus cache sampah (selain cache utama)
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
-      );
-    })
-  );
-  self.clients.claim(); // Ambil alih kontrol seketika
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('Menghapus cache lama:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
+    );
+    self.clients.claim(); // Ambil alih kontrol HP seketika
 });
 
-// 3. FETCH: Strategi "Network First" dengan PAKSAAN (cache: 'reload')
+// 3. FETCH: STRATEGI "INTERNET DULU BARU MEMORI"
 self.addEventListener('fetch', event => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  // Cek apakah yang diminta adalah halaman utama (HTML)
-  if (url.origin === location.origin && (url.pathname === '/' || url.pathname.endsWith('index.html'))) {
     event.respondWith(
-      // INI KUNCINYA: { cache: 'reload' } memaksa browser mengabaikan cache internalnya
-      fetch(request, { cache: 'reload' })
-        .then(networkResponse => {
-          // Kalau berhasil dapat data baru dari internet, simpan ke cache SW
-          return caches.open(CACHE_NAME).then(cache => {
-            cache.put(request, networkResponse.clone());
-            return networkResponse;
-          });
-        })
-        .catch(() => {
-          // Kalau internet mati, baru pasrah pakai cache lama
-          return caches.match(request);
-        })
+        fetch(event.request)
+            .then(networkResponse => {
+                // HORE! ADA INTERNET & DAPAT DATA BARU
+                // Kita simpan data baru ini ke memori biar besok kalau offline tetap update
+                if(networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                    const responseToCache = networkResponse.clone();
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, responseToCache);
+                    });
+                }
+                return networkResponse;
+            })
+            .catch(() => {
+                // YAH, GAK ADA INTERNET / OFFLINE
+                // Ya sudah, pakai data yang ada di memori aja
+                return caches.match(event.request);
+            })
     );
-  } else {
-    // Untuk gambar/font/script lain, pakai Cache dulu biar ngebut
-    event.respondWith(
-      caches.match(request).then(response => {
-        return response || fetch(request);
-      })
-    );
-  }
 });
