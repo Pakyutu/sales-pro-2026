@@ -757,6 +757,21 @@ if (localStorage.getItem('MSP_THEME') === 'dark') {
 }
 
 const DB_VERSION = 1;
+
+/* ==== FIX TANGGAL GLOBAL (JANGAN DIHAPUS) ==== */
+function isoToIndo(iso){
+    if(!iso) return "";
+    let p = iso.split("-");
+    return p[2]+"-"+p[1]+"-"+p[0];
+}
+
+function getTodayIndo(){
+    let d = new Date();
+    let day = String(d.getDate()).padStart(2,'0');
+    let month = String(d.getMonth()+1).padStart(2,'0');
+    let year = d.getFullYear();
+    return day+"-"+month+"-"+year;
+}
     // --- DATABASE ---
     function generateReceiptNo(tgl) {
     let key = "MSP_REC_" + tgl;
@@ -794,7 +809,11 @@ const DB_VERSION = 1;
         let hariIni = day + "-" + month + "-" + year;
 
         // JIKA MASIH HARI YANG SAMA → JANGAN APA-APA
-        if (db.lastUpdate === hariIni) return;
+        if (db.lastUpdate === hariIni || !db.lastUpdate) {
+    db.lastUpdate = hariIni;
+    saveToDisk();
+    return;
+}
 
         // ====== PROSES GANTI HARI ======
         
@@ -841,13 +860,34 @@ const DB_VERSION = 1;
     let enteredPin = "";
     let lastDeletedTrx = null;
 
-        window.onload = () => { 
+        window.onload = () => {
+
     autoUpdateStokAwal();
-    checkLogin();
-    setToday();
+
     document.getElementById('setTarget').value = formatRibuan(db.settings.target);
     document.getElementById('setPin').value = db.settings.pin;
+
     renderOutletSuggestions();
+
+    // SET TANGGAL TANPA RENDER DULU
+    let d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    let iso = d.toISOString().slice(0,10);
+
+    document.getElementById('tanggalInput').value = iso;
+    document.getElementById('filterTgl').value = iso;
+    document.getElementById('stokDateInput').value = iso;
+
+    // baru cek login terakhir
+    checkLogin();
+
+    // kalau tidak ada pin → render
+    if(!db.settings.pin){
+        renderAll();
+    }
+    
+setTimeout(()=>renderAll(),100);
+    
 };
 
     function updatePinDots() {
@@ -892,7 +932,7 @@ updateHarga();
         // 2. AMBIL DATA FILTER & PENCARIAN
         let rawDate = document.getElementById('filterTgl').value;
 if(!rawDate) return;
-let filterTgl = rawDate.split('-').reverse().join('-');
+let filterTgl = isoToIndo(rawDate);
         let searchKeyword = document.getElementById('searchBox').value.toLowerCase(); 
 
         // 3. SIAPKAN WADAH HITUNGAN
@@ -988,7 +1028,7 @@ let filterTgl = rawDate.split('-').reverse().join('-');
 
         let filterTglRaw = document.getElementById('filterTgl').value;
 if(!filterTglRaw) return;
-let filterTglIndo = filterTglRaw.split('-').reverse().join('-');
+let filterTglIndo = isoToIndo(filterTglRaw);
         
         let stokAwalTampil = {};
         let statusData = "";
@@ -1109,7 +1149,7 @@ ${sisaIcon} ${sisa}
             let stokAwal = db.stokAwal[namaItem] || 0;
             
             // 2. Hitung barang yang sudah laku hari ini
-            let tglInput = document.getElementById('tanggalInput').value.split('-').reverse().join('-');
+            let tglInput = isoToIndo(document.getElementById('tanggalInput').value);
             let sudahLaku = db.rekap
                 .filter(r => r.tgl === tglInput)
                 .reduce((total, tr) => {
@@ -1164,13 +1204,18 @@ ${sisaIcon} ${sisa}
     if(!nama) return alert("Masukkan Nama Outlet!");
     
     const now = new Date();
-    const data = {
-        nama: nama,
-        metode: document.getElementById('metodeBayar').value,
-        items: [...tempItems],
-        jam: now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'),
-        tgl: document.getElementById('tanggalInput').value.split('-').reverse().join('-')
-    };
+    let tglFix = isoToIndo(document.getElementById('tanggalInput').value);
+
+const data = {
+    nama: nama,
+    metode: document.getElementById('metodeBayar').value,
+    items: [...tempItems],
+    jam: now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'),
+    tgl: tglFix,
+    nota: (editIdx > -1 && db.rekap[editIdx]?.nota) 
+      ? db.rekap[editIdx].nota 
+      : generateReceiptNo(tglFix)
+};
 
     // SIMPAN LOKAL SAJA (OFFLINE MODE)
     if(editIdx > -1) { 
@@ -1206,7 +1251,7 @@ ${sisaIcon} ${sisa}
     document.getElementById('rMetode').innerText = d.metode; // Mengisi baris Metode yang kita buat tadi
     document.getElementById('rDateOnly').innerText = d.tgl;
     document.getElementById('rTimeOnly').innerText = d.jam;
-    document.getElementById('rNo').innerText = generateReceiptNo(d.tgl);
+    document.getElementById('rNo').innerText = d.nota || "-";
     
     document.getElementById('rList').innerHTML = d.items.map(it => {
         let sub = it.harga * it.qty; total += sub;
@@ -1625,10 +1670,13 @@ function enterPin(n) {
     else if(enteredPin.length < 4) enteredPin += n;
     updatePinDots();
     if(enteredPin.length === 4) {
-        if(enteredPin === db.settings.pin.toString()) {
+       if(enteredPin === db.settings.pin.toString()) {
     document.getElementById('loginOverlay').style.display = 'none';
-    renderAll();
-        }
+
+    setTimeout(()=>{
+        renderAll();
+    },50);
+}
         else {
             alert("PIN KEAMANAN SALAH!");
             enteredPin = ""; updatePinDots();
