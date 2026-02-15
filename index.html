@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -44,9 +43,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-      :root {
+    :root {
     --primary: #EE2D24;
     --radius: 20px;
+
+    /* FIX VARIABLE */
+    --input-bg: #ffffff;
+    --bg-card: rgba(255,255,255,0.9);
+    --shadow-sm: 0 4px 10px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
     
     /* MODE SIANG */
     --bg-overlay: rgba(244, 246, 248, 0.94);
@@ -219,28 +224,18 @@ body.dark-mode {
         /* STOK TABLE */
         .stok-table { width: 100%; border-collapse: collapse; }
         /* PERBAIKAN TABEL STOK (BIAR TERANG) */
+.stok-table thead tr{
+    background: linear-gradient(135deg,#EE2D24,#ff6b6b);
+}
+
 .stok-table th { 
     text-align: left; 
-    color: var(--text-sub) !important; 
-    padding: 10px; 
-    font-size: 10px; 
+    color: white !important; 
+    padding: 12px; 
+    font-size: 11px; 
+    letter-spacing:1px;
     text-transform: uppercase; 
-    border-bottom: 2px solid var(--border-color); 
-}
-
-.stok-table td {
-    padding: 15px 10px; 
-    border-bottom: 1px solid var(--border-color); 
-    font-weight: 700; 
-    font-size: 13px; 
-    color: var(--text-main) !important; 
-}
-
-/* PRIORITAS PALING TINGGI - KOLOM LAKU */
-body .stok-table tbody tr td[data-laku]{
-    color:#00e676 !important;
-    font-weight:900 !important;
-    text-shadow:0 0 6px rgba(0,230,118,.4);
+    border-bottom: none;
 }
 
 
@@ -320,10 +315,16 @@ input[type="date"] {
             color: var(--text-main) !important;
         }
         
-/* PAKSA HIJAU UNTUK KOLOM LAKU */
-#stokTableBody td[data-laku]{
-    color:#00e676 !important;
-    font-weight:900 !important;
+
+/* ===== WARNA BARIS STOK ===== */
+.stok-table tbody tr:nth-child(odd){
+    background: rgba(255,255,255,0.04);
+}
+
+.stok-table tbody tr:hover{
+    background: rgba(238,45,36,0.08);
+    transform: scale(1.01);
+    transition:0.2s;
 }
 
     </style>
@@ -677,12 +678,10 @@ const DB_VERSION = 1;
 }
         autoUpdateStokAwal(); // <--- Ini yang bikin sistem langsung cek tanggal pas buka
         checkLogin();
-        setToday(); 
-        document.getElementById('setTarget').value = formatRibuan(db.settings.target);
-        document.getElementById('setPin').value = db.settings.pin;
-        renderOutletSuggestions();
-        renderAll(); 
-    };
+        setToday();
+document.getElementById('setTarget').value = formatRibuan(db.settings.target);
+document.getElementById('setPin').value = db.settings.pin;
+renderOutletSuggestions();
 
     function syncDateAndRender(newDate) {
         document.getElementById('filterTgl').value = newDate;
@@ -742,11 +741,17 @@ const DB_VERSION = 1;
     function renderAll() {
         // 1. UPDATE URUTAN DROPDOWN SESUAI KATALOG (Supaya Sinkron)
         const sel = document.getElementById('pilihanVoucher');
-        sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
-        updateHarga();
+let old = sel.value;
+
+sel.innerHTML = db.catalog.map(v => `<option value="${v.harga}">${v.nama}</option>`).join('');
+
+if(old) sel.value = old;
+updateHarga();
 
         // 2. AMBIL DATA FILTER & PENCARIAN
-        let filterTgl = document.getElementById('filterTgl').value.split('-').reverse().join('-');
+        let rawDate = document.getElementById('filterTgl').value;
+if(!rawDate) return;
+let filterTgl = rawDate.split('-').reverse().join('-');
         let searchKeyword = document.getElementById('searchBox').value.toLowerCase(); 
 
         // 3. SIAPKAN WADAH HITUNGAN
@@ -866,13 +871,27 @@ const DB_VERSION = 1;
             // Ambil data terjual dari hasil hitungan renderAll tadi
             let terjual = dataLaku[v.nama] || 0; 
             let sisa = awal - terjual;
-let color = sisa <= 5 ? '#ff5252' : 'var(--text-main)';
+let sisaIcon = "🟢";
+let color = "#2ecc71";
+
+if(sisa <= 20){
+    sisaIcon = "🟡";
+    color = "#f1c40f";
+}
+if(sisa <= 5){
+    sisaIcon = "🔴";
+    color = "#ff5252";
+}
             
             return `<tr>
                 <td>${v.nama}</td>
                 <td style="text-align:center;">${awal}</td>
-              <td style="text-align:center; font-weight:900; color:#00e676;">${terjual}</td>
-                <td style="text-align:right; font-weight:bold; color:${color};">${sisa}</td>
+           <td style="text-align:center; font-weight:900; color:#00ff88;">
+${terjual}
+</td>
+               <td style="text-align:right; font-weight:900; color:${color};">
+${sisaIcon} ${sisa}
+</td>
             </tr>`;
         }).join('');
         
@@ -990,12 +1009,9 @@ let color = sisa <= 5 ? '#ff5252' : 'var(--text-main)';
     }
 
     function cancelTempItem(i) {
-        let it = tempItems[i];
-        if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
-            db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty;
-        }
-        tempItems.splice(i,1); renderTemp();
-    }
+    tempItems.splice(i,1);
+    renderTemp();
+}
 
     function saveTrx() {
     const nama = document.getElementById('namaOutlet').value.toUpperCase();
@@ -1069,16 +1085,18 @@ let color = sisa <= 5 ? '#ff5252' : 'var(--text-main)';
 }
 
     function editTrx(i) {
-        let d = db.rekap[i]; editIdx = i;
-        document.getElementById('namaOutlet').value = d.nama;
-        d.items.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] = (db.stok[it.nama]||0) + it.qty; });
-        tempItems = [...d.items]; 
-        tempItems.forEach(it => { if(!it.nama.includes("LINKAJA")) db.stok[it.nama] -= it.qty; });
-        renderTemp();
-        document.getElementById('mainSaveBtn').innerText = "UPDATE DATA SEKARANG";
-        document.getElementById('mainSaveBtn').style.display = "block";
-        openTab('tab1', document.querySelectorAll('.tab-btn')[0]);
-    }
+    let d = db.rekap[i];
+    editIdx = i;
+
+    document.getElementById('namaOutlet').value = d.nama;
+    tempItems = [...d.items];
+
+    renderTemp();
+    document.getElementById('mainSaveBtn').innerText = "UPDATE DATA SEKARANG";
+    document.getElementById('mainSaveBtn').style.display = "block";
+
+    openTab('tab1', document.querySelectorAll('.tab-btn')[0]);
+}
     
     function delTrx(i) { 
     if (!confirm("Hapus transaksi?\n( Bisa UNDO sekali )")) return;
@@ -1088,13 +1106,6 @@ let color = sisa <= 5 ? '#ff5252' : 'var(--text-main)';
         data: db.rekap[i],
         index: i
     };
-
-    // kembalikan stok
-    db.rekap[i].items.forEach(it => {
-        if(!it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
-            db.stok[it.nama] = (db.stok[it.nama] || 0) + it.qty;
-        }
-    });
 
     // hapus transaksi
     db.rekap.splice(i, 1);
