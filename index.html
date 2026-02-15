@@ -1382,9 +1382,14 @@ const data = {
     
     document.getElementById('rList').innerHTML = d.items.map(it => {
         let sub = it.harga * it.qty; total += sub;
-        let qtyText = it.qty + (it.nama.includes("LINKAJA") ? "" : " Pcs");
-        let priceText = "x " + formatRibuan(it.harga);
-        waText += `${it.nama}\n(${qtyText} ${priceText}) = ${formatRibuan(sub)}\n`;
+        let isSaldo = it.nama.includes("LINKAJA") || it.nama.includes("SEVEN");
+let qtyText = isSaldo
+    ? "Rp " + formatRibuan(it.qty)
+    : it.qty + " Pcs";
+        let priceText = isSaldo ? "" : "x " + formatRibuan(it.harga);
+        waText += isSaldo
+ ? `${it.nama}\n(${qtyText})\n`
+ : `${it.nama}\n(${qtyText} ${priceText}) = ${formatRibuan(sub)}\n`;
         
         return `<div style="margin-bottom: 5px;">
             <div style="font-weight: 800;">${it.nama}</div>
@@ -1571,13 +1576,19 @@ function getActiveDate(){
                     
                     let subQty = 0;
                     buyers.forEach(b => {
-                        report += `- ${b.nama} (${b.qty} pcs)\n`;
+                        let isSaldo = prod.includes("LINKAJA") || prod.includes("SEVEN");
+report += isSaldo
+    ? `- ${b.nama} (Rp ${formatRibuan(b.qty)})\n`
+    : `- ${b.nama} (${b.qty} pcs)\n`;
                         subQty += b.qty;
                     });
                     
                     totalPcsCash += subQty;
                     summaryProduk[prod] += subQty; 
-                    report += `*TOTAL : ${subQty} pcs*\n`;
+                    let isSaldo = prod.includes("LINKAJA") || prod.includes("SEVEN");
+report += isSaldo
+    ? `*TOTAL : Rp ${formatRibuan(subQty)}*\n`
+    : `*TOTAL : ${subQty} pcs*\n`;
                 }
             });
         } else { report += `_(Kosong)_\n`; }
