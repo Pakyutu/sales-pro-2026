@@ -671,6 +671,50 @@ body.dark-mode .stok-table td:nth-child(3){
     }
 }
 
+/* ===== MASTER STOK RESPONSIVE ===== */
+
+#stokEditorBulk{
+    width:100%;
+    table-layout:fixed;
+}
+
+/* kolom nama produk */
+#stokEditorBulk td:nth-child(1){
+    width:45%;
+    font-size:11px;
+    word-break:break-word;
+}
+
+/* kolom stok awal */
+#stokEditorBulk td:nth-child(2){
+    width:25%;
+}
+
+/* kolom tambah stok */
+#stokEditorBulk td:nth-child(3){
+    width:30%;
+}
+
+/* input jangan melebar */
+#stokEditorBulk input{
+    width:100%;
+    padding:10px 6px;
+    font-size:12px;
+    text-align:center;
+}
+
+/* hp kecil */
+@media (max-width:420px){
+    #stokEditorBulk td:nth-child(1){
+        font-size:10px;
+    }
+
+    #stokEditorBulk input{
+        padding:8px 4px;
+        font-size:11px;
+    }
+}
+
     </style>
 </head>
 <body>
