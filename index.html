@@ -1002,8 +1002,12 @@ const DB_VERSION = 1;
 
         if(editIdx > -1) { db.rekap[editIdx] = data; editIdx = -1; } 
         else { db.rekap.push(data); }
-      if (window.firebase && firebase.database) {
-    firebase.database().ref("transaksi").push(data);
+   if (FIREBASE_READY) {
+    cloudDB.ref("transaksi").push(data)
+    .then(()=>console.log("UPLOAD OK"))
+    .catch(e=>console.log("UPLOAD ERROR",e));
+} else {
+    console.log("Firebase belum siap");
 }
 
         tempItems = []; document.getElementById('namaOutlet').value = ""; document.getElementById('tempList').innerHTML = "";
@@ -1426,6 +1430,8 @@ function forceUpdate() {
 
 /* ================= FIREBASE CONNECT ================= */
 
+let FIREBASE_READY = true;
+
 const firebaseConfig = {
 apiKey: "AIzaSyBzGcliM6Um0hqyDw8ynFB4bXk9P9yzd3k",
 authDomain: "sales-pro-fa637.firebaseapp.com",
@@ -1438,6 +1444,18 @@ appId: "1:801563728462:web:3cf1a19a96790e1774411f"
 
 firebase.initializeApp(firebaseConfig);
 const cloudDB = firebase.database();
+
+// ===== REALTIME SYNC =====
+cloudDB.ref("transaksi").on("value", snap => {
+    const data = snap.val();
+    if(!data) return;
+
+    db.rekap = Object.values(data);
+    saveToDisk();
+    renderAll();
+
+    console.log("SYNC FROM SERVER:", db.rekap.length);
+});
 
 /* ===================================================== */
 
