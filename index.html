@@ -40,7 +40,7 @@
    <link rel="icon" type="image/png" href="background.png">
 <link rel="apple-touch-icon" href="background.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
     :root {
@@ -121,6 +121,11 @@ body.dark-mode {
         .header-content h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--primary); text-transform: uppercase; }
         .header-content p { margin: 5px 0 0; font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
         .header-content .loc { font-size: 12px; color: var(--text-main); font-weight: 800; margin-top: 5px; display: block; }
+        
+body.dark-mode .header-content .loc{
+    color:#ffffff;
+    text-shadow:0 0 8px rgba(255,255,255,0.35);
+}
 
         /* TARGET BAR (CYBER LOOK) */
         .target-box { margin-top: 25px; background: #fff; padding: 18px; border-radius: var(--radius); border: 1px solid #eee; box-shadow: var(--shadow-sm); position: relative; z-index: 2; }
@@ -208,7 +213,7 @@ body.dark-mode {
         .trx-name { font-size: 15px; font-weight: 800; color: var(--text-main); }
         .trx-price { font-size: 16px; font-weight: 800; color: var(--primary); }
 
-        /* REAL THERMAL RECEIPT STYLE */
+        /* REAL THERMAL RECEIPT  */
         #receiptOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .receipt-paper { 
             background: #fff; width: 300px; padding: 20px; color: #000; 
@@ -327,6 +332,84 @@ input[type="date"] {
     transition:0.2s;
 }
 
+/* ===== TOMBOL PANAH KATALOG ===== */
+#catalogList button{
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    font-weight:900;
+    border:1px solid rgba(255,255,255,0.15) !important;
+}
+
+#catalogList button:hover{
+    transform:scale(1.15);
+    filter:brightness(1.3);
+}
+
+/* panah atas */
+#catalogList button:first-child{
+    background:linear-gradient(135deg,#ff3b3b,#ff7675)!important;
+    color:white!important;
+}
+
+/* panah bawah */
+#catalogList button:nth-child(2){
+    background:linear-gradient(135deg,#00cec9,#0984e3)!important;
+    color:white!important;
+}
+
+/* ===== TOMBOL OUTLINE BIAR KEBACA ===== */
+.btn-outline{
+    border:2px solid #4dabff !important;
+    color:#4dabff !important;
+    background:rgba(77,171,255,0.08)!important;
+    box-shadow:0 0 12px rgba(77,171,255,0.25);
+}
+
+.btn-outline:hover{
+    background:#4dabff!important;
+    color:white!important;
+}
+
+/* ===== PERTEGAS TEXT MODE GELAP ===== */
+body.dark-mode .card,
+body.dark-mode .trx-card{
+    backdrop-filter: blur(12px);
+}
+
+body.dark-mode .trx-name{
+    color:#ffffff!important;
+}
+
+body.dark-mode .trx-price{
+    color:#ff4d4d!important;
+    text-shadow:0 0 8px rgba(255,0,0,0.3);
+}
+
+/* ===== MODERN STOCK TABLE ===== */
+.stok-table tbody tr{
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.stok-table tbody td{
+    padding:14px 10px!important;
+    font-weight:700;
+}
+
+.stok-table tbody tr{
+    background:rgba(255,255,255,0.03);
+    transition:0.25s;
+}
+
+.stok-table tbody tr:hover{
+    background:linear-gradient(90deg,rgba(238,45,36,0.15),transparent);
+    transform:translateX(6px);
+}
+
+/* header */
+.stok-table thead tr{
+    box-shadow:0 10px 25px rgba(238,45,36,0.25);
+}
+
     </style>
 </head>
 <body>
@@ -345,7 +428,7 @@ input[type="date"] {
             <button class="num-btn" onclick="enterPin(7)">7</button>
             <button class="num-btn" onclick="enterPin(8)">8</button>
             <button class="num-btn" onclick="enterPin(9)">9</button>
-            <button class="num-btn" style="color:var(--primary)" onclick="clearPin()">C</button>
+           <button class="num-btn" style="color:var(--primary)" onclick="clearPin()">C</button>
             <button class="num-btn" onclick="enterPin(0)">0</button>
             <button class="num-btn" style="color:var(--primary)" onclick="enterPin(-1)">⌫</button>
         </div>
