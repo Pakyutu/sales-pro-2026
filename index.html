@@ -1272,17 +1272,11 @@ let filterTglIndo = isoToIndo(filterTglRaw);
             // Ambil data terjual dari hasil hitungan renderAll tadi
             let terjual = dataLaku[v.nama] || 0; 
             let sisa = awal - terjual;
-let sisaIcon = "🟢";
-let color = "#2ecc71";
+            
+            let color = "#2ecc71";
 
-if(sisa <= 20){
-    sisaIcon = "🟡";
-    color = "#f1c40f";
-}
-if(sisa <= 5){
-    sisaIcon = "🔴";
-    color = "#ff5252";
-}
+if(sisa <= 20) color = "#f1c40f";
+if(sisa <= 5) color = "#ff5252";
             
             return `<tr>
                 <td>${v.nama}</td>
@@ -1291,7 +1285,7 @@ if(sisa <= 5){
 ${terjual}
 </td>
                <td style="text-align:right; font-weight:900; color:${color};">
-${sisaIcon} ${sisa}
+${sisa}
 </td>
             </tr>`;
         }).join('');
