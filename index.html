@@ -1167,9 +1167,9 @@ let filterTgl = isoToIndo(rawDate);
             if (ot.tgl === filterTgl) {
                 ot.items.forEach(it => {
                     // Penjumlahan Live
-                    if (laku.hasOwnProperty(it.nama)) {
-                        laku[it.nama] += it.qty;
-                    }
+                    if (laku.hasOwnProperty(it.nama) && !it.nama.includes("LINKAJA") && !it.nama.includes("SEVEN")) {
+    laku[it.nama] += it.qty;
+}
                 });
                 
                 // Hitung Duit
@@ -1396,14 +1396,20 @@ ${sisa}
     }
 
     function renderTemp() {
-        document.getElementById('tempList').innerHTML = tempItems.map((it, i) => `
-            <div class="temp-item">
-                <span>${it.nama}</span>
-                <span>
-                    <span class="temp-qty">${formatRibuan(it.qty)} Pcs</span>
-                    <span onclick="cancelTempItem(${i})" style="color:red; margin-left:15px; cursor:pointer;">✖</span>
-                </span>
-            </div>`).join('');
+        document.getElementById('tempList').innerHTML = tempItems.map((it, i) => {
+    let isSaldo = it.nama.includes("LINKAJA") || it.nama.includes("SEVEN");
+
+    return `
+    <div class="temp-item">
+        <span>${it.nama}</span>
+        <span>
+            <span class="temp-qty">
+                ${isSaldo ? "Rp "+formatRibuan(it.qty) : formatRibuan(it.qty)+" Pcs"}
+            </span>
+            <span onclick="cancelTempItem(${i})" style="color:red; margin-left:15px; cursor:pointer;">✖</span>
+        </span>
+    </div>`;
+}).join('');
         if(tempItems.length === 0) document.getElementById('mainSaveBtn').style.display = "none";
     }
 
@@ -1617,180 +1623,80 @@ function getActiveDate(){
 }
 
             function copyReport() {
-        let tglRaw = getActiveDate();
-        if(!tglRaw) return alert("Pilih tanggal dulu!");
+    let tglRaw = getActiveDate();
+    if(!tglRaw) return alert("Pilih tanggal dulu!");
 
-        let p = tglRaw.split('-');
-        let tglIndo = `${p[2]}/${p[1]}/${p[0]}`; 
-        let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`; 
+    let p = tglRaw.split('-');
+    let tglIndo = `${p[2]}/${p[1]}/${p[0]}`;
+    let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`;
 
-        let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
-        if (dataHarian.length === 0) return alert("Data hari ini masih kosong!");
+    let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
+    if (dataHarian.length === 0) return alert("Data hari ini masih kosong!");
 
-        const priority = [
-            "4GB 1H", "5GB 2H", "4GB 3H", "3GB 5H", "8GB 5H", 
-            "12GB 30H", "SA 3GB", "SA BYU 3GB", "LINKAJA", "SEVEN"
-        ];
-        
-        let report = `*LAPORAN PENJUALAN HARIAN*\nTANGGAL : ${tglIndo}\n`;
-        
-        let totalPcsCash = 0;
-        let totalPcsTf = 0;
-        let totalPcsBon = 0; // Tambahan hitung Bon
-        
-        // Objek untuk menampung total per produk (Gabungan Semua)
-        let summaryProduk = {};
-        priority.forEach(k => summaryProduk[k] = 0);
+    const priority = ["4GB 1H","5GB 2H","4GB 3H","3GB 5H","8GB 5H","12GB 30H","SA 3GB","SA BYU 3GB","LINKAJA","SEVEN"];
 
-        // --- 1. BAGIAN CASH ---
-        report += `\n------------------------\n💵 *CASH (TUNAI)*\n`;
-        let cashData = dataHarian.filter(ot => ot.metode === "CASH");
-        
-        if (cashData.length > 0) {
-            priority.forEach(prod => {
-                let buyers = [];
-                cashData.forEach(ot => {
-                    ot.items.forEach(it => {
-                        if (it.nama === prod) buyers.push({ nama: ot.nama, qty: it.qty });
-                    });
+    let report = `*LAPORAN PENJUALAN HARIAN*\nTANGGAL : ${tglIndo}\n`;
+
+    let totalCash=0,totalTf=0,totalBon=0;
+    let saldoLink=0,saldoSeven=0;
+
+    function prosesBagian(label,metode){
+        report += `\n------------------------\n${label}\n`;
+        let data = dataHarian.filter(ot=>ot.metode===metode);
+        if(!data.length){ report+=`_(Kosong)_\n`; return;}
+
+        priority.forEach(prod=>{
+            let list=[];
+            data.forEach(ot=>{
+                ot.items.forEach(it=>{
+                    if(it.nama===prod) list.push({nama:ot.nama,qty:it.qty});
                 });
+            });
+            if(!list.length) return;
 
-                if (buyers.length > 0) {
-                    buyers.sort((a, b) => b.qty - a.qty);
-                    let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
-                    report += `\n*${displayName}*\n`;
-                    
-                    let subQty = 0;
-                    buyers.forEach(b => {
-                        let isSaldo = prod.includes("LINKAJA") || prod.includes("SEVEN");
-report += isSaldo
-    ? `- ${b.nama} (Rp ${formatRibuan(b.qty)})\n`
-    : `- ${b.nama} (${b.qty} pcs)\n`;
-                        subQty += b.qty;
-                    });
-                    
-                    totalPcsCash += subQty;
-                    summaryProduk[prod] += subQty; 
-                    let isSaldo = prod.includes("LINKAJA") || prod.includes("SEVEN");
-report += isSaldo
-    ? `*TOTAL : Rp ${formatRibuan(subQty)}*\n`
-    : `*TOTAL : ${subQty} pcs*\n`;
+            report+=`\n*${prod.replace("SA ","KARTU ")}*\n`;
+
+            let subtotal=0;
+            list.forEach(b=>{
+                if(prod==="LINKAJA"||prod==="SEVEN"){
+                    report+=`- ${b.nama} (Rp ${formatRibuan(b.qty)})\n`;
+                    subtotal+=b.qty;
+                }else{
+                    report+=`- ${b.nama} (${b.qty} pcs)\n`;
+                    subtotal+=b.qty;
                 }
             });
-        } else { report += `_(Kosong)_\n`; }
 
-        // --- 2. BAGIAN TRANSFER ---
-        report += `\n------------------------\n🏦 *TRANSFER (TF)*\n`;
-        let tfData = dataHarian.filter(ot => ot.metode === "TRANSFER");
+            if(prod==="LINKAJA"){ saldoLink+=subtotal; report+=`*TOTAL : Rp ${formatRibuan(subtotal)}*\n`; return;}
+            if(prod==="SEVEN"){ saldoSeven+=subtotal; report+=`*TOTAL : Rp ${formatRibuan(subtotal)}*\n`; return;}
 
-        if (tfData.length > 0) {
-            priority.forEach(prod => {
-                let buyers = [];
-                tfData.forEach(ot => {
-                    ot.items.forEach(it => {
-                        if (it.nama === prod) {
-                            let namaClean = ot.nama.replace("(TF)", "").replace("(tf)", "").trim();
-                            buyers.push({ nama: namaClean, qty: it.qty });
-                        }
-                    });
-                });
+            report+=`*TOTAL : ${subtotal} pcs*\n`;
 
-                if (buyers.length > 0) {
-                    buyers.sort((a, b) => b.qty - a.qty);
-                    let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
-                    report += `\n*${displayName}*\n`;
-
-                    let subQty = 0;
-                    buyers.forEach(b => {
-                        report += `- ${b.nama} (${b.qty} pcs)\n`;
-                        subQty += b.qty;
-                    });
-                    
-                    totalPcsTf += subQty;
-                    summaryProduk[prod] += subQty; 
-                    report += `*TOTAL : ${subQty} pcs*\n`;
-                }
-            });
-        } else { report += `_(Kosong)_\n`; }
-
-        // --- 3. BAGIAN BON / PENDING (BARU) ---
-        report += `\n------------------------\n⚠️ *BELUM LUNAS (BON)*\n`;
-        let bonData = dataHarian.filter(ot => ot.metode === "PENDING");
-
-        if (bonData.length > 0) {
-            priority.forEach(prod => {
-                let buyers = [];
-                bonData.forEach(ot => {
-                    ot.items.forEach(it => {
-                        if (it.nama === prod) {
-                            buyers.push({ nama: ot.nama, qty: it.qty });
-                        }
-                    });
-                });
-
-                if (buyers.length > 0) {
-                    buyers.sort((a, b) => b.qty - a.qty);
-                    let displayName = prod.replace("SA ", "KARTU ").replace("Data tambahan", "kartu");
-                    report += `\n*${displayName}*\n`;
-
-                    let subQty = 0;
-                    buyers.forEach(b => {
-                        report += `- ${b.nama} (${b.qty} pcs)\n`;
-                        subQty += b.qty;
-                    });
-                    
-                    totalPcsBon += subQty;
-                    summaryProduk[prod] += subQty; 
-                    report += `*TOTAL : ${subQty} pcs*\n`;
-                }
-            });
-        } else { report += `_(Aman, tidak ada bon)_\n`; }
-
-        /* ================= RINGKASAN BARANG ================= */
-
-let totalSemuaPcs = totalPcsCash + totalPcsTf + totalPcsBon;
-
-report += `\n====================\n`;
-report += `TOTAL CASH : ${totalPcsCash} pcs\n`;
-report += `TOTAL TF   : ${totalPcsTf} pcs\n`;
-
-if(totalPcsBon > 0){
-    report += `TOTAL BON  : ${totalPcsBon} pcs\n`;
-}
-
-report += `--------------------\n`;
-
-priority.forEach(prod => {
-    if(prod.includes("LINKAJA") || prod.includes("SEVEN")) return;
-
-    if(summaryProduk[prod] > 0){
-        let displayName = prod.replace("SA ", "KARTU ");
-        report += `TOTAL ${displayName} : ${summaryProduk[prod]} pcs\n`;
+            if(metode==="CASH") totalCash+=subtotal;
+            if(metode==="TRANSFER") totalTf+=subtotal;
+            if(metode==="PENDING") totalBon+=subtotal;
+        });
     }
-});
 
-report += `--------------------\n`;
-report += `GRAND TOTAL BARANG : ${totalSemuaPcs} pcs\n`;
+    prosesBagian("💵 *CASH (TUNAI)*","CASH");
+    prosesBagian("🏦 *TRANSFER (TF)*","TRANSFER");
+    prosesBagian("⚠️ *BELUM LUNAS (BON)*","PENDING");
 
-/* ================= RINGKASAN SALDO ================= */
+    let grandBarang=totalCash+totalTf+totalBon;
 
-let totalLinkaja = summaryProduk["LINKAJA"] || 0;
-let totalSeven   = summaryProduk["SEVEN"] || 0;
-let totalSaldo   = totalLinkaja + totalSeven;
+    report+=`\n====================\nTOTAL CASH : ${totalCash} pcs\nTOTAL TF   : ${totalTf} pcs\n`;
+    if(totalBon>0) report+=`TOTAL BON  : ${totalBon} pcs\n`;
+    report+=`--------------------\nGRAND TOTAL BARANG : ${grandBarang} pcs\n`;
 
-if(totalSaldo > 0){
-    report += `\n💰 ====================\n`;
-    report += `REKAP SALDO\n`;
-    report += `LINKAJA : Rp ${formatRibuan(totalLinkaja)}\n`;
-    report += `SEVEN   : Rp ${formatRibuan(totalSeven)}\n`;
-    report += `--------------------\n`;
-    report += `TOTAL SALDO : Rp ${formatRibuan(totalSaldo)}\n`;
-}
-
-report += `\n--------------------\nGenerated by TAP Bagan Batu`;
-
-        navigator.clipboard.writeText(report).then(() => alert("Laporan Harian (Termasuk Bon) Siap!"));
+    let totalSaldo=saldoLink+saldoSeven;
+    if(totalSaldo>0){
+        report+=`\n💰 ====================\nREKAP SALDO\nLINKAJA : Rp ${formatRibuan(saldoLink)}\nSEVEN   : Rp ${formatRibuan(saldoSeven)}\n--------------------\nTOTAL SALDO : Rp ${formatRibuan(totalSaldo)}\n`;
     }
+
+    report+=`\n--------------------\nGenerated by TAP Bagan Batu`;
+
+    navigator.clipboard.writeText(report).then(()=>alert("Laporan siap disalin!"));
+}
     
     function openTab(id, btn) {
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
