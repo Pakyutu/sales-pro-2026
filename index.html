@@ -1631,18 +1631,22 @@ function getActiveDate(){
     let filterTglStr = `${p[2]}-${p[1]}-${p[0]}`;
 
     let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
-    if (dataHarian.length === 0) return alert("Data hari ini masih kosong!");
+    if (!dataHarian.length) return alert("Data hari ini masih kosong!");
 
     const priority = ["4GB 1H","5GB 2H","4GB 3H","3GB 5H","8GB 5H","12GB 30H","SA 3GB","SA BYU 3GB","LINKAJA","SEVEN"];
 
-    let report = `*LAPORAN PENJUALAN HARIAN*\nTANGGAL : ${tglIndo}\n`;
-
+    let totalProduk = {};
+    let saldoLink=0, saldoSeven=0;
     let totalCash=0,totalTf=0,totalBon=0;
-    let saldoLink=0,saldoSeven=0;
+
+    priority.forEach(p=> totalProduk[p]=0);
+
+    let report = `*LAPORAN PENJUALAN HARIAN*\nTANGGAL : ${tglIndo}\n`;
 
     function prosesBagian(label,metode){
         report += `\n------------------------\n${label}\n`;
         let data = dataHarian.filter(ot=>ot.metode===metode);
+
         if(!data.length){ report+=`_(Kosong)_\n`; return;}
 
         priority.forEach(prod=>{
@@ -1652,6 +1656,7 @@ function getActiveDate(){
                     if(it.nama===prod) list.push({nama:ot.nama,qty:it.qty});
                 });
             });
+
             if(!list.length) return;
 
             report+=`\n*${prod.replace("SA ","KARTU ")}*\n`;
@@ -1670,6 +1675,7 @@ function getActiveDate(){
             if(prod==="LINKAJA"){ saldoLink+=subtotal; report+=`*TOTAL : Rp ${formatRibuan(subtotal)}*\n`; return;}
             if(prod==="SEVEN"){ saldoSeven+=subtotal; report+=`*TOTAL : Rp ${formatRibuan(subtotal)}*\n`; return;}
 
+            totalProduk[prod]+=subtotal;
             report+=`*TOTAL : ${subtotal} pcs*\n`;
 
             if(metode==="CASH") totalCash+=subtotal;
@@ -1682,10 +1688,18 @@ function getActiveDate(){
     prosesBagian("🏦 *TRANSFER (TF)*","TRANSFER");
     prosesBagian("⚠️ *BELUM LUNAS (BON)*","PENDING");
 
-    let grandBarang=totalCash+totalTf+totalBon;
+    let grandBarang = totalCash + totalTf + totalBon;
 
     report+=`\n====================\nTOTAL CASH : ${totalCash} pcs\nTOTAL TF   : ${totalTf} pcs\n`;
     if(totalBon>0) report+=`TOTAL BON  : ${totalBon} pcs\n`;
+    report+=`--------------------\n`;
+
+    report+=`REKAP TOTAL PRODUK\n`;
+    priority.forEach(p=>{
+        if(p==="LINKAJA"||p==="SEVEN") return;
+        report+=`${p} : ${totalProduk[p]} pcs\n`;
+    });
+
     report+=`--------------------\nGRAND TOTAL BARANG : ${grandBarang} pcs\n`;
 
     let totalSaldo=saldoLink+saldoSeven;
