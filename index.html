@@ -1633,7 +1633,17 @@ function getActiveDate(){
     let dataHarian = db.rekap.filter(item => item.tgl === filterTglStr);
     if (!dataHarian.length) return alert("Data hari ini masih kosong!");
 
-    const priority = ["4GB 1H","5GB 2H","4GB 3H","3GB 5H","8GB 5H","12GB 30H","SA 3GB","SA BYU 3GB","LINKAJA","SEVEN"];
+    // AUTO AMBIL SEMUA PRODUK DARI KATALOG
+const priority = db.catalog
+    .map(p => p.nama)
+    .filter(n => n !== "");
+    
+// pindahkan saldo ke bawah
+priority.sort((a,b)=>{
+    if(a.includes("LINKAJA") || a.includes("SEVEN")) return 1;
+    if(b.includes("LINKAJA") || b.includes("SEVEN")) return -1;
+    return 0;
+});
 
     let totalProduk = {};
     let saldoLink=0, saldoSeven=0;
