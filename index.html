@@ -1705,10 +1705,13 @@ priority.sort((a,b)=>{
     report+=`--------------------\n`;
 
     report+=`REKAP TOTAL PRODUK\n`;
-    priority.forEach(p=>{
-        if(p==="LINKAJA"||p==="SEVEN") return;
+priority.forEach(p=>{
+    if(p==="LINKAJA"||p==="SEVEN") return;
+
+    if(totalProduk[p] > 0){
         report+=`${p} : ${totalProduk[p]} pcs\n`;
-    });
+    }
+});
 
     report+=`--------------------\nGRAND TOTAL BARANG : ${grandBarang} pcs\n`;
 
