@@ -1846,6 +1846,35 @@ function syncDateAndRender(newDate) {
     renderAll();
 }
 
+/* ================= AUTO BACKUP HARIAN ================= */
+
+function autoBackupDaily(){
+
+    let today = new Date().toISOString().slice(0,10);
+    let last = localStorage.getItem("MSP_LAST_BACKUP");
+
+    if(last === today) return; // sudah backup hari ini
+
+    // buat file backup
+    let dataStr = JSON.stringify(db, null, 2);
+    let blob = new Blob([dataStr], {type:"application/json"});
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "MSP_BACKUP_" + today + ".json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    localStorage.setItem("MSP_LAST_BACKUP", today);
+
+    alert("📦 Backup otomatis tersimpan di folder Download");
+}
+
+/* jalankan saat app dibuka */
+setTimeout(autoBackupDaily,1500);
+
 function checkLogin() {
     if(db.settings.pin && db.settings.pin.toString().length === 4) {
         document.getElementById('loginOverlay').style.display = 'flex';
