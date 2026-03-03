@@ -1501,14 +1501,20 @@ ${v.nama}
 
 <input type="text"
 class="auto-width"
-value="${formatRibuan(it.qty)}"
+value="${formatRibuan(it.harga)}"
+
 oninput="
-let v=this.value.replace(/[^\d]/g,'');
-
-tempItems[${i}].qty=parseInt(v)||0;
-
-this.value = Number(v||0).toLocaleString('id-ID');
+tempItems[${i}].harga =
+parseInt(this.value.replace(/\D/g,'')) || '';
 "
+
+onblur="
+if(this.value!=''){
+this.value =
+Number(this.value.replace(/\D/g,''))
+.toLocaleString('id-ID');
+}
+">
 
 <input type="text"
 class="auto-width"
