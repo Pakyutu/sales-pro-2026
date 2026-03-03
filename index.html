@@ -715,6 +715,15 @@ body.dark-mode .stok-table td:nth-child(3){
     }
 }
 
+.auto-width{
+    width:auto;
+    min-width:80px;
+    max-width:100%;
+    transition:0.15s ease;
+    text-align:right;
+    font-weight:800;
+}
+
     </style>
 </head>
 <body>
@@ -790,7 +799,10 @@ body.dark-mode .stok-table td:nth-child(3){
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <input type="text" id="hargaDisplay" oninput="formatInput(this)" placeholder="HARGA">
+               <input type="text" id="hargaDisplay"
+class="auto-width"
+oninput="formatInput(this); autoResizeInput(this)"
+placeholder="HARGA">
                 <input type="text" id="jumlahPcs" placeholder="QTY / NOMINAL" oninput="formatInput(this)" inputmode="numeric">
             </div>
             
@@ -1342,6 +1354,7 @@ ${sisa}
         const isSaldo = txt.includes("LINKAJA") || txt.includes("SEVEN");
         document.getElementById('hargaDisplay').value = isSaldo ? "1" : formatRibuan(sel.value);
         document.getElementById('jumlahPcs').placeholder = isSaldo ? "NOMINAL RP" : "JUMLAH PCS";
+        autoResizeInput(document.getElementById('hargaDisplay'));
     }
 
     function renderOutletSuggestions() {
@@ -2002,6 +2015,18 @@ laporan += `--------------------\n`;
 
 navigator.clipboard.writeText(laporan)
 .then(()=>alert("✅ Status stok berhasil disalin"));
+}
+
+function autoResizeInput(el){
+    let length = el.value.length;
+
+    // hitung lebar otomatis
+    let newWidth = (length + 2) * 12;
+
+    if(newWidth < 80) newWidth = 80;
+    if(newWidth > 260) newWidth = 260;
+
+    el.style.width = newWidth + "px";
 }
 
 </script>
