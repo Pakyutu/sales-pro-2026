@@ -735,12 +735,12 @@ letter-spacing:.5px;
 .temp-item{
 display:grid;
 grid-template-columns:
-minmax(110px,1.6fr)
-minmax(60px,.7fr)
-minmax(95px,1fr)
-30px;
+1.4fr
+70px
+110px
+28px;
 
-gap:8px;
+gap:6px;
 align-items:center;
 width:100%;
 }
@@ -749,9 +749,16 @@ width:100%;
 width:100%;
 text-align:right;
 font-weight:800;
-padding-right:12px;
-font-size:14px;
-overflow:hidden;
+padding:10px 14px;
+font-size:15px;
+box-sizing:border-box;
+}
+
+.temp-item span{
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:18px;
 }
 
 .temp-item select{
@@ -1496,21 +1503,23 @@ ${v.nama}
 class="auto-width"
 value="${formatRibuan(it.qty)}"
 oninput="
-this.value=this.value.replace(/[^\d]/g,'')
-.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+let v=this.value.replace(/[^\d]/g,'');
 
-tempItems[${i}].qty=parseInt(this.value.replace(/\./g,''))||0;
-">
+tempItems[${i}].qty=parseInt(v)||0;
+
+this.value = Number(v||0).toLocaleString('id-ID');
+"
 
 <input type="text"
 class="auto-width"
 value="${formatRibuan(it.harga)}"
 oninput="
-this.value=this.value.replace(/[^\d]/g,'')
-.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+let v=this.value.replace(/[^\d]/g,'');
 
-tempItems[${i}].harga=parseInt(this.value.replace(/\./g,''))||0;
-">
+tempItems[${i}].harga=parseInt(v)||0;
+
+this.value = Number(v||0).toLocaleString('id-ID');
+"
 
 <span onclick="cancelTempItem(${i})"
 style="
