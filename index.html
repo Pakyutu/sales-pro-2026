@@ -1598,7 +1598,16 @@ function moveDown(i) {
 }
 
     function renderRiwayatTab() {
-        let dates = [...new Set(db.rekap.map(d => d.tgl))].sort().reverse();
+        let dates = [...new Set(db.rekap.map(d => d.tgl))]
+.sort((a,b)=>{
+    let pa = a.split("-");
+    let pb = b.split("-");
+
+    let da = new Date(pa[2], pa[1]-1, pa[0]);
+    let dbb = new Date(pb[2], pb[1]-1, pb[0]);
+
+    return dbb - da; // terbaru di atas
+});
         document.getElementById('riwayatList').innerHTML = dates.map(d => {
             let dayTotal = db.rekap.filter(x => x.tgl === d).reduce((a,b) => a + b.items.reduce((x,y)=>x+(y.harga*y.qty),0), 0);
             return `<div class="trx-card" style="display:flex; justify-content:space-between; align-items:center;">
