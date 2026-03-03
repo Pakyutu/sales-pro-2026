@@ -734,9 +734,35 @@ letter-spacing:.5px;
 
 .temp-item{
 display:grid;
-grid-template-columns: 1fr 90px 120px 35px;
-align-items:center;
+grid-template-columns:
+minmax(110px,1.6fr)
+minmax(60px,.7fr)
+minmax(95px,1fr)
+30px;
+
 gap:8px;
+align-items:center;
+width:100%;
+}
+
+.temp-item input{
+width:100%;
+text-align:right;
+font-weight:800;
+padding-right:12px;
+font-size:14px;
+overflow:hidden;
+}
+
+.temp-item select{
+width:100%;
+font-size:13px;
+font-weight:700;
+}
+
+.auto-width{
+letter-spacing:.8px;
+font-family:'JetBrains Mono',monospace;
 }
 
     </style>
