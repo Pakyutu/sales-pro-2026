@@ -1395,48 +1395,54 @@ ${sisa}
         document.getElementById('mainSaveBtn').style.display = "block";
     }
 
-    function renderTemp() {
+    function renderTemp(){
 
 document.getElementById('tempList').innerHTML =
 tempItems.map((it,i)=>{
 
-let isSaldo =
-it.nama.includes("LINKAJA") ||
-it.nama.includes("SEVEN");
-
 return `
 <div class="temp-item"
-style="display:flex;
-justify-content:space-between;
+style="
+display:grid;
+grid-template-columns:1.5fr .7fr .9fr auto;
+gap:8px;
 align-items:center;
-margin-bottom:8px;
+margin-bottom:10px;
 padding:10px;
-border-radius:10px;
-background:var(--bg-inner);">
+border-radius:12px;
+background:var(--bg-inner);
+">
 
-<div style="flex:1;font-weight:800;">
-${it.nama}
-</div>
+<select onchange="
+tempItems[${i}].nama=this.value;
+updateTempPrice(${i});
+">
+${db.catalog.map(v=>`
+<option value="${v.nama}"
+${v.nama===it.nama?'selected':''}>
+${v.nama}
+</option>
+`).join("")}
+</select>
 
 <input type="number"
 value="${it.qty}"
-style="width:70px;text-align:center;"
 onchange="
 tempItems[${i}].qty=parseInt(this.value)||0;
 ">
 
 <input type="number"
 value="${it.harga}"
-style="width:90px;text-align:center;"
 onchange="
 tempItems[${i}].harga=parseInt(this.value)||0;
 ">
 
 <span onclick="cancelTempItem(${i})"
-style="color:red;
+style="
+color:red;
 font-weight:900;
 cursor:pointer;
-margin-left:10px;">
+text-align:center;">
 ✖
 </span>
 
@@ -1447,6 +1453,19 @@ margin-left:10px;">
 
 if(tempItems.length===0)
 document.getElementById('mainSaveBtn').style.display="none";
+}
+
+function updateTempPrice(i){
+
+let nama = tempItems[i].nama;
+
+let produk = db.catalog.find(v=>v.nama===nama);
+
+if(produk){
+    tempItems[i].harga = produk.harga;
+    renderTemp();
+}
+
 }
 
     function cancelTempItem(i) {
