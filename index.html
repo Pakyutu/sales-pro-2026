@@ -1396,22 +1396,58 @@ ${sisa}
     }
 
     function renderTemp() {
-        document.getElementById('tempList').innerHTML = tempItems.map((it, i) => {
-    let isSaldo = it.nama.includes("LINKAJA") || it.nama.includes("SEVEN");
 
-    return `
-    <div class="temp-item">
-        <span>${it.nama}</span>
-        <span>
-            <span class="temp-qty">
-                ${isSaldo ? "Rp "+formatRibuan(it.qty) : formatRibuan(it.qty)+" Pcs"}
-            </span>
-            <span onclick="cancelTempItem(${i})" style="color:red; margin-left:15px; cursor:pointer;">✖</span>
-        </span>
-    </div>`;
+document.getElementById('tempList').innerHTML =
+tempItems.map((it,i)=>{
+
+let isSaldo =
+it.nama.includes("LINKAJA") ||
+it.nama.includes("SEVEN");
+
+return `
+<div class="temp-item"
+style="display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:8px;
+padding:10px;
+border-radius:10px;
+background:var(--bg-inner);">
+
+<div style="flex:1;font-weight:800;">
+${it.nama}
+</div>
+
+<input type="number"
+value="${it.qty}"
+style="width:70px;text-align:center;"
+onchange="
+tempItems[${i}].qty=parseInt(this.value)||0;
+">
+
+<input type="number"
+value="${it.harga}"
+style="width:90px;text-align:center;"
+onchange="
+tempItems[${i}].harga=parseInt(this.value)||0;
+">
+
+<span onclick="cancelTempItem(${i})"
+style="color:red;
+font-weight:900;
+cursor:pointer;
+margin-left:10px;">
+✖
+</span>
+
+</div>
+`;
+
 }).join('');
-        if(tempItems.length === 0) document.getElementById('mainSaveBtn').style.display = "none";
-    }
+
+if(tempItems.length===0)
+document.getElementById('mainSaveBtn').style.display="none";
+}
 
     function cancelTempItem(i) {
     tempItems.splice(i,1);
