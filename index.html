@@ -155,20 +155,24 @@ display: flex; justify-content: space-between; background: var(--card-bg); margi
         h3::before { content: '🤖'; font-size: 18px; }
         
         input, select { 
-    width: 100%; padding: 16px; 
-    
-    /* Gunakan Variabel Input & Tulisan */
+    width: 100%;
+    padding: 16px;
     background: var(--input-bg);
     color: var(--text-main);
-    
     border: 1.5px solid var(--border-color);
-    border-radius: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 15px; 
-    font-weight: 600; font-family: 'Poppins', sans-serif; transition: 0.3s;
-    .temp-item input{
-    text-align:right;
-    padding-right:35px; /* kasih jarak dari tombol X */
-    font-weight:800;
+    border-radius: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    transition: 0.3s;
 }
+
+.temp-item input{
+    text-align:right;
+    padding-right:35px;
+    font-weight:800;
 }
 
         input:focus, select:focus { background: var(--bg-inner); border-color: var(--primary); outline:none; box-shadow: 0 0 0 4px rgba(238, 45, 36, 0.1); }
@@ -810,7 +814,7 @@ gap:8px;
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-         <input type="text" id="harga" class="input-harga" placeholder="HARGA">
+         <input type="text" id="hargaDisplay" class="input-harga" placeholder="HARGA">
                 <input type="text" id="jumlahPcs" placeholder="QTY / NOMINAL" oninput="formatInput(this)" inputmode="numeric">
             </div>
             
