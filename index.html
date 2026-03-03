@@ -164,6 +164,11 @@ display: flex; justify-content: space-between; background: var(--card-bg); margi
     border: 1.5px solid var(--border-color);
     border-radius: 15px; box-sizing: border-box; font-size: 14px; margin-bottom: 15px; 
     font-weight: 600; font-family: 'Poppins', sans-serif; transition: 0.3s;
+    .temp-item input{
+    text-align:right;
+    padding-right:35px; /* kasih jarak dari tombol X */
+    font-weight:800;
+}
 }
 
         input:focus, select:focus { background: var(--bg-inner); border-color: var(--primary); outline:none; box-shadow: 0 0 0 4px rgba(238, 45, 36, 0.1); }
@@ -722,6 +727,13 @@ body.dark-mode .stok-table td:nth-child(3){
     transition:0.15s ease;
     text-align:right;
     font-weight:800;
+}
+
+.temp-item{
+    display:grid;
+    grid-template-columns: 1fr 80px 110px 30px;
+    align-items:center;
+    gap:8px;
 }
 
     </style>
@@ -1335,7 +1347,23 @@ ${sisa}
     function saveAllStok() { saveToDisk(); renderAll(); alert("Database Stok Berhasil Disinkronkan!"); }
     function formatRibuan(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
     function parseNo(s) { return parseInt(s.toString().replace(/\./g, '')) || 0; }
-    function formatInput(el) { el.value = formatRibuan(parseNo(el.value)); }
+    function formatInput(el){
+
+    let angka = el.value.replace(/[^\d]/g,'');
+
+    if(!angka){
+        el.value="";
+        return;
+    }
+
+    el.value = Number(angka).toLocaleString("id-ID");
+}
+
+document.addEventListener("input", e=>{
+    if(e.target.id==="hargaDisplay" || e.target.id==="jumlahPcs"){
+        formatInput(e.target);
+    }
+});
     
     function setToday() { 
     let d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
