@@ -721,19 +721,18 @@ body.dark-mode .stok-table td:nth-child(3){
 }
 
 .auto-width{
-    width:auto;
-    min-width:80px;
-    max-width:100%;
-    transition:0.15s ease;
-    text-align:right;
-    font-weight:800;
+width:100%;
+text-align:right;
+font-weight:800;
+padding-right:10px;
+letter-spacing:.5px;
 }
 
 .temp-item{
-    display:grid;
-    grid-template-columns: 1fr 80px 110px 30px;
-    align-items:center;
-    gap:8px;
+display:grid;
+grid-template-columns: 1fr 90px 120px 35px;
+align-items:center;
+gap:8px;
 }
 
     </style>
@@ -811,10 +810,7 @@ body.dark-mode .stok-table td:nth-child(3){
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-               <input type="text" id="hargaDisplay"
-class="auto-width"
-oninput="formatInput(this); autoResizeInput(this)"
-placeholder="HARGA">
+         <input type="text" id="harga" class="input-harga" placeholder="HARGA">
                 <input type="text" id="jumlahPcs" placeholder="QTY / NOMINAL" oninput="formatInput(this)" inputmode="numeric">
             </div>
             
@@ -1466,16 +1462,24 @@ ${v.nama}
 `).join("")}
 </select>
 
-<input type="number"
-value="${it.qty}"
-onchange="
-tempItems[${i}].qty=parseInt(this.value)||0;
+<input type="text"
+class="auto-width"
+value="${formatRibuan(it.qty)}"
+oninput="
+this.value=this.value.replace(/[^\d]/g,'')
+.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+
+tempItems[${i}].qty=parseInt(this.value.replace(/\./g,''))||0;
 ">
 
-<input type="number"
-value="${it.harga}"
-onchange="
-tempItems[${i}].harga=parseInt(this.value)||0;
+<input type="text"
+class="auto-width"
+value="${formatRibuan(it.harga)}"
+oninput="
+this.value=this.value.replace(/[^\d]/g,'')
+.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+
+tempItems[${i}].harga=parseInt(this.value.replace(/\./g,''))||0;
 ">
 
 <span onclick="cancelTempItem(${i})"
