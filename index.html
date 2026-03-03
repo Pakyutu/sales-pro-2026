@@ -1469,81 +1469,30 @@ document.addEventListener("input", e=>{
         document.getElementById('mainSaveBtn').style.display = "block";
     }
 
-    function renderTemp(){
+    function renderTemp() {
+    document.getElementById('tempList').innerHTML = tempItems.map((it, i) => {
+        return `
+        <div class="temp-item" style="display: grid; grid-template-columns: 1fr 90px 60px 30px; gap: 8px; align-items: center; margin-bottom: 10px; padding: 10px; border-radius: 12px; background: var(--bg-inner); border: 1px solid var(--border-color); border-left: 4px solid var(--primary);">
+            
+            <select onchange="tempItems[${i}].nama=this.value; updateTempPrice(${i});" style="margin:0; font-size:12px; font-weight:700;">
+                ${db.catalog.map(v => `<option value="${v.nama}" ${v.nama === it.nama ? 'selected' : ''}>${v.nama}</option>`).join("")}
+            </select>
 
-document.getElementById('tempList').innerHTML =
-tempItems.map((it,i)=>{
+            <input type="text" value="${formatRibuan(it.harga)}" style="margin:0; text-align:right; color:var(--primary); font-family:monospace;"
+                oninput="this.value = formatRibuan(this.value.replace(/\\D/g,'')); tempItems[${i}].harga = parseNo(this.value);">
 
-return `
-<div class="temp-item"
-style="
-display:grid;
-grid-template-columns:1.5fr .7fr .9fr auto;
-gap:8px;
-align-items:center;
-margin-bottom:10px;
-padding:10px;
-border-radius:12px;
-background:var(--bg-inner);
-">
+            <input type="text" value="${formatRibuan(it.qty)}" style="margin:0; text-align:center; font-weight:800;"
+                oninput="this.value = formatRibuan(this.value.replace(/\\D/g,'')); tempItems[${i}].qty = parseNo(this.value);">
 
-<select onchange="
-tempItems[${i}].nama=this.value;
-updateTempPrice(${i});
-">
-${db.catalog.map(v=>`
-<option value="${v.nama}"
-${v.nama===it.nama?'selected':''}>
-${v.nama}
-</option>
-`).join("")}
-</select>
+            <span onclick="cancelTempItem(${i})" style="color:red; font-weight:900; cursor:pointer; text-align:center;">✕</span>
+        </div>`;
+    }).join('');
 
-<input type="text"
-class="auto-width"
-value="${formatRibuan(it.harga)}"
-
-oninput="
-tempItems[${i}].harga =
-parseInt(this.value.replace(/\D/g,'')) || '';
-"
-
-onblur="
-if(this.value!=''){
-this.value =
-Number(this.value.replace(/\D/g,''))
-.toLocaleString('id-ID');
+    // Munculkan tombol simpan
+    document.getElementById('mainSaveBtn').style.display = tempItems.length > 0 ? "block" : "none";
+    if(editIdx > -1) document.getElementById('mainSaveBtn').innerText = "✨ UPDATE PENJUALAN";
 }
-">
 
-<input type="text"
-class="auto-width"
-value="${formatRibuan(it.harga)}"
-oninput="
-let v=this.value.replace(/[^\d]/g,'');
-
-tempItems[${i}].harga=parseInt(v)||0;
-
-this.value = Number(v||0).toLocaleString('id-ID');
-"
-
-<span onclick="cancelTempItem(${i})"
-style="
-color:red;
-font-weight:900;
-cursor:pointer;
-text-align:center;">
-✖
-</span>
-
-</div>
-`;
-
-}).join('');
-
-if(tempItems.length===0)
-document.getElementById('mainSaveBtn').style.display="none";
-}
 
 function updateTempPrice(i){
 
@@ -1648,14 +1597,19 @@ let qtyText = isSaldo
     let d = db.rekap[i];
     editIdx = i;
 
+    // Isi Nama, Metode, & Tanggal dari data lama
     document.getElementById('namaOutlet').value = d.nama;
-    tempItems = [...d.items];
+    document.getElementById('metodeBayar').value = d.metode;
+    
+    // Sinkronkan Tanggal (Balikin format DD-MM-YYYY ke input date)
+    let p = d.tgl.split('-');
+    document.getElementById('tanggalInput').value = `${p[2]}-${p[1]}-${p[0]}`;
 
-    renderTemp();
-    document.getElementById('mainSaveBtn').innerText = "UPDATE DATA SEKARANG";
-    document.getElementById('mainSaveBtn').style.display = "block";
+    // Ambil barang-barangnya
+    tempItems = JSON.parse(JSON.stringify(d.items)); 
 
-    openTab('tab1', document.querySelectorAll('.tab-btn')[0]);
+    renderTemp(); // Tampilin list editnya
+    openTab('tab1', document.querySelectorAll('.tab-btn')[0]); // Loncat ke tab input
 }
     
     function delTrx(i) { 
