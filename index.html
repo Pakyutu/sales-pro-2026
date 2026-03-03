@@ -1964,6 +1964,46 @@ function enterPin(n) {
     }
 }
 
+function copyStockReport(){
+
+let rawDate = document.getElementById('filterTgl').value;
+if(!rawDate) return alert("Pilih tanggal dulu!");
+
+let tgl = isoToIndo(rawDate);
+
+let laporan = `*STATUS STOK HARIAN*\n`;
+laporan += `TANGGAL : ${tgl}\n`;
+laporan += `====================\n`;
+
+db.catalog.forEach(v=>{
+
+if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN"))
+return;
+
+let awal = db.stokAwal[v.nama] || 0;
+
+// hitung terjual
+let terjual = db.rekap
+.filter(r=>r.tgl===tgl)
+.reduce((a,r)=>{
+let it = r.items.find(i=>i.nama===v.nama);
+return a + (it ? it.qty : 0);
+},0);
+
+let sisa = awal - terjual;
+
+laporan += `${v.nama}\n`;
+laporan += `Awal : ${awal}\n`;
+laporan += `Laku : ${terjual}\n`;
+laporan += `Sisa : ${sisa}\n`;
+laporan += `--------------------\n`;
+
+});
+
+navigator.clipboard.writeText(laporan)
+.then(()=>alert("✅ Status stok berhasil disalin"));
+}
+
 </script>
 
 </body>
