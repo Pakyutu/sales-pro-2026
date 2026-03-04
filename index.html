@@ -1352,24 +1352,19 @@ ${sisa}
 let disabled = isEditable ? "" : "disabled style='opacity:0.5;'";
 
 document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
-    // Abaikan saldo Linkaja & Seven dari stok fisik
     if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-    
     let val = db.stokAwal[v.nama] || 0;
-    
     return `
     <tr style="border-bottom: 1px solid var(--border-color);">
-        <td style="padding: 15px 10px; font-weight: 800; font-size: 13px; color: var(--text-main);">
-            ${v.nama}
-        </td>
-        <td style="padding: 10px 5px; width: 80px;">
-            <input type="number" ${disabled} value="${val}" 
-                style="margin:0; text-align:center; padding: 10px; border-radius: 30px; font-weight: 800; background: var(--bg-inner);"
+        <td style="padding: 12px 10px; font-weight: 800; font-size: 12px;">${v.nama}</td>
+        <td style="padding: 5px; width: 85px;">
+            <input type="number" value="${val}" 
+                style="margin:0; text-align:center; border-radius:30px; padding:10px; font-weight:800; background:var(--bg-inner);"
                 onchange="db.stokAwal['${v.nama}'] = parseInt(this.value) || 0; saveToDisk();">
         </td>
-        <td style="padding: 10px 5px; width: 100px;">
-            <input type="number" ${disabled} placeholder="+ STOK" 
-                style="margin:0; text-align:center; padding: 10px; border-radius: 30px; border: 1.5px dashed var(--primary); background: transparent; font-weight: 700;"
+        <td style="padding: 5px; width: 95px;">
+            <input type="number" placeholder="+ STOK" 
+                style="margin:0; text-align:center; border-radius:30px; border: 1.5px dashed var(--primary); background:transparent; font-weight:700;"
                 onchange="let t = parseInt(this.value) || 0; db.stokAwal['${v.nama}'] = (db.stokAwal['${v.nama}'] || 0) + t; this.value=''; saveToDisk(); renderAll();">
         </td>
     </tr>`;
@@ -1533,37 +1528,39 @@ if(produk){
     function saveTrx() {
     const nama = document.getElementById('namaOutlet').value.toUpperCase();
     if(!nama) return alert("Masukkan Nama Outlet!");
+    if(tempItems.length === 0) return alert("List belanja masih kosong!");
     
-    const now = new Date();
+    // Ambil tanggal dari input (bukan dari jam sekarang) biar aman buat edit data lama
     let tglFix = isoToIndo(document.getElementById('tanggalInput').value);
+    const now = new Date();
+    const jamFix = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
 
-const data = {
-    nama: nama,
-    metode: document.getElementById('metodeBayar').value,
-    items: [...tempItems],
-    jam: now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'),
-    tgl: tglFix,
-    nota: (editIdx > -1 && db.rekap[editIdx]?.nota) 
-      ? db.rekap[editIdx].nota 
-      : generateReceiptNo(tglFix)
-};
+    const dataBaru = {
+        nama: nama,
+        metode: document.getElementById('metodeBayar').value,
+        items: [...tempItems],
+        jam: (editIdx > -1) ? db.rekap[editIdx].jam : jamFix, // Jam tetap kalau cuma edit
+        tgl: tglFix,
+        nota: (editIdx > -1) ? db.rekap[editIdx].nota : generateReceiptNo(tglFix)
+    };
 
-    // SIMPAN LOKAL SAJA (OFFLINE MODE)
     if(editIdx > -1) { 
-        db.rekap[editIdx] = data; 
+        db.rekap[editIdx] = dataBaru; // Timpa data lama
         editIdx = -1; 
+        alert("✅ Data Berhasil Diupdate!");
     } else { 
-        db.rekap.push(data); 
+        db.rekap.push(dataBaru); // Tambah data baru
+        alert("💾 Data Tersimpan!");
     }
 
     saveToDisk();
     renderAll();
-    renderOutletSuggestions();
-
+    
+    // Reset Form Total
     tempItems = [];
     document.getElementById('namaOutlet').value = "";
     document.getElementById('tempList').innerHTML = "";
-    document.getElementById('mainSaveBtn').innerText = "SIMPAN DATA";
+    document.getElementById('mainSaveBtn').innerText = "💾 SIMPAN PERMANEN";
     document.getElementById('mainSaveBtn').style.display = "none";
 }
 
@@ -1615,20 +1612,25 @@ let qtyText = isSaldo
     let d = db.rekap[i];
     editIdx = i;
 
-    // Isi Nama, Metode, & Tanggal dari data lama
+    // Load data ke form
     document.getElementById('namaOutlet').value = d.nama;
     document.getElementById('metodeBayar').value = d.metode;
     
-    // Sinkronkan Tanggal (Balikin format DD-MM-YYYY ke input date)
+    // SINKRONKAN TANGGAL: Balikkan format DD-MM-YYYY ke YYYY-MM-DD
     let p = d.tgl.split('-');
-    document.getElementById('tanggalInput').value = `${p[2]}-${p[1]}-${p[0]}`;
+    let tglIso = `${p[2]}-${p[1]}-${p[0]}`;
+    document.getElementById('tanggalInput').value = tglIso;
 
-    // Ambil barang-barangnya
+    // Load list barangnya
     tempItems = JSON.parse(JSON.stringify(d.items)); 
 
-    renderTemp(); // Tampilin list editnya
-    openTab('tab1', document.querySelectorAll('.tab-btn')[0]); // Loncat ke tab input
+    renderTemp(); 
+    openTab('tab1', document.querySelectorAll('.tab-btn')[0]);
+    
+    // Scroll ke atas biar kelihatan formnya
+    window.scrollTo({top: 0, behavior: 'smooth'});
 }
+
     
     function delTrx(i) { 
     if (!confirm("Hapus transaksi?\n( Bisa UNDO sekali )")) return;
