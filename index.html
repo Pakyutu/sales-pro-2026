@@ -1349,13 +1349,31 @@ ${sisa}
         
         // Update Editor Stok
         let isEditable = (filterTglIndo === db.lastUpdate);
-        let disabled = isEditable ? "" : "disabled style='background:#eee;'";
+let disabled = isEditable ? "" : "disabled style='opacity:0.5;'";
 
-        document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
-            if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-            let val = db.stokAwal[v.nama] || 0;
-            return `<tr><td style="padding:10px; font-size:11px;">${v.nama}</td><td><input type="number" ${disabled} value="${val}" onchange="db.stokAwal['${v.nama}']=parseInt(this.value)||0;saveToDisk();renderAll();"></td><td><input type="number" ${disabled} placeholder="+ STOK" onchange="let t=parseInt(this.value)||0;db.stokAwal['${v.nama}']=(db.stokAwal['${v.nama}']||0)+t;saveToDisk();this.value='';renderAll();"></td></tr>`;
-        }).join('');
+document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
+    // Abaikan saldo Linkaja & Seven dari stok fisik
+    if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
+    
+    let val = db.stokAwal[v.nama] || 0;
+    
+    return `
+    <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 15px 10px; font-weight: 800; font-size: 13px; color: var(--text-main);">
+            ${v.nama}
+        </td>
+        <td style="padding: 10px 5px; width: 80px;">
+            <input type="number" ${disabled} value="${val}" 
+                style="margin:0; text-align:center; padding: 10px; border-radius: 30px; font-weight: 800; background: var(--bg-inner);"
+                onchange="db.stokAwal['${v.nama}'] = parseInt(this.value) || 0; saveToDisk();">
+        </td>
+        <td style="padding: 10px 5px; width: 100px;">
+            <input type="number" ${disabled} placeholder="+ STOK" 
+                style="margin:0; text-align:center; padding: 10px; border-radius: 30px; border: 1.5px dashed var(--primary); background: transparent; font-weight: 700;"
+                onchange="let t = parseInt(this.value) || 0; db.stokAwal['${v.nama}'] = (db.stokAwal['${v.nama}'] || 0) + t; this.value=''; saveToDisk(); renderAll();">
+        </td>
+    </tr>`;
+}).join('');
 
         // Update Daftar Katalog (Tetap pakai tombol panah)
         document.getElementById('catalogList').innerHTML = db.catalog.map((v,i) => `
