@@ -1064,10 +1064,10 @@ function getTodayIndo(){
     ];
 
             let db = {
-        version: DB_VERSION,
-        catalog: JSON.parse(localStorage.getItem('MSP_CATALOG')) || defaultCatalog,
-        rekap: JSON.parse(localStorage.getItem('MSP_REKAP')) || [],
-        stok: JSON.parse(localStorage.getItem('MSP_STOK')) || {}, 
+    stokAwal: {},
+    riwayatStok: [],
+    lastUpdate: new Date().toISOString()
+}, 
         stokAwal: JSON.parse(localStorage.getItem('MSP_STOK_AWAL')) || {},
         stokMasuk: JSON.parse(localStorage.getItem('MSP_STOK_MASUK')) || {},
         // BAGIAN BARU: Tempat simpan arsip stok masa lalu
@@ -1109,7 +1109,7 @@ function getTodayIndo(){
         db.catalog.forEach(v => {
             if (v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return;
 
-            let awal = db.stokAwal[v.nama] || 0;
+            let awal = backupStok(); db.stokAwal[v.nama] || 0;
             let masuk = db.stokMasuk[v.nama] || 0;
 
             let terjual = db.rekap
@@ -1184,15 +1184,14 @@ setTimeout(()=>renderAll(),100);
     function togglePin() { saveSettings(); alert("Akses PIN Berhasil Diperbarui!"); }
 
         function saveToDisk() {
-        localStorage.setItem('MSP_CATALOG', JSON.stringify(db.catalog));
-        localStorage.setItem('MSP_REKAP', JSON.stringify(db.rekap));
-        localStorage.setItem('MSP_STOK', JSON.stringify(db.stok)); 
-        localStorage.setItem('MSP_STOK_AWAL', JSON.stringify(db.stokAwal));
-        localStorage.setItem('MSP_STOK_MASUK', JSON.stringify(db.stokMasuk));
-        // SIMPAN RIWAYAT
-        localStorage.setItem('MSP_RIWAYAT_STOK', JSON.stringify(db.riwayatStok));
-        localStorage.setItem('MSP_LAST_DATE', db.lastUpdate);
+    if (!db.stokAwal) return;
+    let values = Object.values(db.stokAwal);
+    if (values.length === 0 || values.every(v => v === 0)) {
+        console.log("Skip save kosong");
+        return;
     }
+    localStorage.setItem("db", JSON.stringify(db));
+}
 
                     // --- FUNGSI UTAMA PENGENDALI TAMPILAN (RENDER ALL) ---
     function renderAll() {
@@ -1353,7 +1352,7 @@ let disabled = isEditable ? "" : "disabled style='opacity:0.5;'";
 
 document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
     if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN")) return '';
-    let val = db.stokAwal[v.nama] || 0;
+    let val = backupStok(); db.stokAwal[v.nama] || 0;
     return `
     <tr style="border-bottom: 1px solid var(--border-color);">
         <td style="padding: 12px 10px; font-weight: 800; font-size: 12px;">${v.nama}</td>
@@ -1362,7 +1361,7 @@ document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
                 style="margin:0; text-align:center; border-radius:30px; padding:10px; font-weight:800; background:var(--bg-inner);"
                 onchange="
 backupStok();
-db.stokAwal['${v.nama}'] = parseInt(this.value) || 0; 
+backupStok(); db.stokAwal['${v.nama}'] = parseInt(this.value) || 0; 
 saveToDisk();
 ">
         </td>
@@ -1372,7 +1371,7 @@ saveToDisk();
                 onchange="
 backupStok();
 let t = parseInt(this.value) || 0; 
-db.stokAwal['${v.nama}'] = (db.stokAwal['${v.nama}'] || 0) + t; 
+backupStok(); db.stokAwal['${v.nama}'] = (backupStok(); db.stokAwal['${v.nama}'] || 0) + t; 
 this.value=''; 
 saveToDisk(); 
 renderAll();
@@ -1457,7 +1456,7 @@ document.addEventListener("input", e=>{
         // --- PERBAIKAN LOGIKA STOK (DINAMIS) ---
         if(!namaItem.includes("LINKAJA") && !namaItem.includes("SEVEN")) {
             // 1. Ambil data Stok Awal dari Master Stok (yang kamu isi 500 tadi)
-            let stokAwal = db.stokAwal[namaItem] || 0;
+            let stokAwal = backupStok(); db.stokAwal[namaItem] || 0;
             
             // 2. Hitung barang yang sudah laku hari ini
             let tglInput = isoToIndo(document.getElementById('tanggalInput').value);
@@ -2055,7 +2054,7 @@ db.catalog.forEach(v=>{
 if(v.nama.includes("LINKAJA") || v.nama.includes("SEVEN"))
 return;
 
-let awal = db.stokAwal[v.nama] || 0;
+let awal = backupStok(); db.stokAwal[v.nama] || 0;
 
 // hitung terjual
 let terjual = db.rekap
