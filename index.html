@@ -1360,12 +1360,23 @@ document.getElementById('stokEditorBulk').innerHTML = db.catalog.map(v => {
         <td style="padding: 5px; width: 85px;">
             <input type="number" value="${val}" 
                 style="margin:0; text-align:center; border-radius:30px; padding:10px; font-weight:800; background:var(--bg-inner);"
-                onchange="db.stokAwal['${v.nama}'] = parseInt(this.value) || 0; saveToDisk();">
+                onchange="
+backupStok();
+db.stokAwal['${v.nama}'] = parseInt(this.value) || 0; 
+saveToDisk();
+">
         </td>
         <td style="padding: 5px; width: 95px;">
             <input type="number" placeholder="+ STOK" 
                 style="margin:0; text-align:center; border-radius:30px; border: 1.5px dashed var(--primary); background:transparent; font-weight:700;"
-                onchange="let t = parseInt(this.value) || 0; db.stokAwal['${v.nama}'] = (db.stokAwal['${v.nama}'] || 0) + t; this.value=''; saveToDisk(); renderAll();">
+                onchange="
+backupStok();
+let t = parseInt(this.value) || 0; 
+db.stokAwal['${v.nama}'] = (db.stokAwal['${v.nama}'] || 0) + t; 
+this.value=''; 
+saveToDisk(); 
+renderAll();
+">
         </td>
     </tr>`;
 }).join('');
@@ -2078,6 +2089,20 @@ function autoResizeInput(el){
     if(newWidth > 260) newWidth = 260;
 
     el.style.width = newWidth + "px";
+}
+
+function backupStok() {
+    let hariIni = db.lastUpdate;
+
+    // cek apakah sudah ada backup hari ini
+    let cek = db.riwayatStok.find(r => r.tgl === hariIni);
+
+    if (!cek) {
+        db.riwayatStok.push({
+            tgl: hariIni,
+            stok: JSON.parse(JSON.stringify(db.stokAwal))
+        });
+    }
 }
 
 </script>
